@@ -1,0 +1,39 @@
+{
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": false,
+    "declaration": true,
+    "declarationDir": "dist/",
+    "outDir": "dist/",
+    "sourceMap": true,
+    "pretty": true,
+    "lib": [
+      "dom",
+      "es6",
+      "es2015",
+      "es2016",
+      "es2017"
+    ],
+    "typeRoots": [
+      "node_modules/@types",
+      "src/typings"
+    ]
+  },
+  "filesGlob": [
+    "**/*.ts",
+    "!node_modules/**/*"
+  ],
+  "exclude": [
+    "node_modules/**",
+    "dist/**"
+  ]
+}
