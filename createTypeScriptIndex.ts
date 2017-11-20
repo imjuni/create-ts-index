@@ -92,7 +92,7 @@ export async function createTypeScriptIndex(_option: ICreateTsIndexOption): Prom
     option.globOptions.cwd = option.globOptions.cwd || process.cwd();
     option.globOptions.nonull = option.globOptions.nonull || true;
     option.globOptions.dot = option.globOptions.dot || true;
-    option.excludes = option.excludes || ['@types', '__test__', '__tests__'];
+    option.excludes = option.excludes || ['@types', 'typings', '__test__', '__tests__'];
     option.targetExts = option.targetExts || ['ts', 'tsx'];
 
     const targetFileGlob = option.targetExts.map(ext => `*.${ext}`).join('|');
