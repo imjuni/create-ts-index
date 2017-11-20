@@ -1,24 +1,34 @@
 {
   "name": "create-ts-index",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.2",
+  "description": "Automatic create index.ts file",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "clean": "rimraf ./dist",
+    "prepub": "npm run clean && npm run build",
+    "pub": "npm publish"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/imjuni/create-ts-index.git"
+  },
+  "bin": {
+    "cti": "./dist/cti.js"
   },
   "author": "ByungJoon Lee",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/imjuni/create-ts-index/issues"
   },
+  "files": [
+    "dist"
+  ],
   "homepage": "https://github.com/imjuni/create-ts-index#readme",
   "devDependencies": {
     "@types/glob": "^5.0.33",
     "@types/node": "^8.0.51",
+    "rimraf": "^2.6.2",
     "ts-node": "^3.3.0",
     "tslib": "^1.8.0",
     "tslint": "^5.8.0",

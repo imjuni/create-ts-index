@@ -1,3 +1,6 @@
+#!/usr/bin/env node
+
+import * as chalk from 'chalk';
 import * as commander from 'commander';
 import {
   ICreateTsIndexOption,
@@ -16,6 +19,8 @@ commander
   .parse(process.argv);
 
 const [cwd] = commander.args;
+
+console.log(chalk.default.green('working directory: ', cwd));
 
 option.addNewline = commander['addnewline'];
 option.useSemicolon = commander['usesemicolon'];

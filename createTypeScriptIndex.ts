@@ -38,6 +38,8 @@ export async function indexWriter(
   const indexFiles = option.targetExts.map(targetExt => `index.${targetExt}`);
 
   try {
+    console.log(chalk.default.yellow('Current working: ', directory));
+
     const resolvePath = path.resolve(option.globOptions.cwd);
     const elements = await readDirFunc(path.join(resolvePath, directory));
 
