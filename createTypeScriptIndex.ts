@@ -125,9 +125,31 @@ export async function createTypeScriptIndex(_option: ICreateTsIndexOption): Prom
           );
       });
 
-    const tsDirSet: Set<string> = new Set<string>(tsFiles.map(tsFile => path.dirname(tsFile)));
-    const tsDirs = Array.from<string>(tsDirSet).filter(dir => dir !== '.');
+    const dupLibDirs = tsFiles
+      .filter(tsFile => tsFile.split(path.sep).length > 1)
+      .map((tsFile) => {
+        const splitted = tsFile.split(path.sep);
+        const allPath = Array<number>(splitted.length - 1)
+          .fill(0)
+          .map((_, index) => index + 1)
+          .map((index) => {
+            const a = splitted.slice(0, index).join(path.sep);
+            return a;
+          });
+        return allPath;
+      })
+      .reduce<string[]>(
+        (aggregated, libPath) => {
+          return aggregated.concat(libPath);
+        },
+        [] as string[],
+      );
 
+    const dirSet: Set<string> = new Set<string>();
+    dupLibDirs.forEach(dir => dirSet.add(dir));
+    tsFiles.map(tsFile => path.dirname(tsFile)).forEach(dir => dirSet.add(dir));
+
+    const tsDirs = Array.from<string>(dirSet);
     tsDirs.sort((left: string, right: string): number => {
       const llen = left.split(path.sep).length;
       const rlen = right.split(path.sep).length;
