@@ -77,7 +77,7 @@ option.targetExts = option.targetExts || ['ts', 'tsx'];
 # basic usage
 cti ./src
 
-# with newline
+# without newline
 cti -n ./src
 
 # custom exclude directories

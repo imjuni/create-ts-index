@@ -129,6 +129,7 @@ export async function createTypeScriptIndex(_option: ICreateTsIndexOption): Prom
       '@types', 'typings', '__test__', '__tests__', 'node_modules',
     ];
     option.targetExts = option.targetExts || ['ts', 'tsx'];
+    option.targetExts = option.targetExts.sort().reverse();
 
     const targetFileGlob = option.targetExts.map(ext => `*.${ext}`).join('|');
     const globFunc = util.promisify<string, glob.IOptions, string[]>(glob);

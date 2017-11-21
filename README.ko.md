@@ -74,13 +74,13 @@ option.targetExts = option.targetExts || ['ts', 'tsx'];
 
 ## CLI
 ```
-# basic usage
+# 기본 사용법
 cti ./src
 
-# with newline
+# 줄바꿈 문자 포함하지 않기
 cti -n ./src
 
-# custom exclude directories
+# 제외할 디렉터리를 직접 전달하는 방법
 cti -n -e @types,typings,__test__,__tests__,pages ./src
 ```
 
