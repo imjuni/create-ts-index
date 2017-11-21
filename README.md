@@ -58,8 +58,8 @@ create-ts-index create index.ts file below.
 ```
 const option = {};
 
-option.addNewline = option.addNewline || false;
-option.useSemicolon = option.useSemicolon || false;
+option.addNewline = option.addNewline || true;
+option.useSemicolon = option.useSemicolon || true;
 option.useTimestamp = option.useTimestamp || false;
 option.globOptions.cwd = option.globOptions.cwd || process.cwd();
 option.globOptions.nonull = option.globOptions.nonull || true;

@@ -58,8 +58,9 @@ create-ts-index 는 아래와 같이 export index.ts 파일을 생성합니다.
 ```
 const option = {};
 
-option.addNewline = option.addNewline || false;
-option.useSemicolon = option.useSemicolon || false;
+option.addNewline = option.addNewline || true;
+option.useSemicolon = option.useSemicolon || true;
+option.useTimestamp = option.useTimestamp || false;
 option.globOptions.cwd = option.globOptions.cwd || process.cwd();
 option.globOptions.nonull = option.globOptions.nonull || true;
 option.globOptions.dot = option.globOptions.dot || true;
