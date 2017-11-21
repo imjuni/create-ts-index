@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import * as util from 'util';
 import * as glob from 'glob';
 import * as fs from 'fs';
@@ -7,6 +8,7 @@ import * as path from 'path';
 export interface ICreateTsIndexOption {
   addNewline?: boolean;
   useSemicolon?: boolean;
+  useTimestamp?: boolean;
   excludes?: string[];
   targetExts?: string[];
   globOptions?: glob.IOptions;
@@ -35,6 +37,7 @@ export async function indexWriter(
 ): Promise<void> {
   const readDirFunc = util.promisify<string, string[]>(fs.readdir);
   const writeFileFunc = util.promisify<string, any, string>(fs.writeFile);
+  const statFunc = util.promisify<string, fs.Stats>(fs.stat);
   const indexFiles = option.targetExts.map(targetExt => `index.${targetExt}`);
 
   try {
@@ -58,7 +61,29 @@ export async function indexWriter(
         return (isTarget || isHaveTarget) && isNotIndex;
       });
 
-    const exportString = targets.map((target) => {
+    const stats = await Promise.all(
+      targets.map(target => statFunc(path.join(resolvePath, directory, target))),
+    );
+
+    const categorized = targets.reduce<{ dir: string[], file: string[] }>(
+      (result, target, index) => {
+        if (stats[index].isDirectory()) {
+          result.dir.push(target);
+        } else {
+          result.file.push(target);
+        }
+
+        return result;
+      },
+      { dir: [], file: [] },
+    );
+
+    categorized.dir.sort();
+    categorized.file.sort();
+
+    const sorted = categorized.dir.concat(categorized.file);
+
+    const exportString = sorted.map((target) => {
       let targetFileWithoutExt = target;
 
       option.targetExts.forEach((ext) => {
@@ -72,7 +97,14 @@ export async function indexWriter(
       return `export * from './${targetFileWithoutExt}'`;
     });
 
-    const fileContent = addNewline(option, exportString.join('\n'));
+    const comment = (() => {
+      if (option.useTimestamp) {
+        return `// created from 'create-ts-index' ${moment(new Date()).format('YYYY-MM-DD HH:mm')}\n\n`; // tslint:disable-line
+      }
+      return `// created from 'create-ts-index'\n\n`; // tslint:disable-line
+    })();
+
+    const fileContent = comment + addNewline(option, exportString.join('\n'));
     await writeFileFunc(path.join(resolvePath, directory, 'index.ts'), fileContent, 'utf8');
   } catch (err) {
     console.log(chalk.default.red('indexWriter: ', err.message));
@@ -89,10 +121,13 @@ export async function createTypeScriptIndex(_option: ICreateTsIndexOption): Prom
 
     option.addNewline = option.addNewline || true;
     option.useSemicolon = option.useSemicolon || true;
+    option.useTimestamp = option.useTimestamp || false;
     option.globOptions.cwd = option.globOptions.cwd || process.cwd();
     option.globOptions.nonull = option.globOptions.nonull || true;
     option.globOptions.dot = option.globOptions.dot || true;
-    option.excludes = option.excludes || ['@types', 'typings', '__test__', '__tests__'];
+    option.excludes = option.excludes || [
+      '@types', 'typings', '__test__', '__tests__', 'node_modules',
+    ];
     option.targetExts = option.targetExts || ['ts', 'tsx'];
 
     const targetFileGlob = option.targetExts.map(ext => `*.${ext}`).join('|');

@@ -1,6 +1,6 @@
 {
   "name": "create-ts-index",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Automatic create index.ts file",
   "main": "dist/index.js",
   "scripts": {
@@ -38,6 +38,7 @@
   "dependencies": {
     "chalk": "^2.3.0",
     "commander": "^2.11.0",
-    "glob": "^7.1.2"
+    "glob": "^7.1.2",
+    "moment": "^2.19.2"
   }
 }
