@@ -81,7 +81,7 @@ export async function indexWriter(
     categorized.dir.sort();
     categorized.file.sort();
 
-    const sorted = categorized.dir.concat(categorized.file);
+    const sorted = categorized.file.concat(categorized.dir);
 
     const exportString = sorted.map((target) => {
       let targetFileWithoutExt = target;
