@@ -11,7 +11,9 @@ const option: ICreateTsIndexOption = {
   globOptions: {},
 };
 
+// -f -n -s -t -e -x
 commander
+  .option('-f --filefirst', 'export list create filefirst, no option false, option true')
   .option('-n --addnewline', 'deside add newline file ending. no option true, option false')
   .option('-s --usesemicolon', 'deside use semicolon line ending. no option true, option false')
   .option(
@@ -41,6 +43,7 @@ if (!cwd) {
 
 console.log(chalk.default.green('working directory: ', cwd));
 
+option.fileFirst = !!commander['filefirst'];
 option.addNewline = !commander['addnewline'];
 option.useSemicolon = !commander['usesemicolon'];
 option.useTimestamp =  commander['usetimestamp'];

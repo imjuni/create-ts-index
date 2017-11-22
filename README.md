@@ -39,6 +39,7 @@ create-ts-index create index.ts file below.
 
 # Option
 ## library
+* `fileFirst?: boolean` export list create filefirst. default false
 * `addNewline?: boolean` deside add newline file ending. default true
 * `useSemicolon?: boolean` deside use semicolon line ending. default true
 * `useTimestamp?: boolean` deside use timestamp(YYYY-MM-DD HH:mm) top line comment. default false
@@ -47,6 +48,7 @@ create-ts-index create index.ts file below.
 * `globOptions?: glob.IOptions` pass include glob options. [node-glob](https://github.com/isaacs/node-glob) option use it.
 
 ## cli (use it cti)
+* `-f --filefirst` export list create filefirst, no option false, option true
 * `-n --addnewline` deside add newline file ending. no option true, option false
 * `-s --usesemicolon` deside use semicolon line ending. no option true, option false
 * `-t --usetimestamp` deside use timestamp(YYYY-MM-DD HH:mm) top line comment. no option false, option true
@@ -58,14 +60,17 @@ create-ts-index create index.ts file below.
 ```
 const option = {};
 
+option.fileFirst = option.fileFirst || false;
 option.addNewline = option.addNewline || true;
 option.useSemicolon = option.useSemicolon || true;
 option.useTimestamp = option.useTimestamp || false;
+option.excludes = option.excludes || ['@types', 'typings', '__test__', '__tests__'];
+option.targetExts = option.targetExts || ['ts', 'tsx'];
+
+option.globOptions = {};
 option.globOptions.cwd = option.globOptions.cwd || process.cwd();
 option.globOptions.nonull = option.globOptions.nonull || true;
 option.globOptions.dot = option.globOptions.dot || true;
-option.excludes = option.excludes || ['@types', 'typings', '__test__', '__tests__'];
-option.targetExts = option.targetExts || ['ts', 'tsx'];
 
 (async () => {
   await createTypeScriptIndex(option);

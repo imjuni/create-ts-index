@@ -6,6 +6,7 @@ import * as chalk from 'chalk';
 import * as path from 'path';
 
 export interface ICreateTsIndexOption {
+  fileFirst?: boolean;
   addNewline?: boolean;
   useSemicolon?: boolean;
   useTimestamp?: boolean;
@@ -81,7 +82,13 @@ export async function indexWriter(
     categorized.dir.sort();
     categorized.file.sort();
 
-    const sorted = categorized.file.concat(categorized.dir);
+    const sorted = (() => {
+      if (option.fileFirst) {
+        return categorized.file.concat(categorized.dir);
+      }
+
+      return categorized.dir.concat(categorized.file);
+    })();
 
     const exportString = sorted.map((target) => {
       let targetFileWithoutExt = target;
@@ -119,6 +126,7 @@ export async function createTypeScriptIndex(_option: ICreateTsIndexOption): Prom
       option.globOptions = {};
     }
 
+    option.fileFirst = option.fileFirst || false;
     option.addNewline = option.addNewline || true;
     option.useSemicolon = option.useSemicolon || true;
     option.useTimestamp = option.useTimestamp || false;
