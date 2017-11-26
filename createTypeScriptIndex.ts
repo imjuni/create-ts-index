@@ -11,6 +11,7 @@ export interface ICreateTsIndexOption {
   useSemicolon?: boolean;
   useTimestamp?: boolean;
   excludes?: string[];
+  fileExcludePatterns?: string[];
   targetExts?: string[];
   globOptions?: glob.IOptions;
 }
@@ -48,6 +49,15 @@ export async function indexWriter(
     const elements = await readDirFunc(path.join(resolvePath, directory));
 
     const targets = elements
+      .filter(element => indexFiles.indexOf(element) < 0)
+      .filter((element) => {
+        return !option.fileExcludePatterns.reduce<boolean>(
+          (result, excludePattern) => {
+            return result || element.indexOf(excludePattern) >= 0;
+          },
+          false,
+        );
+      })
       .filter((element) => {
         const isTarget = option.targetExts.reduce<boolean>(
           (result, ext) => {
@@ -57,9 +67,8 @@ export async function indexWriter(
         );
 
         const isHaveTarget = directories.indexOf(path.join(directory, element)) >= 0;
-        const isNotIndex = indexFiles.indexOf(element) < 0;
 
-        return (isTarget || isHaveTarget) && isNotIndex;
+        return isTarget || isHaveTarget;
       });
 
     const stats = await Promise.all(
@@ -130,6 +139,7 @@ export async function createTypeScriptIndex(_option: ICreateTsIndexOption): Prom
     option.addNewline = option.addNewline || true;
     option.useSemicolon = option.useSemicolon || true;
     option.useTimestamp = option.useTimestamp || false;
+    option.fileExcludePatterns = option.fileExcludePatterns || [];
     option.globOptions.cwd = option.globOptions.cwd || process.cwd();
     option.globOptions.nonull = option.globOptions.nonull || true;
     option.globOptions.dot = option.globOptions.dot || true;
@@ -137,7 +147,7 @@ export async function createTypeScriptIndex(_option: ICreateTsIndexOption): Prom
       '@types', 'typings', '__test__', '__tests__', 'node_modules',
     ];
     option.targetExts = option.targetExts || ['ts', 'tsx'];
-    option.targetExts = option.targetExts.sort().reverse();
+    option.targetExts = option.targetExts.sort((l, r) => r.length - l.length);
 
     const targetFileGlob = option.targetExts.map(ext => `*.${ext}`).join('|');
     const globFunc = util.promisify<string, glob.IOptions, string[]>(glob);
@@ -157,7 +167,17 @@ export async function createTypeScriptIndex(_option: ICreateTsIndexOption): Prom
       // Step 2, remove declare file(*.d.ts)
       .filter(tsFilePath => !tsFilePath.endsWith('.d.ts'))
 
-      // Step 3, remove index file(index.ts, index.tsx etc ...)
+      // Step 3, remove exclude pattern
+      .filter((tsFilePath) => {
+        return !option.fileExcludePatterns.reduce<boolean>(
+          (result, excludePattern) => {
+            return result || tsFilePath.indexOf(excludePattern) >= 0;
+          },
+          false,
+        );
+      })
+
+      // Step 4, remove index file(index.ts, index.tsx etc ...)
       .filter((tsFilePath) => {
         return !option.targetExts
           .map(ext => `index.${ext}`)

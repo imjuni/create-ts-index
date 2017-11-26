@@ -1,6 +1,6 @@
 {
   "name": "create-ts-index",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Automatic create index.ts file",
   "main": "dist/index.js",
   "scripts": {
@@ -24,6 +24,7 @@
   "files": [
     "dist"
   ],
+  "types": "./dist/index.d.ts",
   "homepage": "https://github.com/imjuni/create-ts-index#readme",
   "devDependencies": {
     "@types/glob": "^5.0.33",

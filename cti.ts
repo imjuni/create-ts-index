@@ -11,7 +11,7 @@ const option: ICreateTsIndexOption = {
   globOptions: {},
 };
 
-// -f -n -s -t -e -x
+// -f -n -s -t -e -x -i
 commander
   .option('-f --filefirst', 'export list create filefirst, no option false, option true')
   .option('-n --addnewline', 'deside add newline file ending. no option true, option false')
@@ -23,6 +23,11 @@ commander
   .option(
     '-e --excludes <list>',
     'pass exclude directory. default exclude directory is `[\'@types\', \'typings\', \'__test__\', \'__tests__\']`', // tslint:disable-line
+    values => values.split(/[ |,]/).map(value => value.trim()),
+  )
+  .option(
+    '-i --fileexcludes <list>',
+    'pass exclude pattern of filename. default exclude directory is `[]`', // tslint:disable-line
     values => values.split(/[ |,]/).map(value => value.trim()),
   )
   .option(
@@ -48,6 +53,7 @@ option.addNewline = !commander['addnewline'];
 option.useSemicolon = !commander['usesemicolon'];
 option.useTimestamp =  commander['usetimestamp'];
 option.excludes = commander['excludes'];
+option.fileExcludePatterns = commander['fileexcludes'];
 option.targetExts = commander['targetexts'];
 option.globOptions.cwd = cwd;
 

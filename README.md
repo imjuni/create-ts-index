@@ -44,6 +44,7 @@ create-ts-index create index.ts file below.
 * `useSemicolon?: boolean` deside use semicolon line ending. default true
 * `useTimestamp?: boolean` deside use timestamp(YYYY-MM-DD HH:mm) top line comment. default false
 * `excludes?: string[]` pass exclude directory. default exclude directory is `['@types', 'typings', '__test__', '__tests__']`
+* `fileExcludePatterns?: string[]` pass exclude filename pattern. default exclude patterns is `[]`
 * `targetExts?: string[]` pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot charactor.
 * `globOptions?: glob.IOptions` pass include glob options. [node-glob](https://github.com/isaacs/node-glob) option use it.
 
@@ -53,6 +54,7 @@ create-ts-index create index.ts file below.
 * `-s --usesemicolon` deside use semicolon line ending. no option true, option false
 * `-t --usetimestamp` deside use timestamp(YYYY-MM-DD HH:mm) top line comment. no option false, option true
 * `-e --excludes [comma separated exclude directories]` pass exclude directory. default exclude directory is `['@types', 'typings', '__test__', '__tests__']`
+* `-i --fileexcludes [comma separated extname]` pass exclude filename pattern. default exclude patterns is `[]`
 * `-x --targetexts [comma separated extname]` pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot charactor.
 
 # Usage
@@ -60,17 +62,16 @@ create-ts-index create index.ts file below.
 ```
 const option = {};
 
-option.fileFirst = option.fileFirst || false;
-option.addNewline = option.addNewline || true;
-option.useSemicolon = option.useSemicolon || true;
-option.useTimestamp = option.useTimestamp || false;
-option.excludes = option.excludes || ['@types', 'typings', '__test__', '__tests__'];
-option.targetExts = option.targetExts || ['ts', 'tsx'];
-
-option.globOptions = {};
-option.globOptions.cwd = option.globOptions.cwd || process.cwd();
-option.globOptions.nonull = option.globOptions.nonull || true;
-option.globOptions.dot = option.globOptions.dot || true;
+option.fileFirst = false;
+option.addNewline = true;
+option.useSemicolon = true;
+option.useTimestamp = false;
+option.fileExcludePatterns = [];
+option.globOptions.cwd = process.cwd();
+option.globOptions.nonull = true;
+option.globOptions.dot = true;
+option.excludes = ['@types', 'typings', '__test__', '__tests__'];
+option.targetExts = ['ts', 'tsx'];
 
 (async () => {
   await createTypeScriptIndex(option);
