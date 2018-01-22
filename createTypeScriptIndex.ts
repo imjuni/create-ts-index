@@ -10,6 +10,7 @@ export interface ICreateTsIndexOption {
   addNewline?: boolean;
   useSemicolon?: boolean;
   useTimestamp?: boolean;
+  includeCWD?: boolean;
   excludes?: string[];
   fileExcludePatterns?: string[];
   targetExts?: string[];
@@ -51,14 +52,6 @@ export async function indexWriter(
     const targets = elements
       .filter(element => indexFiles.indexOf(element) < 0)
       .filter((element) => {
-        return !option.fileExcludePatterns.reduce<boolean>(
-          (result, excludePattern) => {
-            return result || element.indexOf(excludePattern) >= 0;
-          },
-          false,
-        );
-      })
-      .filter((element) => {
         const isTarget = option.targetExts.reduce<boolean>(
           (result, ext) => {
             return result || addDot(ext) === path.extname(element);
@@ -75,28 +68,38 @@ export async function indexWriter(
       targets.map(target => statFunc(path.join(resolvePath, directory, target))),
     );
 
-    const categorized = targets.reduce<{ dir: string[], file: string[] }>(
+    const categorized = targets.reduce<{ dir: string[], allFiles: string[] }>(
       (result, target, index) => {
         if (stats[index].isDirectory()) {
           result.dir.push(target);
         } else {
-          result.file.push(target);
+          result.allFiles.push(target);
         }
 
         return result;
       },
-      { dir: [], file: [] },
+      { dir: [], allFiles: [] },
     );
 
     categorized.dir.sort();
-    categorized.file.sort();
+
+    const files = categorized.allFiles.filter((element) => {
+      return !option.fileExcludePatterns.reduce<boolean>(
+        (result, excludePattern) => {
+          return result || element.indexOf(excludePattern) >= 0;
+        },
+        false,
+      );
+    });
+
+    files.sort();
 
     const sorted = (() => {
       if (option.fileFirst) {
-        return categorized.file.concat(categorized.dir);
+        return categorized.allFiles.concat(categorized.dir);
       }
 
-      return categorized.dir.concat(categorized.file);
+      return categorized.dir.concat(files);
     })();
 
     const exportString = sorted.map((target) => {
@@ -139,6 +142,7 @@ export async function createTypeScriptIndex(_option: ICreateTsIndexOption): Prom
     option.addNewline = option.addNewline || true;
     option.useSemicolon = option.useSemicolon || true;
     option.useTimestamp = option.useTimestamp || false;
+    option.includeCWD = option.includeCWD || true;
     option.fileExcludePatterns = option.fileExcludePatterns || [];
     option.globOptions.cwd = option.globOptions.cwd || process.cwd();
     option.globOptions.nonull = option.globOptions.nonull || true;
@@ -214,6 +218,11 @@ export async function createTypeScriptIndex(_option: ICreateTsIndexOption): Prom
     tsFiles.map(tsFile => path.dirname(tsFile)).forEach(dir => dirSet.add(dir));
 
     const tsDirs = Array.from<string>(dirSet);
+
+    if (option.includeCWD) {
+      tsDirs.push(option.globOptions.cwd);
+    }
+
     tsDirs.sort((left: string, right: string): number => {
       const llen = left.split(path.sep).length;
       const rlen = right.split(path.sep).length;

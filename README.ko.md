@@ -43,6 +43,7 @@ create-ts-index 는 아래와 같이 export index.ts 파일을 생성합니다.
 * `addNewline?: boolean` 파일 마지막에 줄바꿈 문자를 추가할지 말지를 결정합니다. 기본 값은 `true` 입니다.
 * `useSemicolon?: boolean` 줄 마지막에 `;` 문자를 추가할지 말지를 결정합니다. 기본 값은 `true` 입니다.
 * `useTimestamp?: boolean` 파일 처음에 주석을 작성할 때 시간(YYYY-MM-DD HH:mm 형식)을 추가할지 말지를 결정합니다. 기본 값은 `false` 입니다.
+* `includeCWD?: boolean` 작업디렉터리로 전달된 cwd에 대해서 index.ts 파일을 생성할 것인지에 대해서 결정합니다. 기본 값은 `true` 입니다.
 * `excludes?: string[]` 제외할 디렉터리를 전달합니다. 기본 값은 `['@types', 'typings', '__test__', '__tests__']` 입니다.
 * `fileExcludePatterns?: string[]` 제외할 파일이름 패턴을 전달합니다. 기본 값은 `[]` 입니다. 전달된 패턴은 indexOf 함수를 사용하여 파일이름에서 검색되며 indexOf 함수 결과가 0 이상인 경우 제외됩니다.
 * `targetExts?: string[]` export 구문을 생성할 때 사용할 확장자명을 전달합니다. 기본 값은 `['ts', 'tsx']` 입니다. 확장자명을 전달할 때는 예와같이 점 문자를 제외하고 전달해야합니다.
@@ -53,6 +54,7 @@ create-ts-index 는 아래와 같이 export index.ts 파일을 생성합니다.
 * `-n --addnewline` 파일 마지막에 줄바꿈 문자를 추가할지 말지를 결정합니다. 옵션을 생략하면 `true`, 전달하면 `false` 입니다.
 * `-s --usesemicolon` 줄 마지막에 `;` 문자를 추가할지 말지를 결정합니다. 옵션을 생략하면 `true`, 전달하면 `false` 입니다.
 * `-t --usetimestamp` 파일 처음에 주석을 작성할 때 시간(YYYY-MM-DD HH:mm 형식)을 추가할지 말지를 결정합니다. 옵션을 생략하면 `false` 전달하면 `true` 입니다.
+* `-c --includecwd` 작업디렉터리로 전달된 cwd에 대해서 index.ts 파일을 생성할 것인지에 대해서 결정합니다. 옵션을 생략하면 `true` 전달하면 `false` 입니다.
 * `-e --excludes [comma separated exclude directories]` 제외할 디렉터리를 전달합니다. 기본 값은 `['@types', 'typings', '__test__', '__tests__']` 입니다. 사용자 설정 값을 전달하려고 하는 경우 아래 예제와 같이 쉼표로 구분해서 전달하세요.
 * `-i --fileexcludes [comma separated extname]` 제외할 파일이름 패턴을 전달합니다.기본 값은 `[]` 입니다. 사용자 설정 값을 전달하려고 하는 경우 쉼표로 구분해서 전달하세요.
 * `-x --targetexts [comma separated extname]` export 구문을 생성할 때 사용할 확장자명을 전달합니다. 기본 값은 `['ts', 'tsx']` 입니다. 확장자명을 전달할 때는 예와같이 점 문자를 제외하고 전달해야합니다. 또한 사용자 설정 값을 전달하려고 하는 경우 아래 예제와 같이 쉼표로 구분해서 전달하세요.

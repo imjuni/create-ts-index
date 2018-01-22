@@ -11,11 +11,15 @@ const option: ICreateTsIndexOption = {
   globOptions: {},
 };
 
-// -f -n -s -t -e -x -i
+// -f -n -s -t -e -x -i -c
 commander
   .option('-f --filefirst', 'export list create filefirst, no option false, option true')
   .option('-n --addnewline', 'deside add newline file ending. no option true, option false')
   .option('-s --usesemicolon', 'deside use semicolon line ending. no option true, option false')
+  .option(
+    '-c --includecwd',
+    'deside include cwd directory in task. no option true, option false',
+  )
   .option(
     '-t --usetimestamp',
     'deside use timestamp(YYYY-MM-DD HH:mm) top line comment. no option false, option true',
@@ -52,6 +56,7 @@ option.fileFirst = !!commander['filefirst'];
 option.addNewline = !commander['addnewline'];
 option.useSemicolon = !commander['usesemicolon'];
 option.useTimestamp =  commander['usetimestamp'];
+option.includeCWD =  commander['includecwd'];
 option.excludes = commander['excludes'];
 option.fileExcludePatterns = commander['fileexcludes'];
 option.targetExts = commander['targetexts'];
