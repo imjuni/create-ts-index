@@ -220,7 +220,7 @@ export async function createTypeScriptIndex(_option: ICreateTsIndexOption): Prom
     const tsDirs = Array.from<string>(dirSet);
 
     if (option.includeCWD) {
-      tsDirs.push(option.globOptions.cwd);
+      tsDirs.push('.');
     }
 
     tsDirs.sort((left: string, right: string): number => {
