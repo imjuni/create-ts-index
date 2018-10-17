@@ -16,6 +16,40 @@ export class TypeScritIndexWriter {
   public static readonly writeFileFunc = util.promisify<string, any, string>(fs.writeFile);
   public static readonly statFunc = util.promisify<string, fs.Stats>(fs.stat);
   public static readonly globFunc = util.promisify<string, glob.IOptions, string[]>(glob);
+  public static readonly unlink = util.promisify<fs.PathLike>(fs.unlink);
+
+  public static getDefaultOption(cwd?: string): ICreateTsIndexOption {
+    return {
+      oneFileEntrypoint: false,
+      fileFirst: false,
+      addNewline: true,
+      useSemicolon: true,
+      useTimestamp: false,
+      includeCWD: true,
+      excludes: ['@types', 'typings', '__test__', '__tests__', 'node_modules'],
+      fileExcludePatterns: [],
+      targetExts: ['ts', 'tsx'],
+      globOptions: {
+        cwd: cwd || process.cwd(),
+        nonull: true,
+        dot: true,
+      },
+    };
+  }
+
+  public async clean(directory?: string) {
+    const cwd = directory || process.cwd();
+    const indexFiles = await TypeScritIndexWriter.globFunc('**/index.ts', {
+      cwd,
+      nonull: true,
+    });
+
+    console.log(indexFiles);
+
+    await Promise.all(
+      indexFiles.map((file) => TypeScritIndexWriter.unlink(path.join(cwd, file))),
+    );
+  }
 
   public async write(
     directory: string,
@@ -120,22 +154,7 @@ export class TypeScritIndexWriter {
 
   public async create(passed: Partial<ICreateTsIndexOption>): Promise<void> {
     try {
-      const option: ICreateTsIndexOption = {
-        oneFileEntrypoint: false,
-        fileFirst: false,
-        addNewline: true,
-        useSemicolon: true,
-        useTimestamp: false,
-        includeCWD: true,
-        excludes: ['@types', 'typings', '__test__', '__tests__', 'node_modules'],
-        fileExcludePatterns: [],
-        targetExts: ['ts', 'tsx'],
-        globOptions: {
-          cwd: process.cwd(),
-          nonull: true,
-          dot: true,
-        },
-      };
+      const option: ICreateTsIndexOption = TypeScritIndexWriter.getDefaultOption();
 
       option.oneFileEntrypoint = isNotEmpty(passed.oneFileEntrypoint)
         ? passed.oneFileEntrypoint
@@ -183,10 +202,9 @@ export class TypeScritIndexWriter {
 
       const tsFiles = allTsFiles
         // Step 1, remove exclude directory
-        .map((tsFilePath) => path.dirname(tsFilePath))
         .filter((tsFilePath) => {
           return !option.excludes.reduce<boolean>((result, exclude) => {
-            return result || tsFilePath.indexOf(exclude) >= 0;
+            return result || path.dirname(tsFilePath).indexOf(exclude) >= 0;
           }, false);
         })
 

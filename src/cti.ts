@@ -29,17 +29,17 @@ commander
   )
   .option(
     '-e --excludes <list>',
-    "pass exclude directory. default exclude directory is `['@types', 'typings', '__test__', '__tests__']`", // tslint:disable-line
+    "pass exclude directory. default exclude directory is `['@types', 'typings', '__test__', '__tests__']`",
     (values) => values.split(/[ |,]/).map((value) => value.trim()),
   )
   .option(
     '-i --fileexcludes <list>',
-    'pass exclude pattern of filename. default exclude directory is `[]`', // tslint:disable-line
+    'pass exclude pattern of filename. default exclude directory is `[]`',
     (values) => values.split(/[ |,]/).map((value) => value.trim()),
   )
   .option(
     '-x --targetexts <list>',
-    "pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot charactor.", // tslint:disable-line
+    "pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot charactor.",
     (values) => values.split(/[ |,]/).map((value) => value.trim()),
   )
   .parse(process.argv);
