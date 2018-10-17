@@ -12,6 +12,7 @@
     "noUnusedParameters": true,
     "removeComments": false,
     "declaration": true,
+    "strict": true,
     "declarationDir": "dist/",
     "outDir": "dist/",
     "sourceMap": true,
