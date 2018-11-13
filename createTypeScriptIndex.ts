@@ -110,10 +110,10 @@ export async function indexWriter(
       });
 
       if (option.useSemicolon) {
-        return `export * from './${targetFileWithoutExt}';`;
+        return `export * from "./${targetFileWithoutExt}";`;
       }
 
-      return `export * from './${targetFileWithoutExt}'`;
+      return `export * from "./${targetFileWithoutExt}"`;
     });
 
     const comment = (() => {
