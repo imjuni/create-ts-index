@@ -9,6 +9,7 @@ export interface ICreateTsIndexOption {
   fileFirst?: boolean;
   addNewline?: boolean;
   useSemicolon?: boolean;
+  useDoubleQuote?: boolean;
   useTimestamp?: boolean;
   includeCWD?: boolean;
   excludes?: string[];
@@ -109,11 +110,16 @@ export async function indexWriter(
         return targetFileWithoutExt = targetFileWithoutExt.replace(addDot(ext), '');
       });
 
-      if (option.useSemicolon) {
-        return `export * from './${targetFileWithoutExt}';`;
+      let singleOrDoubleQuote = '\'';
+      if (option.useDoubleQuote) {
+        singleOrDoubleQuote = '"';
       }
 
-      return `export * from './${targetFileWithoutExt}'`;
+      if (option.useSemicolon) {
+        return `export * from ${singleOrDoubleQuote}./${targetFileWithoutExt}${singleOrDoubleQuote};`;
+      }
+
+      return `export * from ${singleOrDoubleQuote}./${targetFileWithoutExt}${singleOrDoubleQuote}`;
     });
 
     const comment = (() => {

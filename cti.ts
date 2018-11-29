@@ -14,8 +14,9 @@ const option: ICreateTsIndexOption = {
 // -f -n -s -t -e -x -i -c
 commander
   .option('-f --filefirst', 'export list create filefirst, no option false, option true')
-  .option('-n --addnewline', 'deside add newline file ending. no option true, option false')
-  .option('-s --usesemicolon', 'deside use semicolon line ending. no option true, option false')
+  .option('-n --addnewline', 'decide to add newline file ending. no option true, option false')
+  .option('-s --usesemicolon', 'decide to use semicolon line ending. no option true, option false')
+  .option('-d --usedoublequote', 'decide to use double quote for import from. with option true, without option false')
   .option(
     '-c --includecwd',
     'deside include cwd directory in task. no option true, option false',
@@ -55,6 +56,7 @@ console.log(chalk.default.green('working directory: ', cwd));
 option.fileFirst = !!commander['filefirst'];
 option.addNewline = !commander['addnewline'];
 option.useSemicolon = !commander['usesemicolon'];
+option.useDoubleQuote = commander['usedoublequote'];
 option.useTimestamp =  commander['usetimestamp'];
 option.includeCWD =  commander['includecwd'];
 option.excludes = commander['excludes'];
