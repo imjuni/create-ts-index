@@ -5,7 +5,8 @@
     "tslint-config-prettier"
   ],
   "rules": {
-    "max-line-length": [true, 100]
+    "max-line-length": [true, 100],
+    "variable-name": [true, "allow-leading-underscore"]
   },
   "no-unused-variable": [true]
 }

@@ -1,7 +1,6 @@
 import * as glob from 'glob';
 
 export interface ICreateTsIndexOption {
-  oneFileEntrypoint: boolean;
   fileFirst: boolean;
   addNewline: boolean;
   useSemicolon: boolean;
@@ -11,4 +10,6 @@ export interface ICreateTsIndexOption {
   fileExcludePatterns: string[];
   targetExts: string[];
   globOptions: glob.IOptions;
+  quote: string;
+  verbose: boolean;
 }

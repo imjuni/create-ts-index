@@ -1,13 +1,17 @@
 // tslint:disable no-console
 
+import * as path from 'path';
 import { ICreateTsIndexOption } from '../ICreateTsIndexOption';
 import { TypeScritIndexWriter } from '../TypeScritIndexWriter';
 
 describe('cti-test', () => {
-  test('index-clean', async () => {
-    const cti = new TypeScritIndexWriter();
+  test('entry-build', async () => {
     const option: ICreateTsIndexOption = TypeScritIndexWriter.getDefaultOption();
+    const cti = new TypeScritIndexWriter();
 
-    await cti.clean(option);
+    option.verbose = true;
+    option.globOptions.cwd = path.resolve('./example/type02');
+
+    await cti.createEntrypoint(option);
   });
 });

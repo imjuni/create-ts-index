@@ -13,6 +13,7 @@
     "removeComments": false,
     "declaration": true,
     "strict": true,
+    "baseUrl": "src",
     "declarationDir": "dist/",
     "outDir": "dist/",
     "sourceMap": true,
@@ -35,6 +36,9 @@
   ],
   "exclude": [
     "node_modules/**",
+    "example/**",
+    "**/__tests__",
+    "**/__test__",
     "dist/**"
   ]
 }

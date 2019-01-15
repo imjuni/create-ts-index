@@ -59,6 +59,21 @@ create-ts-index create index.ts file below.
 * `-i --fileexcludes [comma separated extname]` pass exclude filename pattern. default exclude patterns is `[]`
 * `-x --targetexts [comma separated extname]` pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot charactor.
 
+# Breaking change
+I expect `create-ts-index` to be developed in more OOP style. Also I want to add action that clean action
+and create webpack entrypoint file action. Finally I want add dependency graph using by TypeScript parser
+that help to exactly build index.ts files and entrypoint file.
+Painfully, But I had to make a decision. CLI change git-style sub-command. Also library change to class.
+
+## CLI
+add git-style sub-command
+* create
+  * cti create index.ts file
+* clean
+  * cti clean index.ts file recursively
+* entrypoint
+  * cti create webpack entrypoint
+
 # Usage
 ## library
 ```
@@ -83,13 +98,16 @@ option.targetExts = ['ts', 'tsx'];
 ## CLI
 ```
 # basic usage
-cti ./src
+cti c ./src  # or cti create ./src
 
 # without newline
-cti -n ./src
+cti c -n ./src
 
 # custom exclude directories
-cti -n -e @types,typings,__test__,__tests__,pages ./src
+cti c -n -e @types,typings,__test__,__tests__,pages ./src
+
+# clean index.ts
+cti l ./src  # or cti clean ./src
 ```
 
 # Language
