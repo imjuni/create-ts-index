@@ -3,16 +3,32 @@
 
 import * as chalk from 'chalk';
 import * as commander from 'commander';
+import * as fs from 'fs';
+import * as path from 'path';
 import { ICreateTsIndexOption } from './ICreateTsIndexOption';
 import { TypeScritIndexWriter } from './TypeScritIndexWriter';
 
-const cti = new TypeScritIndexWriter();
-const option: Partial<ICreateTsIndexOption> = {
-  globOptions: {},
-};
+const version = (() => {
+  if (fs.existsSync(path.join(__dirname, 'package.json'))) {
+    const packageJSON = JSON.parse(
+      fs.readFileSync(path.join(__dirname, 'package.json')).toString(),
+    );
 
-// -f -n -s -t -e -x -i -c
+    return packageJSON.version;
+  }
+
+  if (fs.existsSync(path.join('.', 'package.json'))) {
+    const packageJSON = JSON.parse(fs.readFileSync(path.join('.', 'package.json')).toString());
+
+    return packageJSON.version;
+  }
+
+  return '1.0.14';
+})();
+
+// -f -n -s -t -e -x -i -c -v -q
 commander
+  .version(version)
   .option('-f --filefirst', 'export list create filefirst, no option false, option true')
   .option('-n --addnewline', 'deside add newline file ending. no option true, option false')
   .option(
@@ -29,7 +45,8 @@ commander
   )
   .option(
     '-e --excludes <list>',
-    "pass exclude directory. default exclude directory is `['@types', 'typings', '__test__', '__tests__']`",
+    'pass exclude directory. default exclude directory is' +
+      " `['@types', 'typings', '__test__', '__tests__']`",
     (values) => values.split(/[ |,]/).map((value) => value.trim()),
   )
   .option(
@@ -42,29 +59,103 @@ commander
     "pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot charactor.",
     (values) => values.split(/[ |,]/).map((value) => value.trim()),
   )
-  .parse(process.argv);
+  .option('-v --verbose', 'verbose logging message. to option false, option true')
+  .option('-q --quote', "deside quote character. default quote character is '");
 
-const [cwd] = commander.args;
+commander
+  .command('create [cwd]')
+  .alias('c')
+  .description('create index.ts file in working directory')
+  .action((cwd, _options) => {
+    if (!cwd) {
+      console.log(chalk.default.magenta('Enter working directory, '));
+      console.log(chalk.default.red('cti [working directory]'));
 
-if (!cwd) {
-  console.log(chalk.default.magenta('Enter working directory, '));
-  console.log(chalk.default.red('cti [working directory]'));
+      process.exit(1);
+    }
 
-  process.exit(1);
+    const cti = new TypeScritIndexWriter();
+    const options: Partial<ICreateTsIndexOption> = {
+      globOptions: {},
+    };
+
+    options.fileFirst = !!_options['filefirst'];
+    options.addNewline = !_options['addnewline'];
+    options.useSemicolon = !_options['usesemicolon'];
+    options.useTimestamp = _options['usetimestamp'];
+    options.includeCWD = _options['includecwd'];
+    options.excludes = _options['excludes'];
+    options.fileExcludePatterns = _options['fileexcludes'];
+    options.targetExts = _options['targetexts'];
+    options.verbose = !!_options['verbose'];
+    options.quote = _options['quote'];
+    options.globOptions!.cwd = cwd;
+
+    console.log(chalk.default.green('working directory: ', cwd));
+
+    (async () => {
+      await cti.create(options);
+    })();
+  });
+
+commander
+  .command('entrypoint [cwd]')
+  .alias('e')
+  .description('create entrypoint.ts file in working directory')
+  .action((cwd, _options) => {
+    if (!cwd) {
+      console.log(chalk.default.magenta('Enter working directory, '));
+      console.log(chalk.default.red('cti [working directory]'));
+
+      process.exit(1);
+    }
+
+    const cti = new TypeScritIndexWriter();
+    const options: Partial<ICreateTsIndexOption> = {
+      globOptions: {},
+    };
+
+    options.fileFirst = !!_options['filefirst'];
+    options.addNewline = !_options['addnewline'];
+    options.useSemicolon = !_options['usesemicolon'];
+    options.useTimestamp = _options['usetimestamp'];
+    options.includeCWD = _options['includecwd'];
+    options.excludes = _options['excludes'];
+    options.fileExcludePatterns = _options['fileexcludes'];
+    options.targetExts = _options['targetexts'];
+    options.verbose = !!_options['verbose'];
+    options.quote = _options['quote'];
+    options.globOptions!.cwd = cwd;
+
+    console.log(chalk.default.green('working directory: ', cwd));
+
+    (async () => {
+      await cti.createEntrypoint(options);
+    })();
+  });
+
+commander
+  .command('clean [cwd]')
+  .description('clean index.ts file in working directory')
+  .alias('l')
+  .action((cwd) => {
+    if (!cwd) {
+      console.log(chalk.default.magenta('Enter working directory, '));
+      console.log(chalk.default.red('cti [working directory]'));
+
+      process.exit(1);
+    }
+
+    const cti = new TypeScritIndexWriter();
+
+    (async () => {
+      await cti.clean(cwd);
+    })();
+  });
+
+commander.parse(process.argv);
+
+if (!process.argv.slice(2).length) {
+  // display the help text in red on the console
+  commander.outputHelp((help) => chalk.default.redBright(help));
 }
-
-console.log(chalk.default.green('working directory: ', cwd));
-
-option.fileFirst = !!commander['filefirst'];
-option.addNewline = !commander['addnewline'];
-option.useSemicolon = !commander['usesemicolon'];
-option.useTimestamp = commander['usetimestamp'];
-option.includeCWD = commander['includecwd'];
-option.excludes = commander['excludes'];
-option.fileExcludePatterns = commander['fileexcludes'];
-option.targetExts = commander['targetexts'];
-option.globOptions!.cwd = cwd;
-
-(async () => {
-  await cti.create(option);
-})();

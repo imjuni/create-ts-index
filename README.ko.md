@@ -6,6 +6,9 @@ create-ts-index
 npm install create-ts-index --save-dev
 ```
 
+# 변경점
+`1.5` 버전에서는 큰 변경점이 있습니다. commander.js에서 Git-style sub-commands를 채용하였습니다. 그래서 1.5 버전은 더 이상 예전 방식으로 사용할 수 없습니다. 이렇게 변경된 가장 큰 이유는, 기존 기능을 지원하면서 entrypoint를 자동생성하기 위해서 입니다. 기존과 같이 index.ts를 생성하려고 하는 사람은 `create` sub-commands를 사용하면 됩니다. 새로운 기능인 `entrypoint` sub-commands를 사용하면 webpack과 같은 build 도구에서 사용할 수 있는 entrypoint를 얻게 됩니다.
+
 # 소개
 TypeScript 프로젝트를 개발할 때 export를 위한 index.ts 파일을 생성합니다. index.ts 파일을 export 용도로만 사용하거나 라이브러리 프로젝트를 개발할 때 유용합니다. 예를들면 [blueprint.js](http://blueprintjs.com/)와 같은 라이브러리 프로젝트를 개발한다면 컴포넌트를 다른 프로젝트에서 사용할 수 있도록 모든 파일을 export 해야 합니다. 이런 경우 create-ts-index를 아주 유용하게 사용할 수 있습니다. 라이브러리 프로젝트가 아니라도, create-ts-index를 사용해서 export 용 index.ts 파일을 사용한다면 import 구문을 간단하게 만들 수 있고 협업할 때 import 형식에 대한 고민을 줄일 수 있어서 유용합니다.
 
@@ -19,7 +22,7 @@ TypeScript 프로젝트를 개발할 때 export를 위한 index.ts 파일을 생
       Button.ts
 ```
 
-create-ts-index 는 아래와 같이 export index.ts 파일을 생성합니다.
+create-ts-index create sub-command는 아래와 같이 export index.ts 파일을 생성합니다.
 
 ```
   src/
@@ -36,6 +39,23 @@ create-ts-index 는 아래와 같이 export index.ts 파일을 생성합니다.
         export * from './Nav';
         export * from './Button';
 ```
+
+만약 create-ts-index entrypoint sub-command를 사용하면 아래와 같이 동작합니다.
+
+```
+  src/
+    app.ts
+    component/
+      Nav.ts
+      Button.ts
+  > index.ts
+    // created from 'create-ts-index'
+    export * from './src/app.ts'
+    export * from './src/component/Nav.ts'
+    export * from './src/component/Button.ts'
+```
+
+index.ts 파일을 webpack entrypoint로 사용할 수 있습니다.
 
 # 옵션
 ## 라이브러리로 사용할 경우

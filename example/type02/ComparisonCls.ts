@@ -1,3 +1,3 @@
 export class ComparisonCls {
-  name: string = 'ComparisonCls';
+  private name: string = 'ComparisonCls';
 }
