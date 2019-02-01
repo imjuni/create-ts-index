@@ -6,6 +6,9 @@ create-ts-index
 npm install create-ts-index --save-dev
 ```
 
+# Breaking Changes
+`create-ts-index(below cti)` have breaking change on `1.5`. `cti` change to Git-style sub-commands. `cti` convenient tool for Node.js package development. Node.js packages have variety type `commonjs` and `AMD`, `umd`. Almost `AMD`, `umd` packages used to bundle tool likes `webpack` or `parcel`. `1.x` version `cti` have in-connvenient for bundle tools. We need legacy index.ts creation and entrypoint.ts creation. So `cti` adopt Git-style sub-commands after `create` sub-commands
+
 # Introduction
 Index.ts file create for export syntax. If don't have business logic in index.ts that use to only export. In this case, more than easy importing and library project need this export process(for example, blueprint.js etc ...). cti(create-ts-index) create export index.ts file.
 
@@ -19,7 +22,7 @@ For example, sample directory below.
       Button.ts
 ```
 
-create-ts-index create index.ts file below.
+create-ts-index create sub-command create index.ts file below.
 
 ```
   src/
@@ -37,17 +40,35 @@ create-ts-index create index.ts file below.
         export * from './Button';
 ```
 
+create-ts-index entrypoint sub-command create index.ts file below.
+
+```
+  src/
+    app.ts
+    component/
+      Nav.ts
+      Button.ts
+  > entrypoint.ts
+    // created from 'create-ts-index'
+    export * from './src/app.ts'
+    export * from './src/component/Nav.ts'
+    export * from './src/component/Button.ts'
+```
+
 # Option
 ## library
-* `fileFirst?: boolean` export list create filefirst. default false
-* `addNewline?: boolean` deside add newline file ending. default true
-* `useSemicolon?: boolean` deside use semicolon line ending. default true
-* `useTimestamp?: boolean` deside use timestamp(YYYY-MM-DD HH:mm) top line comment. default false
-* `includeCWD?: boolean` deside include cwd directory. default true
-* `excludes?: string[]` pass exclude directory. default exclude directory is `['@types', 'typings', '__test__', '__tests__']`
-* `fileExcludePatterns?: string[]` pass exclude filename pattern. default exclude patterns is `[]`
-* `targetExts?: string[]` pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot charactor.
-* `globOptions?: glob.IOptions` pass include glob options. [node-glob](https://github.com/isaacs/node-glob) option use it.
+* `fileFirst: boolean` export list create filefirst. default false
+* `addNewline: boolean` deside add newline file ending. default true
+* `useSemicolon: boolean` deside use semicolon line ending. default true
+* `useTimestamp: boolean` deside use timestamp(YYYY-MM-DD HH:mm) top line comment. default false
+* `includeCWD: boolean` deside include cwd directory. default true
+* `excludes: string[]` pass exclude directory. default exclude directory is `['@types', 'typings', '__test__', '__tests__']`
+* `fileExcludePatterns: string[]` pass exclude filename pattern. default exclude patterns is `[]`
+* `targetExts: string[]` pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot charactor.
+* `globOptions: glob.IOptions` pass include glob options. [node-glob](https://github.com/isaacs/node-glob) option use it.
+* `quote` deside quote charactor. Single quete charactor use to default.
+* `verbose` verbose log message disply
+
 
 ## cli (use it cti)
 * `-f --filefirst` export list create filefirst, no option false, option true
@@ -58,15 +79,12 @@ create-ts-index create index.ts file below.
 * `-e --excludes [comma separated exclude directories]` pass exclude directory. default exclude directory is `['@types', 'typings', '__test__', '__tests__']`
 * `-i --fileexcludes [comma separated extname]` pass exclude filename pattern. default exclude patterns is `[]`
 * `-x --targetexts [comma separated extname]` pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot charactor.
-
-# Breaking change
-I expect `create-ts-index` to be developed in more OOP style. Also I want to add action that clean action
-and create webpack entrypoint file action. Finally I want add dependency graph using by TypeScript parser
-that help to exactly build index.ts files and entrypoint file.
-Painfully, But I had to make a decision. CLI change git-style sub-command. Also library change to class.
+* `-q --quote` deside quote charactor. default quote charactor single quote
+* `-v --verbose` disply verbose log message. no option false, option true
 
 ## CLI
 add git-style sub-command
+
 * create
   * cti create index.ts file
 * clean
@@ -77,37 +95,37 @@ add git-style sub-command
 # Usage
 ## library
 ```
-const option = {};
-
-option.fileFirst = false;
-option.addNewline = true;
-option.useSemicolon = true;
-option.useTimestamp = false;
-option.fileExcludePatterns = [];
-option.globOptions.cwd = process.cwd();
-option.globOptions.nonull = true;
-option.globOptions.dot = true;
-option.excludes = ['@types', 'typings', '__test__', '__tests__'];
-option.targetExts = ['ts', 'tsx'];
+const tsiw = new TypeScritIndexWriter();
+const option = TypeScritIndexWriter.getDefaultOption('./src');
 
 (async () => {
-  await createTypeScriptIndex(option);
+  await tsiw.create(option);
+
+  // or
+
+  await tsiw.createEntrypoint(option);
 })();
 ```
 
 ## CLI
 ```
 # basic usage
-cti c ./src  # or cti create ./src
+cti create ./src  # or cti create ./src
+## or
+cti entrypoint ./src  # or cti create ./src
 
 # without newline
-cti c -n ./src
+cti create -n ./src
+## or
+cti entrypoint -n ./src
 
 # custom exclude directories
-cti c -n -e @types,typings,__test__,__tests__,pages ./src
+cti create -n -e @types,typings,__test__,__tests__,pages ./src
+## or
+cti entrypoint -n -e @types,typings,__test__,__tests__,pages ./src
 
 # clean index.ts
-cti l ./src  # or cti clean ./src
+cti clean ./src  # or cti clean ./src
 ```
 
 # Language
