@@ -2,13 +2,14 @@
 // tslint:disable no-console no-string-literal
 
 import * as chalk from 'chalk';
+import * as debugModule from 'debug';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yargs from 'yargs';
 import { ICreateTsIndexCliOption, ICreateTsIndexOption } from './ICreateTsIndexOption';
 import { TypeScritIndexWriter } from './TypeScritIndexWriter';
 
-// const { parseBool, getQuote } = CTIUtility;
+const debug = debugModule('cti');
 
 const version = (() => {
   if (fs.existsSync(path.join(__dirname, 'package.json'))) {
@@ -137,7 +138,7 @@ yargs
         const cti = new TypeScritIndexWriter();
         const options = ctiOptionBuilder(args, cwd);
 
-        console.log(chalk.default.yellowBright('Option: '), options);
+        debug(chalk.default.yellowBright('Option: '), options);
 
         await cti.create(options);
       })();
@@ -161,7 +162,7 @@ yargs
         const cti = new TypeScritIndexWriter();
         const options = ctiOptionBuilder(args, cwd);
 
-        console.log(chalk.default.yellowBright('Option: '), options);
+        debug(chalk.default.yellowBright('Option: '), options);
 
         await cti.createEntrypoint(options);
       })();
