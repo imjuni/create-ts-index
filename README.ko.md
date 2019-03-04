@@ -125,6 +125,9 @@ cti entrypoint -n -e @types typings __test__ __tests__ pages ./src
 
 # entrypoint.ts 와 index.ts 파일 삭제하기
 cti clean ./src
+
+# 하위 디렉터리를 포함해서 실행하기
+for f in *; do cti create ./$f; done
 ```
 
 # Language

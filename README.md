@@ -126,6 +126,9 @@ cti entrypoint -n -e @types,typings,__test__,__tests__,pages ./src
 
 # clean index.ts
 cti clean ./src  # or cti clean ./src
+
+# loop through every sub-directory in current path
+for f in *; do cti create ./$f; done
 ```
 
 # Language
