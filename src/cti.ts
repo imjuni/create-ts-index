@@ -8,8 +8,6 @@ import * as yargs from 'yargs';
 import { ICreateTsIndexCliOption, ICreateTsIndexOption } from './ICreateTsIndexOption';
 import { TypeScritIndexWriter } from './TypeScritIndexWriter';
 
-// const { parseBool, getQuote } = CTIUtility;
-
 const version = (() => {
   if (fs.existsSync(path.join(__dirname, 'package.json'))) {
     const packageJSON = JSON.parse(
@@ -183,7 +181,8 @@ yargs
 
       (async () => {
         const cti = new TypeScritIndexWriter();
-        await cti.clean(cwd);
+        const options = ctiOptionBuilder(args, cwd);
+        await cti.clean(options);
       })();
     },
   )

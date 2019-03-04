@@ -38,11 +38,10 @@ export class TypeScritIndexWriter {
       targetExts: ['ts', 'tsx'],
       useSemicolon: true,
       useTimestamp: false,
-      verbose: true,
+      verbose: false,
     };
   }
 
-  // public log: (message?: any, ...optionalParams: any[]) => void = () => {};
   public logger: {
     log: logging;
     error: logging;
@@ -103,6 +102,7 @@ export class TypeScritIndexWriter {
 
   public async clean(_option: Partial<ICreateTsIndexOption>) {
     const option: ICreateTsIndexOption = this.getOption(_option);
+
     this.initLogger(option);
 
     const cwd: string = option.globOptions.cwd!;
@@ -118,12 +118,20 @@ export class TypeScritIndexWriter {
 
     const concatted = indexFiles.concat(entrypointFiles);
 
+    if (concatted.length === 0) {
+      console.log(
+        chalk.default.yellow(`Cannot find target file on working directory: ${cwd}`),
+      );
+    }
+
     await Promise.all(
       concatted.map((file) => {
-        this.logger.log(chalk.default.redBright(`delete file: ${path.join(cwd, file)}`));
+        this.logger.log(chalk.default.redBright('delete file: '), path.join(cwd, file));
         return promisify.unlink(path.join(cwd, file));
       }),
     );
+
+    console.log(chalk.default.green('clean successed'));
   }
 
   public async write(
@@ -134,7 +142,7 @@ export class TypeScritIndexWriter {
     const indexFiles = option.targetExts.map((targetExt) => `index.${targetExt}`);
 
     try {
-      this.logger.log(chalk.default.yellow('Current working: ', directory));
+      this.logger.log(chalk.default.yellow('Current working directory: ', directory));
 
       const resolvePath = path.resolve(option.globOptions.cwd || __dirname);
       const elements = await promisify.readDir(path.join(resolvePath, directory));
@@ -214,6 +222,12 @@ export class TypeScritIndexWriter {
       })();
 
       const fileContent = comment + CTIUtility.addNewline(option, exportString.join('\n'));
+
+      this.logger.log(
+        chalk.default.green('created: '),
+        `${path.join(resolvePath, directory, 'index.ts')}`,
+      );
+
       await promisify.writeFile(
         path.join(resolvePath, directory, 'index.ts'),
         fileContent,
@@ -297,6 +311,8 @@ export class TypeScritIndexWriter {
           ));
         });
 
+        this.logger.log(chalk.default.green('entrypoint added from:'), target);
+
         if (option.useSemicolon) {
           return `export * from ${option.quote}./${targetFileWithoutExt}${option.quote};`;
         }
@@ -320,8 +336,9 @@ export class TypeScritIndexWriter {
       const cwdPath = option.globOptions.cwd || __dirname;
 
       this.logger.log(
-        chalk.default.green('entrypoinyWriter: ', `${cwdPath}${path.sep}entrypoint.ts`),
+        chalk.default.green('entrypoiny writed:', `${cwdPath}${path.sep}entrypoint.ts`),
       );
+
       await promisify.writeFile(path.join(cwdPath, 'entrypoint.ts'), fileContent, 'utf8');
     } catch (err) {
       this.logger.error(chalk.default.red('indexWriter: ', err.message));
@@ -361,6 +378,8 @@ export class TypeScritIndexWriter {
         : option.globOptions.dot;
     }
 
+    option.verbose = isNotEmpty(passed.verbose) ? passed.verbose : option.verbose;
+
     return option;
   }
 
@@ -395,12 +414,14 @@ export class TypeScritIndexWriter {
       dupLibDirs.forEach((dir) => dirSet.add(dir));
       tsFiles.map((tsFile) => path.dirname(tsFile)).forEach((dir) => dirSet.add(dir));
 
-      const tsDirs = (() => {
-        if (option.includeCWD) {
-          return Array.from<string>(dirSet);
-        }
-        return Array.from<string>(dirSet).filter((dir) => dir !== '.');
-      })();
+      const tsDirs = Array.from<string>(dirSet);
+
+      if (
+        option.includeCWD &&
+        tsDirs.findIndex((dir) => path.resolve(dir) === path.resolve('.')) < 0
+      ) {
+        tsDirs.push('.');
+      }
 
       tsDirs.sort(
         (left: string, right: string): number => {
@@ -418,8 +439,9 @@ export class TypeScritIndexWriter {
       );
 
       await this.entryWrite(tsDirs, option);
+      console.log(chalk.default.green('entrypoint create successed'));
     } catch (err) {
-      this.logger.error(chalk.default.redBright(err));
+      console.error(chalk.default.redBright(err));
     }
   }
 
@@ -434,6 +456,7 @@ export class TypeScritIndexWriter {
       this.logger.error = console.error;
     }
   }
+
   public async create(passed: Partial<ICreateTsIndexOption>): Promise<void> {
     try {
       const option: ICreateTsIndexOption = this.getOption(passed);
@@ -467,7 +490,10 @@ export class TypeScritIndexWriter {
 
       const tsDirs = Array.from<string>(dirSet);
 
-      if (option.includeCWD) {
+      if (
+        option.includeCWD &&
+        tsDirs.findIndex((dir) => path.resolve(dir) === path.resolve('.')) < 0
+      ) {
         tsDirs.push('.');
       }
 
@@ -487,8 +513,9 @@ export class TypeScritIndexWriter {
       );
 
       await Promise.all(tsDirs.map((tsDir) => this.write(tsDir, tsDirs, option)));
+      console.log(chalk.default.green('create successed'));
     } catch (err) {
-      this.logger.error(chalk.default.red(err.message));
+      console.error(chalk.default.red(err.message));
     }
   }
 }
