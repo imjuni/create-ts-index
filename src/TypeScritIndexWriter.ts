@@ -100,10 +100,23 @@ export class TypeScritIndexWriter {
     }
   }
 
+  public initLogger(option: ICreateTsIndexOption) {
+    if (option.verbose) {
+      this.logger.log = console.log;
+      this.logger.error = console.error;
+    } else {
+      this.logger.log = () => {
+        return;
+      };
+      this.logger.error = console.error;
+    }
+  }
+
   public async clean(_option: Partial<ICreateTsIndexOption>) {
     const option: ICreateTsIndexOption = this.getOption(_option);
 
     this.initLogger(option);
+    this.logger.log(chalk.default.yellowBright('Option: '), option);
 
     const cwd: string = option.globOptions.cwd!;
     const indexFiles = await promisify.glob('**/index.ts', {
@@ -131,7 +144,7 @@ export class TypeScritIndexWriter {
       }),
     );
 
-    console.log(chalk.default.green('clean successed'));
+    console.log(chalk.default.green('clean succeeded'));
   }
 
   public async write(
@@ -388,6 +401,7 @@ export class TypeScritIndexWriter {
       const option: ICreateTsIndexOption = this.getOption(passed);
 
       this.initLogger(option);
+      this.logger.log(chalk.default.yellowBright('Option: '), option);
 
       const targetFileGlob = option.targetExts.map((ext) => `*.${ext}`).join('|');
       const allTsFiles = await promisify.glob(`**/+(${targetFileGlob})`, option.globOptions);
@@ -439,21 +453,10 @@ export class TypeScritIndexWriter {
       );
 
       await this.entryWrite(tsDirs, option);
-      console.log(chalk.default.green('entrypoint create successed'));
+
+      console.log(chalk.default.green('entrypoint create succeeded'));
     } catch (err) {
       console.error(chalk.default.redBright(err));
-    }
-  }
-
-  public initLogger(option: ICreateTsIndexOption) {
-    if (option.verbose) {
-      this.logger.log = console.log;
-      this.logger.error = console.error;
-    } else {
-      this.logger.log = () => {
-        return;
-      };
-      this.logger.error = console.error;
     }
   }
 
@@ -462,6 +465,8 @@ export class TypeScritIndexWriter {
       const option: ICreateTsIndexOption = this.getOption(passed);
 
       this.initLogger(option);
+
+      this.logger.log(chalk.default.yellowBright('Option: '), option);
 
       const targetFileGlob = option.targetExts.map((ext) => `*.${ext}`).join('|');
       const allTsFiles = await promisify.glob(`**/+(${targetFileGlob})`, option.globOptions);
@@ -513,7 +518,7 @@ export class TypeScritIndexWriter {
       );
 
       await Promise.all(tsDirs.map((tsDir) => this.write(tsDir, tsDirs, option)));
-      console.log(chalk.default.green('create successed'));
+      console.log(chalk.default.green('create succeeded'));
     } catch (err) {
       console.error(chalk.default.red(err.message));
     }

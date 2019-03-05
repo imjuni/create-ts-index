@@ -135,8 +135,6 @@ yargs
         const cti = new TypeScritIndexWriter();
         const options = ctiOptionBuilder(args, cwd);
 
-        console.log(chalk.default.yellowBright('Option: '), options);
-
         await cti.create(options);
       })();
     },
@@ -158,8 +156,6 @@ yargs
       (async () => {
         const cti = new TypeScritIndexWriter();
         const options = ctiOptionBuilder(args, cwd);
-
-        console.log(chalk.default.yellowBright('Option: '), options);
 
         await cti.createEntrypoint(options);
       })();

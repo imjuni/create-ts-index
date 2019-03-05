@@ -63,3 +63,12 @@ dist/
 # IDE
 .vscode
 .idea
+
+# Generated index.ts from example directory
+example/**/index.ts
+
+# Todo 
+Todo.md
+
+# MacOSX
+.DS_store
