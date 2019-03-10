@@ -5,6 +5,12 @@
     "tslint-config-prettier"
   ],
   "rules": {
+    "object-literal-sort-keys": [
+      true,
+      "ignore-case",
+      "locale-compare",
+      "shorthand-first"
+    ],
     "max-line-length": [true, 100],
     "variable-name": [true, "allow-leading-underscore"]
   },

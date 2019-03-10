@@ -1,4 +1,4 @@
-import { ICreateTsIndexOption } from './ICreateTsIndexOption';
+import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 
 export class CTIUtility {
   public static addDot(ext: string): string {

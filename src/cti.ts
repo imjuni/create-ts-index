@@ -5,8 +5,11 @@ import * as chalk from 'chalk';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yargs from 'yargs';
-import { ICreateTsIndexCliOption, ICreateTsIndexOption } from './ICreateTsIndexOption';
-import { TypeScritIndexWriter } from './TypeScritIndexWriter';
+import { CleanCommandModule } from './commands/CleanCommandModule';
+import { CreateCommandModule } from './commands/CreateCommandModule';
+import { EntrypointCommandModule } from './commands/EntrypointCommandModule';
+import { CreateTsIndexOption } from './options/CreateTsIndexOption';
+import { ICreateTsIndexCliOption } from './options/ICreateTsIndexOption';
 
 const version = (() => {
   if (fs.existsSync(path.join(__dirname, 'package.json'))) {
@@ -96,90 +99,141 @@ pass without dot charactor.`,
     });
 }
 
-function ctiOptionBuilder(args: ICreateTsIndexCliOption, cwd: string): ICreateTsIndexOption {
-  const options: ICreateTsIndexOption = {
-    addNewline: args.addnewline,
-    excludes: args.excludes,
-    fileExcludePatterns: args.fileexcludes,
-    fileFirst: args.filefirst,
-    globOptions: {
-      cwd,
-    },
-    includeCWD: args.includecwd,
-    quote: args.quote,
-    targetExts: args.targetexts,
-    useSemicolon: args.usesemicolon,
-    useTimestamp: args.usetimestamp,
-    verbose: args.verbose,
-  };
-
-  return options;
-}
-
 yargs
   .command<ICreateTsIndexCliOption>(
-    'create <cwd>',
+    '$0 [cwds...]',
     'create index.ts file in working directory',
     (args: yargs.Argv<any>): yargs.Argv<any> => yargOptionBuilder(args),
-    (args: ICreateTsIndexCliOption) => {
-      const cwd = args['cwd'];
+    async (args: ICreateTsIndexCliOption) => {
+      const cwds = args['cwds'];
 
-      if (!cwd) {
+      if (!cwds) {
         console.log(chalk.default.magenta('Enter working directory, '));
         console.log(chalk.default.red('cti [working directory]'));
 
         process.exit(1);
       }
 
-      (async () => {
-        const cti = new TypeScritIndexWriter();
-        const options = ctiOptionBuilder(args, cwd);
+      if (typeof cwds === 'string') {
+        const createCommand = new CreateCommandModule();
+        const options = CreateTsIndexOption.cliOptionBuilder(args, cwds);
 
-        await cti.create(options);
-      })();
+        return createCommand.do(options);
+      }
+
+      if (typeof cwds !== 'string' && Array.isArray(cwds)) {
+        return Promise.all(
+          cwds
+            .filter((cwd) => fs.existsSync(cwd))
+            .map((cwd) => {
+              const createCommand = new CreateCommandModule();
+              const options = CreateTsIndexOption.cliOptionBuilder(args, cwd);
+              return createCommand.do(options);
+            }),
+        );
+      }
     },
   )
   .command<ICreateTsIndexCliOption>(
-    'entrypoint <cwd>',
-    'create entrypoint.ts file in working directory',
+    'create [cwds...]',
+    'create index.ts file in working directory',
     (args: yargs.Argv<any>): yargs.Argv<any> => yargOptionBuilder(args),
-    (args: ICreateTsIndexCliOption) => {
-      const cwd = args['cwd'];
+    async (args: ICreateTsIndexCliOption) => {
+      const cwds = args['cwds'];
 
-      if (!cwd) {
+      if (!cwds) {
         console.log(chalk.default.magenta('Enter working directory, '));
         console.log(chalk.default.red('cti [working directory]'));
 
         process.exit(1);
       }
 
-      (async () => {
-        const cti = new TypeScritIndexWriter();
-        const options = ctiOptionBuilder(args, cwd);
+      if (typeof cwds === 'string') {
+        const createCommand = new CreateCommandModule();
+        const options = CreateTsIndexOption.cliOptionBuilder(args, cwds);
 
-        await cti.createEntrypoint(options);
-      })();
+        return createCommand.do(options);
+      }
+
+      if (typeof cwds !== 'string' && Array.isArray(cwds)) {
+        return Promise.all(
+          cwds
+            .filter((cwd) => fs.existsSync(cwd))
+            .map((cwd) => {
+              const createCommand = new CreateCommandModule();
+              const options = CreateTsIndexOption.cliOptionBuilder(args, cwd);
+              return createCommand.do(options);
+            }),
+        );
+      }
+    },
+  )
+  .command<ICreateTsIndexCliOption>(
+    'entrypoint [cwds...]',
+    'create entrypoint.ts file in working directory',
+    (args: yargs.Argv<any>): yargs.Argv<any> => yargOptionBuilder(args),
+    async (args: ICreateTsIndexCliOption) => {
+      const cwds = args['cwds'];
+
+      if (!cwds) {
+        console.log(chalk.default.magenta('Enter working directory, '));
+        console.log(chalk.default.red('cti [working directory]'));
+
+        process.exit(1);
+      }
+
+      if (typeof cwds === 'string') {
+        const entrypointCommand = new EntrypointCommandModule();
+        const options = CreateTsIndexOption.cliOptionBuilder(args, cwds);
+
+        entrypointCommand.do(options);
+      }
+
+      if (typeof cwds !== 'string' && Array.isArray(cwds)) {
+        return Promise.all(
+          cwds
+            .filter((cwd) => fs.existsSync(cwd))
+            .map((cwd) => {
+              const entrypointCommand = new EntrypointCommandModule();
+              const options = CreateTsIndexOption.cliOptionBuilder(args, cwd);
+              return entrypointCommand.do(options);
+            }),
+        );
+      }
     },
   )
   .command(
-    'clean [cwd]',
+    'clean [cwds...]',
     'clean index.ts or entrypoint.ts file in working directory',
     (args: yargs.Argv<any>): yargs.Argv<any> => yargOptionBuilder(args),
-    (args: ICreateTsIndexCliOption) => {
-      const cwd = args['cwd'];
+    async (args: ICreateTsIndexCliOption) => {
+      const cwds = args['cwds'];
 
-      if (!cwd) {
+      if (!cwds) {
         console.log(chalk.default.magenta('Enter working directory, '));
         console.log(chalk.default.red('cti [working directory]'));
 
         process.exit(1);
       }
 
-      (async () => {
-        const cti = new TypeScritIndexWriter();
-        const options = ctiOptionBuilder(args, cwd);
-        await cti.clean(options);
-      })();
+      if (typeof cwds === 'string') {
+        const cleanCommand = new CleanCommandModule();
+        const options = CreateTsIndexOption.cliOptionBuilder(args, cwds);
+
+        await cleanCommand.do(options);
+      }
+
+      if (typeof cwds !== 'string' && Array.isArray(cwds)) {
+        return Promise.all(
+          cwds
+            .filter((cwd) => fs.existsSync(cwd))
+            .map((cwd) => {
+              const cleanCommand = new CleanCommandModule();
+              const options = CreateTsIndexOption.cliOptionBuilder(args, cwd);
+              return cleanCommand.do(options);
+            }),
+        );
+      }
     },
   )
   .version(version, 'version', 'display version information')
