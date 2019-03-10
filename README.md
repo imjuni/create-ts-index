@@ -115,8 +115,12 @@ cti create ./src  # or cti create ./src
 cti entrypoint ./src  # or cti create ./src
 
 # without newline
+
+## create sub-command, create sub-command is a default command
+cti -n ./src
 cti create -n ./src
-## or
+
+## entrypoint sub-command
 cti entrypoint -n ./src
 
 # custom exclude directories
@@ -129,6 +133,9 @@ cti clean ./src  # or cti clean ./src
 
 # loop through every sub-directory in current path
 for f in *; do cti create ./$f; done
+
+# Pass variadic directories
+cti create ./src/server ./src/client ./src/module
 ```
 
 # Language

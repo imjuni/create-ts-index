@@ -109,8 +109,11 @@ Git-style sub-command를 사용합니다.
   * entrypoint.ts 파일과 index.ts 파일을 모두 삭제합니다. 복원할 수 없으니 주의하세요.
 ```
 # 기본 사용법
+## create 명령어
+cti ./src
 cti create ./src
-## or
+
+## entrypoint 명령어
 cti entrypoint ./src
 
 # 줄바꿈 문자 포함하지 않기
@@ -128,6 +131,9 @@ cti clean ./src
 
 # 하위 디렉터리를 포함해서 실행하기
 for f in *; do cti create ./$f; done
+
+# 여러 디렉터리를 전달하기
+cti create ./src/server ./src/client ./src/module
 ```
 
 # Language
