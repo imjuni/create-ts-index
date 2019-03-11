@@ -1,5 +1,6 @@
 create-ts-index
 ----
+[![Download Status](https://img.shields.io/npm/dw/create-ts-index.svg)](https://img.shields.io/npm/dw/create-ts-index.svg) [![Github Star](https://img.shields.io/github/stars/imjuni/create-ts-index.svg?style=social)](https://img.shields.io/github/stars/imjuni/create-ts-index.svg?style=social) [![NPM version](https://img.shields.io/npm/v/create-ts-index.svg)](https://img.shields.io/npm/v/create-ts-index.svg) [![License](https://img.shields.io/npm/l/create-ts-index.svg)](https://img.shields.io/npm/l/create-ts-index.svg)
 
 # 설치
 ```
