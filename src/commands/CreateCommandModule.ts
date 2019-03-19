@@ -1,19 +1,34 @@
 import * as chalk from 'chalk';
+import debug from 'debug';
 import * as moment from 'moment';
 import * as path from 'path';
-import { CreateTsIndexOption } from '../options/CreateTsIndexOption';
+import { ctircLoader } from '../options/ctircLoader';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
 import { CTIUtility } from '../tools/CTIUtility';
 import { CommandModule } from './CommandModule';
 
+const { isNotEmpty } = CTIUtility;
+const log = debug('cti:CreateCommandModule');
+
 export class CreateCommandModule {
-  public async do(passed: Partial<ICreateTsIndexOption>): Promise<void> {
-    const option: CreateTsIndexOption = CreateTsIndexOption.factory({
-      partialOption: passed,
+  public async do(cliCwd: string, passed: Partial<ICreateTsIndexOption>): Promise<void> {
+    const cwd =
+      isNotEmpty(passed.globOptions) && isNotEmpty(passed.globOptions.cwd)
+        ? passed.globOptions.cwd
+        : process.cwd();
+
+    const { readedFrom, option } = ctircLoader({
+      cwd: cliCwd,
+      fromClioption: passed,
+      inputDir: cwd,
     });
 
-    const logger = new CTILogger(option);
+    const logger = new CTILogger(option.verbose);
+    logger.log(
+      chalk.default.yellowBright('Configuration from: '),
+      readedFrom === '' ? 'default' : readedFrom,
+    );
 
     try {
       logger.log(chalk.default.yellowBright('Option: '), option);
@@ -42,7 +57,7 @@ export class CreateCommandModule {
             });
           return allPath;
         })
-        .reduce<string[]>((aggregated, libPath) => {
+        .reduce<Array<string>>((aggregated, libPath) => {
           return aggregated.concat(libPath);
         }, []);
 
@@ -82,6 +97,9 @@ export class CreateCommandModule {
 
       logger.flog(chalk.default.green(`create succeeded: ${option.globOptions.cwd}`));
     } catch (err) {
+      log(err.message);
+      log(err.stack);
+
       logger.ferror(chalk.default.red(err.message));
     }
   }
@@ -93,14 +111,14 @@ export class CreateCommandModule {
     logger,
   }: {
     directory: string;
-    directories: string[];
+    directories: Array<string>;
     option: ICreateTsIndexOption;
     logger: CTILogger;
   }): Promise<void> {
     const indexFiles = option.targetExts.map((targetExt) => `index.${targetExt}`);
 
     try {
-      logger.log(chalk.default.yellow('Current working directory: ', directory));
+      logger.log(chalk.default.yellowBright('Current working directory: ', directory));
 
       const resolvePath = path.resolve(option.globOptions.cwd || __dirname);
       const elements = await CommandModule.promisify.readDir(
@@ -125,7 +143,7 @@ export class CreateCommandModule {
         ),
       );
 
-      const categorized = targets.reduce<{ dir: string[]; allFiles: string[] }>(
+      const categorized = targets.reduce<{ dir: Array<string>; allFiles: Array<string> }>(
         (result, target, index) => {
           if (stats[index].isDirectory()) {
             result.dir.push(target);
@@ -200,6 +218,9 @@ export class CreateCommandModule {
         'utf8',
       );
     } catch (err) {
+      log(err.message);
+      log(err.stack);
+
       logger.error(chalk.default.red('indexWriter: ', err.message));
     }
   }

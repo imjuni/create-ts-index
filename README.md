@@ -1,7 +1,6 @@
 create-ts-index
 ----
-[![Download Status](https://img.shields.io/npm/dw/create-ts-index.svg)](https://img.shields.io/npm/dw/create-ts-index.svg) [![Github Star](https://img.shields.io/github/stars/imjuni/create-ts-index.svg?style=social)](https://img.shields.io/github/stars/imjuni/create-ts-index.svg?style=social) [![NPM version](https://img.shields.io/npm/v/create-ts-index.svg)](https://img.shields.io/npm/v/create-ts-index.svg) [![License](https://img.shields.io/npm/l/create-ts-index.svg)](https://img.shields.io/npm/l/create-ts-index.svg)
-
+[![Download Status](https://img.shields.io/npm/dw/create-ts-index.svg)](https://npmcharts.com/compare/create-ts-index?minimal=true) [![Github Star](https://img.shields.io/github/stars/imjuni/create-ts-index.svg?style=popout)](https://github.com/imjuni/create-ts-index) [![Github Issues](https://img.shields.io/github/issues-raw/imjuni/create-ts-index.svg)](https://github.com/imjuni/create-ts-index/issues) [![NPM version](https://img.shields.io/npm/v/create-ts-index.svg)](https://www.npmjs.com/package/create-ts-index) [![License](https://img.shields.io/npm/l/create-ts-index.svg)](https://github.com/imjuni/create-ts-index/blob/master/LICENSE)
 
 # Install
 ```
@@ -138,6 +137,64 @@ for f in *; do cti create ./$f; done
 
 # Pass variadic directories
 cti create ./src/server ./src/client ./src/module
+```
+
+## CLI with .ctirc
+create-ts-index cli support `.ctirc` configuration file. Available name is only `.ctirc`. `.ctirc` configuration file can applied by each target directories and script working directory. Every configuration overwrited same feature. Also cti cli arguments forced applied. And `.ctirc` file can write [json5](https://json5.org) format. json5 spec. can comment and more feature.
+
+See below search, apply order. 
+
+```
+# execute on /Users/cti/github/create-ts-index
+sh> cti create ./example/type01
+
+# search configuration file on "/Users/cti/github/create-ts-index"
+# search configuration file on "/Users/cti/github/create-ts-index/example/type01"
+# apply configuration by "/Users/cti/github/create-ts-index"
+# apply configuration by "/Users/cti/github/create-ts-index/example/type01"
+# every configuration is overwrited 
+```
+
+### .ctirc example
+```
+// Option interface for CreateTsIndex
+{
+  // enable file first
+  "fileFirst": false,
+
+  // add newline on EOF
+  "addNewline": true,
+
+  // add semicolon on every export statement
+  "useSemicolon": true,
+
+  // add timestamp on creation comment
+  "useTimestamp": false,
+
+  // current working directory add to creation work 
+  "includeCWD": true,
+
+  // exclude directories 
+  "excludes": ["@types", "typings", "__test__", "__tests__", "node_modules"],
+
+  // file exclude pattern 
+  "fileExcludePatterns": [],
+
+  // file exclude by extension 
+  "targetExts": ["ts", "tsx"],
+
+  // glob option 
+  "globOptions": {
+    dot: true,
+    nonull: true
+  },
+
+  // quote mark " or ' 
+  "quote": "'",
+
+  // disply verbose logging message 
+  "verbose": false,
+}
 ```
 
 # Language

@@ -1,7 +1,6 @@
 // tslint:disable no-console
-import { CreateTsIndexOption } from '../options/CreateTsIndexOption';
 
-type logFunc = (message?: any, ...optionalParams: any[]) => void;
+type logFunc = (message?: any, ...optionalParams: Array<any>) => void;
 
 export class CTILogger {
   public readonly log: logFunc;
@@ -9,8 +8,8 @@ export class CTILogger {
   public readonly flog: logFunc;
   public readonly ferror: logFunc;
 
-  constructor(option: CreateTsIndexOption) {
-    if (option.verbose) {
+  constructor(verbose: boolean) {
+    if (verbose) {
       this.log = console.log;
       this.error = console.error;
     } else {

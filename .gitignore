@@ -66,9 +66,13 @@ dist/
 
 # Generated index.ts from example directory
 example/**/index.ts
+example/**/entrypoint.ts
 
 # Todo 
 Todo.md
 
 # MacOSX
 .DS_store
+
+# configuration file
+example/**/.ctirc

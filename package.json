@@ -1,11 +1,13 @@
 {
   "name": "create-ts-index",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "Automatic create index.ts file",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
     "debug": "node --nolazy --inspect-brk=9229 ./node_modules/.bin/jest --runInBand",
+    "start": "node -r ts-node/register ./src/cti.ts ",
+    "dexec": "DEBUG=cti:* node -r ts-node/register ./src/cti.ts ",
     "build": "tsc",
     "clean": "rimraf ./dist",
     "prepub": "npm run clean && npm run build",
@@ -43,8 +45,10 @@
     ]
   },
   "devDependencies": {
+    "@types/debug": "^4.1.2",
     "@types/glob": "^7.1.1",
     "@types/jest": "^23.3.5",
+    "@types/json5": "0.0.30",
     "@types/node": "^10.12.0",
     "@types/yargs": "^12.0.5",
     "jest": "^24.1.0",
@@ -52,7 +56,7 @@
     "ts-jest": "^24.0.0",
     "ts-node": "^7.0.1",
     "tslib": "^1.9.3",
-    "tslint": "^5.13.1",
+    "tslint": "^5.14.0",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.3.3333",
@@ -61,7 +65,9 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "commander": "^2.19.0",
+    "debug": "^4.1.1",
     "glob": "^7.1.3",
+    "json5": "^2.1.0",
     "moment": "^2.22.2",
     "yargs": "^12.0.5"
   }

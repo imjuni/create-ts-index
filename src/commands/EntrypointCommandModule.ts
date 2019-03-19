@@ -1,19 +1,28 @@
 import * as chalk from 'chalk';
 import * as moment from 'moment';
 import * as path from 'path';
-import { CreateTsIndexOption } from '../options/CreateTsIndexOption';
+import { ctircLoader } from '../options/ctircLoader';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
 import { CTIUtility } from '../tools/CTIUtility';
 import { CommandModule } from './CommandModule';
 
-export class EntrypointCommandModule {
-  public async do(passed: Partial<ICreateTsIndexOption>): Promise<void> {
-    const option: CreateTsIndexOption = CreateTsIndexOption.factory({
-      partialOption: passed,
-    });
+const { isNotEmpty } = CTIUtility;
 
-    const logger = new CTILogger(option);
+export class EntrypointCommandModule {
+  public async do(cliCwd: string, passed: Partial<ICreateTsIndexOption>): Promise<void> {
+    const cwd =
+      isNotEmpty(passed.globOptions) && isNotEmpty(passed.globOptions.cwd)
+        ? passed.globOptions.cwd
+        : process.cwd();
+
+    const { readedFrom, option } = ctircLoader({
+      cwd: cliCwd,
+      fromClioption: passed,
+      inputDir: cwd,
+    });
+    const logger = new CTILogger(option.verbose);
+    logger.log('configuration from: ', readedFrom === '' ? 'default' : readedFrom);
 
     try {
       logger.log(chalk.default.yellowBright('Option: '), option);
@@ -42,7 +51,7 @@ export class EntrypointCommandModule {
             });
           return allPath;
         })
-        .reduce<string[]>((aggregated, libPath) => {
+        .reduce<Array<string>>((aggregated, libPath) => {
           return aggregated.concat(libPath);
         }, []);
 
@@ -89,7 +98,7 @@ export class EntrypointCommandModule {
     option,
     logger,
   }: {
-    directories: string[];
+    directories: Array<string>;
     option: ICreateTsIndexOption;
     logger: CTILogger;
   }): Promise<void> {
@@ -122,7 +131,10 @@ export class EntrypointCommandModule {
               ),
             );
 
-            const categorized = targets.reduce<{ dir: string[]; allFiles: string[] }>(
+            const categorized = targets.reduce<{
+              dir: Array<string>;
+              allFiles: Array<string>;
+            }>(
               (result, target, index) => {
                 if (stats[index].isDirectory()) {
                   result.dir.push(target);

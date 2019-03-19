@@ -8,8 +8,8 @@ import { CTILogger } from '../tools/CTILogger';
 
 export class CommandModule {
   public static promisify = {
-    glob: util.promisify<string, glob.IOptions, string[]>(glob),
-    readDir: util.promisify<string, string[]>(fs.readdir),
+    glob: util.promisify<string, glob.IOptions, Array<string>>(glob),
+    readDir: util.promisify<string, Array<string>>(fs.readdir),
     stat: util.promisify<string, fs.Stats>(fs.stat),
     unlink: util.promisify<fs.PathLike>(fs.unlink),
     writeFile: util.promisify<string, any, string>(fs.writeFile),
@@ -20,10 +20,10 @@ export class CommandModule {
     option,
     logger,
   }: {
-    filenames: string[];
+    filenames: Array<string>;
     option: ICreateTsIndexOption;
     logger: CTILogger;
-  }): string[] {
+  }): Array<string> {
     const targetExts = option.targetExts.map((ext) => (ext.startsWith('.') ? ext : `.${ext}`));
 
     try {

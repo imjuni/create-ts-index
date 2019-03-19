@@ -12,7 +12,9 @@
       "shorthand-first"
     ],
     "max-line-length": [true, 100],
-    "variable-name": [true, "allow-leading-underscore"]
-  },
-  "no-unused-variable": [true]
+    "variable-name": [true, "allow-leading-underscore"],
+    "no-unused-variable": [true],
+    "prefer-array-literal": [false],
+    "array-type": [true, "generic"]
+  }
 }

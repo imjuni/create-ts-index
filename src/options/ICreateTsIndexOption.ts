@@ -4,6 +4,9 @@ import * as glob from 'glob';
  * Option interface for CreateTsIndex
  */
 export interface ICreateTsIndexOption {
+  /** for debugging option, representative from option */
+  __for_debug_from?: string;
+
   /** enable file first */
   fileFirst: boolean;
 
@@ -20,13 +23,13 @@ export interface ICreateTsIndexOption {
   includeCWD: boolean;
 
   /** exclude directories */
-  excludes: string[];
+  excludes: Array<string>;
 
   /** file exclude pattern */
-  fileExcludePatterns: string[];
+  fileExcludePatterns: Array<string>;
 
   /** file exclude by extension */
-  targetExts: string[];
+  targetExts: Array<string>;
 
   /** glob option */
   globOptions: glob.IOptions;
@@ -44,9 +47,9 @@ export interface ICreateTsIndexCliOption {
   usesemicolon: boolean;
   includecwd: boolean;
   usetimestamp: boolean;
-  excludes: string[];
-  fileexcludes: string[];
-  targetexts: string[];
+  excludes: Array<string>;
+  fileexcludes: Array<string>;
+  targetexts: Array<string>;
   verbose: boolean;
   quote: string;
 }

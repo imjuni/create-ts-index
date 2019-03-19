@@ -2,6 +2,7 @@
 // tslint:disable no-console no-string-literal
 
 import * as chalk from 'chalk';
+import debug from 'debug';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yargs from 'yargs';
@@ -10,6 +11,8 @@ import { CreateCommandModule } from './commands/CreateCommandModule';
 import { EntrypointCommandModule } from './commands/EntrypointCommandModule';
 import { CreateTsIndexOption } from './options/CreateTsIndexOption';
 import { ICreateTsIndexCliOption } from './options/ICreateTsIndexOption';
+
+const log = debug('cti:cti-cli');
 
 const version = (() => {
   if (fs.existsSync(path.join(__dirname, 'package.json'))) {
@@ -33,31 +36,26 @@ function yargOptionBuilder(args: yargs.Argv<any>): yargs.Argv<any> {
   return args
     .option('filefirst', {
       alias: 'f',
-      default: false,
       describe: 'export list create filefirst, no option false, option true',
       type: 'boolean',
     })
     .option('addnewline', {
       alias: 'n',
-      default: true,
       describe: 'deside add newline file ending. no option true, option false',
       type: 'boolean',
     })
     .option('usesemicolon', {
       alias: 's',
-      default: true,
       describe: 'deside use semicolon line ending. no option true, option false',
       type: 'boolean',
     })
     .option('includecwd', {
       alias: 'c',
-      default: true,
       describe: 'deside include cwd directory in task. no option true, option false',
       type: 'boolean',
     })
     .option('usetimestamp', {
       alias: 't',
-      default: false,
       describe: `deside use timestamp(YYYY-MM-DD HH:mm) top line comment.
 no option false, option true`,
       type: 'boolean',
@@ -65,7 +63,6 @@ no option false, option true`,
     .option('excludes', {
       alias: 'e',
       array: true,
-      default: ['@types', 'typings', '__test__', '__tests__', 'node_modules'],
       describe: `pass exclude directory. default exclude directory is
 ['@types', 'typings', '__test__', '__tests__']`,
       type: 'string',
@@ -73,27 +70,23 @@ no option false, option true`,
     .option('fileexcludes', {
       alias: 'i',
       array: true,
-      default: [],
       describe: 'pass exclude pattern of filename. default exclude directory is "[]"',
       type: 'string',
     })
     .option('targetexts', {
       alias: 'x',
       array: true,
-      default: ['ts', 'tsx'],
       describe: `pass include extname. default extname is ["ts", "tsx"]. extname
 pass without dot charactor.`,
       type: 'string',
     })
     .option('verbose', {
       alias: 'v',
-      default: false,
       describe: 'verbose logging message. to option false, option true',
       type: 'boolean',
     })
     .option('quote', {
       alias: 'q',
-      default: "'",
       describe: "deside quote character. default quote character is '",
       type: 'string',
     });
@@ -106,6 +99,7 @@ yargs
     (args: yargs.Argv<any>): yargs.Argv<any> => yargOptionBuilder(args),
     async (args: ICreateTsIndexCliOption) => {
       const cwds = args['cwds'];
+      const cliCwd = process.cwd();
 
       if (!cwds) {
         console.log(chalk.default.magenta('Enter working directory, '));
@@ -118,7 +112,7 @@ yargs
         const createCommand = new CreateCommandModule();
         const options = CreateTsIndexOption.cliOptionBuilder(args, cwds);
 
-        return createCommand.do(options);
+        return createCommand.do(cliCwd, options);
       }
 
       if (typeof cwds !== 'string' && Array.isArray(cwds)) {
@@ -128,7 +122,7 @@ yargs
             .map((cwd) => {
               const createCommand = new CreateCommandModule();
               const options = CreateTsIndexOption.cliOptionBuilder(args, cwd);
-              return createCommand.do(options);
+              return createCommand.do(cliCwd, options);
             }),
         );
       }
@@ -140,6 +134,9 @@ yargs
     (args: yargs.Argv<any>): yargs.Argv<any> => yargOptionBuilder(args),
     async (args: ICreateTsIndexCliOption) => {
       const cwds = args['cwds'];
+      const cliCwd = process.cwd();
+
+      log('cli option: ', args);
 
       if (!cwds) {
         console.log(chalk.default.magenta('Enter working directory, '));
@@ -152,7 +149,7 @@ yargs
         const createCommand = new CreateCommandModule();
         const options = CreateTsIndexOption.cliOptionBuilder(args, cwds);
 
-        return createCommand.do(options);
+        return createCommand.do(cliCwd, options);
       }
 
       if (typeof cwds !== 'string' && Array.isArray(cwds)) {
@@ -162,7 +159,7 @@ yargs
             .map((cwd) => {
               const createCommand = new CreateCommandModule();
               const options = CreateTsIndexOption.cliOptionBuilder(args, cwd);
-              return createCommand.do(options);
+              return createCommand.do(cliCwd, options);
             }),
         );
       }
@@ -174,6 +171,7 @@ yargs
     (args: yargs.Argv<any>): yargs.Argv<any> => yargOptionBuilder(args),
     async (args: ICreateTsIndexCliOption) => {
       const cwds = args['cwds'];
+      const cliCwd = process.cwd();
 
       if (!cwds) {
         console.log(chalk.default.magenta('Enter working directory, '));
@@ -186,7 +184,7 @@ yargs
         const entrypointCommand = new EntrypointCommandModule();
         const options = CreateTsIndexOption.cliOptionBuilder(args, cwds);
 
-        entrypointCommand.do(options);
+        entrypointCommand.do(cliCwd, options);
       }
 
       if (typeof cwds !== 'string' && Array.isArray(cwds)) {
@@ -196,7 +194,7 @@ yargs
             .map((cwd) => {
               const entrypointCommand = new EntrypointCommandModule();
               const options = CreateTsIndexOption.cliOptionBuilder(args, cwd);
-              return entrypointCommand.do(options);
+              return entrypointCommand.do(cliCwd, options);
             }),
         );
       }
@@ -208,6 +206,7 @@ yargs
     (args: yargs.Argv<any>): yargs.Argv<any> => yargOptionBuilder(args),
     async (args: ICreateTsIndexCliOption) => {
       const cwds = args['cwds'];
+      const cliCwd = process.cwd();
 
       if (!cwds) {
         console.log(chalk.default.magenta('Enter working directory, '));
@@ -220,7 +219,7 @@ yargs
         const cleanCommand = new CleanCommandModule();
         const options = CreateTsIndexOption.cliOptionBuilder(args, cwds);
 
-        await cleanCommand.do(options);
+        await cleanCommand.do(cliCwd, options);
       }
 
       if (typeof cwds !== 'string' && Array.isArray(cwds)) {
@@ -230,7 +229,7 @@ yargs
             .map((cwd) => {
               const cleanCommand = new CleanCommandModule();
               const options = CreateTsIndexOption.cliOptionBuilder(args, cwd);
-              return cleanCommand.do(options);
+              return cleanCommand.do(cliCwd, options);
             }),
         );
       }

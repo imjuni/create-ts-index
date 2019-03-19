@@ -69,6 +69,69 @@ export class CreateTsIndexOption {
     };
   }
 
+  public static merge<T>(
+    deep: boolean,
+    isNotCopyEmpty: boolean,
+    src: T,
+    ...dsts: Array<T>
+  ): T {
+    const merged: Partial<T> = (() => {
+      if (deep) {
+        return { ...src };
+      }
+
+      return src;
+    })();
+
+    const srcKeys = Object.keys(src);
+
+    dsts.forEach((dst) => {
+      const dstKeys = Object.keys(dst);
+      const keySet = new Set<string>(srcKeys.concat(dstKeys));
+
+      Array.from(keySet).forEach((key) => {
+        if (
+          typeof merged[key] === 'string' ||
+          typeof merged[key] === 'number' ||
+          typeof merged[key] === 'boolean' ||
+          typeof merged[key] === 'bigint' ||
+          typeof merged[key] === 'symbol' ||
+          typeof merged[key] === 'undefined'
+        ) {
+          if (isNotCopyEmpty && (isNotEmpty(dst[key]) && dst[key])) {
+            merged[key] = dst[key];
+          } else if (!isNotCopyEmpty) {
+            merged[key] = dst[key];
+          }
+        } else if (typeof merged[key] === 'object' && Array.isArray(merged[key])) {
+          const element = new Set<any>(merged[key].concat(dst[key]));
+          merged[key] = Array.from(element);
+        } else if (typeof merged[key] === 'object') {
+          merged[key] = CreateTsIndexOption.merge(deep, isNotCopyEmpty, merged[key], dst[key]);
+        }
+      });
+    });
+
+    return merged as any;
+  }
+  /**
+   * Merge configurations by passing order
+   *
+   * @param passeds Passed variadic configurations
+   */
+  public static mergeOptions(
+    ...passeds: Array<Partial<ICreateTsIndexOption>>
+  ): CreateTsIndexOption {
+    const [first, remains] = passeds;
+    const merged: ICreateTsIndexOption = CreateTsIndexOption.merge(
+      true,
+      true,
+      first,
+      remains,
+    ) as any;
+    return new CreateTsIndexOption(merged);
+  }
+
   public static getOption(passed: Partial<ICreateTsIndexOption>): CreateTsIndexOption {
     const option: ICreateTsIndexOption = CreateTsIndexOption.getDefailtICreateTsIndexOption();
 
@@ -87,7 +150,9 @@ export class CreateTsIndexOption {
 
     option.excludes = isNotEmpty(passed.excludes) ? passed.excludes : option.excludes;
     option.targetExts = isNotEmpty(passed.targetExts) ? passed.targetExts : option.targetExts;
-    option.targetExts = option.targetExts.sort((l, r) => r.length - l.length);
+
+    // remove sorting
+    // option.targetExts = option.targetExts.sort((l, r) => r.length - l.length);
 
     if (isNotEmpty(passed.globOptions)) {
       option.globOptions.cwd = isNotEmpty(passed.globOptions.cwd)
@@ -117,11 +182,11 @@ export class CreateTsIndexOption {
   /** current working directory add to creation work */
   public readonly includeCWD: boolean;
   /** exclude directories */
-  public readonly excludes: string[];
+  public readonly excludes: Array<string>;
   /** file exclude pattern */
-  public readonly fileExcludePatterns: string[];
+  public readonly fileExcludePatterns: Array<string>;
   /** file exclude by extension */
-  public readonly targetExts: string[];
+  public readonly targetExts: Array<string>;
   /** glob option */
   public readonly globOptions: glob.IOptions;
   /** quote mark " or ' */
@@ -130,14 +195,14 @@ export class CreateTsIndexOption {
   public readonly verbose: boolean;
 
   constructor(
-    fileFirst: boolean | ICreateTsIndexOption,
+    fileFirst?: boolean | ICreateTsIndexOption,
     addNewline?: boolean,
     useSemicolon?: boolean,
     useTimestamp?: boolean,
     includeCWD?: boolean,
-    excludes?: string[],
-    fileExcludePatterns?: string[],
-    targetExts?: string[],
+    excludes?: Array<string>,
+    fileExcludePatterns?: Array<string>,
+    targetExts?: Array<string>,
     globOptions?: glob.IOptions,
     quote?: string,
     verbose?: boolean,
@@ -175,7 +240,7 @@ export class CreateTsIndexOption {
         globOptions: _globOptions,
         quote: _quote,
         verbose: _verbose,
-      } = fileFirst;
+      } = fileFirst || CreateTsIndexOption.getDefailtICreateTsIndexOption();
 
       this.fileFirst = _fileFirst;
       this.addNewline = _addNewline;
