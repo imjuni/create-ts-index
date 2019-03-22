@@ -7,7 +7,7 @@ import { CTILogger } from '../tools/CTILogger';
 import { CTIUtility } from '../tools/CTIUtility';
 import { CommandModule } from './CommandModule';
 
-const { isNotEmpty } = CTIUtility;
+const { isNotEmpty, addDot } = CTIUtility;
 
 export class EntrypointCommandModule {
   public async do(cliCwd: string, passed: Partial<ICreateTsIndexOption>): Promise<void> {
@@ -173,15 +173,12 @@ export class EntrypointCommandModule {
         return aggregated.concat(_files);
       });
 
+      const targetExtWithDot = option.targetExts.map((ext) => addDot(ext));
       const exportString = files.map((target) => {
-        let targetFileWithoutExt = target;
-
-        option.targetExts.forEach((ext) => {
-          return (targetFileWithoutExt = targetFileWithoutExt.replace(
-            CTIUtility.addDot(ext),
-            '',
-          ));
-        });
+        const matchedExt = targetExtWithDot.find((ext) => path.extname(target) === ext);
+        const targetFileWithoutExt = isNotEmpty(matchedExt)
+          ? target.replace(matchedExt, '')
+          : target;
 
         logger.log(chalk.default.green('entrypoint added from:'), target);
 

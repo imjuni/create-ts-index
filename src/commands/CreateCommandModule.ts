@@ -8,7 +8,7 @@ import { CTILogger } from '../tools/CTILogger';
 import { CTIUtility } from '../tools/CTIUtility';
 import { CommandModule } from './CommandModule';
 
-const { isNotEmpty } = CTIUtility;
+const { isNotEmpty, addDot } = CTIUtility;
 const log = debug('cti:CreateCommandModule');
 
 export class CreateCommandModule {
@@ -179,15 +179,12 @@ export class CreateCommandModule {
         return categorized.dir.concat(files);
       })();
 
+      const targetExtWithDot = option.targetExts.map((ext) => addDot(ext));
       const exportString = sorted.map((target) => {
-        let targetFileWithoutExt = target;
-
-        option.targetExts.forEach((ext) => {
-          return (targetFileWithoutExt = targetFileWithoutExt.replace(
-            CTIUtility.addDot(ext),
-            '',
-          ));
-        });
+        const matchedExt = targetExtWithDot.find((ext) => path.extname(target) === ext);
+        const targetFileWithoutExt = isNotEmpty(matchedExt)
+          ? target.replace(matchedExt, '')
+          : target;
 
         if (option.useSemicolon) {
           return `export * from ${option.quote}./${targetFileWithoutExt}${option.quote};`;
