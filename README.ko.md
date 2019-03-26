@@ -86,6 +86,8 @@ index.ts 파일을 webpack entrypoint로 사용할 수 있습니다.
 
 # 사용법
 ## 라이브러리로 사용하는 경우
+
+### TypeScritIndexWriter 사용
 ```
 const tsiw = new TypeScritIndexWriter();
 const option = TypeScritIndexWriter.getDefaultOption('./src');
@@ -97,6 +99,15 @@ const option = TypeScritIndexWriter.getDefaultOption('./src');
 
   await tsiw.createEntrypoint(option);
 })();
+```
+
+### CommandModule 사용
+```
+(async () => {
+  const option = CreateTsIndexOption.getOption({});
+  const createCommand = new CreateCommandModule();
+  await createCommand.do(process.cwd(), option);
+});
 ```
 
 ## CLI

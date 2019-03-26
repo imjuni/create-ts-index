@@ -94,7 +94,9 @@ add git-style sub-command
   * cti create webpack entrypoint
 
 # Usage
-## library
+## library 
+
+### Use TypeScritIndexWriter
 ```
 const tsiw = new TypeScritIndexWriter();
 const option = TypeScritIndexWriter.getDefaultOption('./src');
@@ -106,6 +108,15 @@ const option = TypeScritIndexWriter.getDefaultOption('./src');
 
   await tsiw.createEntrypoint(option);
 })();
+```
+
+### Use CommandModule
+```
+(async () => {
+  const option = CreateTsIndexOption.getOption({});
+  const createCommand = new CreateCommandModule();
+  await createCommand.do(process.cwd(), option);
+});
 ```
 
 ## CLI

@@ -29,7 +29,7 @@ const version = (() => {
     return packageJSON.version;
   }
 
-  return '1.0.14';
+  return '1.7.2';
 })();
 
 function yargOptionBuilder(args: yargs.Argv<any>): yargs.Argv<any> {
