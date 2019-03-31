@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import debug from 'debug';
 import * as moment from 'moment';
 import * as path from 'path';
@@ -7,11 +7,12 @@ import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
 import { CTIUtility } from '../tools/CTIUtility';
 import { CommandModule } from './CommandModule';
+import { ICommandModule } from './ICommandModule';
 
 const { isNotEmpty, addDot } = CTIUtility;
 const log = debug('cti:CreateCommandModule');
 
-export class CreateCommandModule {
+export class CreateCommandModule implements ICommandModule {
   public async do(cliCwd: string, passed: Partial<ICreateTsIndexOption>): Promise<void> {
     const cwd =
       isNotEmpty(passed.globOptions) && isNotEmpty(passed.globOptions.cwd)
@@ -20,18 +21,18 @@ export class CreateCommandModule {
 
     const { readedFrom, option } = ctircLoader({
       cwd: cliCwd,
-      fromClioption: passed,
+      fromCliOption: passed,
       inputDir: cwd,
     });
 
     const logger = new CTILogger(option.verbose);
     logger.log(
-      chalk.default.yellowBright('Configuration from: '),
+      chalk.yellowBright('Configuration from: '),
       readedFrom === '' ? 'default' : readedFrom,
     );
 
     try {
-      logger.log(chalk.default.yellowBright('Option: '), option);
+      logger.log(chalk.yellowBright('Option: '), option);
 
       const targetFileGlob = option.targetExts.map((ext) => `*.${ext}`).join('|');
       const allTsFiles = await CommandModule.promisify.glob(
@@ -95,12 +96,12 @@ export class CreateCommandModule {
         ),
       );
 
-      logger.flog(chalk.default.green(`create succeeded: ${option.globOptions.cwd}`));
+      logger.flog(chalk.green(`create succeeded: ${option.globOptions.cwd}`));
     } catch (err) {
       log(err.message);
       log(err.stack);
 
-      logger.ferror(chalk.default.red(err.message));
+      logger.ferror(chalk.red(err.message));
     }
   }
 
@@ -118,7 +119,7 @@ export class CreateCommandModule {
     const indexFiles = option.targetExts.map((targetExt) => `index.${targetExt}`);
 
     try {
-      logger.log(chalk.default.yellowBright('Current working directory: ', directory));
+      logger.log(chalk.yellowBright('Current working directory: ', directory));
 
       const resolvePath = path.resolve(option.globOptions.cwd || __dirname);
       const elements = await CommandModule.promisify.readDir(
@@ -204,10 +205,7 @@ export class CreateCommandModule {
 
       const fileContent = comment + CTIUtility.addNewline(option, exportString.join('\n'));
 
-      logger.log(
-        chalk.default.green('created: '),
-        `${path.join(resolvePath, directory, 'index.ts')}`,
-      );
+      logger.log(chalk.green('created: '), `${path.join(resolvePath, directory, 'index.ts')}`);
 
       await CommandModule.promisify.writeFile(
         path.join(resolvePath, directory, 'index.ts'),
@@ -218,7 +216,7 @@ export class CreateCommandModule {
       log(err.message);
       log(err.stack);
 
-      logger.error(chalk.default.red('indexWriter: ', err.message));
+      logger.error(chalk.red('indexWriter: ', err.message));
     }
   }
 }

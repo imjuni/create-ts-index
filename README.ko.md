@@ -86,7 +86,6 @@ index.ts 파일을 webpack entrypoint로 사용할 수 있습니다.
 
 # 사용법
 ## 라이브러리로 사용하는 경우
-
 ### TypeScritIndexWriter 사용
 ```
 const tsiw = new TypeScritIndexWriter();
@@ -110,15 +109,18 @@ const option = TypeScritIndexWriter.getDefaultOption('./src');
 });
 ```
 
-## CLI
+## CLI로 사용하기
 Git-style sub-command를 사용합니다.
 
 * create
   * index.ts 파일을 재귀적으로 생성합니다.
 * entrypoint
   * entrypoint.ts 파일을 생성합니다.
+* init
+  * `.ctirc` 파일을 생성합니다.
 * clean
   * entrypoint.ts 파일과 index.ts 파일을 모두 삭제합니다. 복원할 수 없으니 주의하세요.
+
 ```
 # 기본 사용법
 ## create 명령어
@@ -162,6 +164,18 @@ sh> cti create ./example/type01
 # apply configuration by "/Users/cti/github/create-ts-index/example/type01"
 # every configuration is overwrited 
 ```
+
+### .ctirc 파일 생성하기 
+cli를 사용해서 `.ctirc` 파일을 생성할 수 있습니다.
+
+```bash
+# 현재 디렉터리에 생성
+> cti init
+
+# 여러 디렉터리에 생성
+> cti init ./example/type03 ./example/type02
+```
+
 
 ### .ctirc 예제
 ```

@@ -1,14 +1,15 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import * as path from 'path';
 import { ctircLoader } from '../options/ctircLoader';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
 import { CTIUtility } from '../tools/CTIUtility';
 import { CommandModule } from './CommandModule';
+import { ICommandModule } from './ICommandModule';
 
 const { isNotEmpty } = CTIUtility;
 
-export class CleanCommandModule {
+export class CleanCommandModule implements ICommandModule {
   public async do(cliCwd: string, passed: Partial<ICreateTsIndexOption>) {
     const cwd =
       isNotEmpty(passed.globOptions) && isNotEmpty(passed.globOptions.cwd)
@@ -17,13 +18,13 @@ export class CleanCommandModule {
 
     const { readedFrom, option } = ctircLoader({
       cwd: cliCwd,
-      fromClioption: passed,
+      fromCliOption: passed,
       inputDir: cwd,
     });
     const logger = new CTILogger(option.verbose);
     logger.log('configuration from: ', readedFrom === '' ? 'default' : readedFrom);
 
-    logger.log(chalk.default.yellowBright('Option: '), option);
+    logger.log(chalk.yellowBright('Option: '), option);
 
     const indexFiles = await CommandModule.promisify.glob('**/index.ts', {
       cwd,
@@ -38,18 +39,24 @@ export class CleanCommandModule {
     const concatted = indexFiles.concat(entrypointFiles);
 
     if (concatted.length === 0) {
-      logger.flog(
-        chalk.default.yellow(`Cannot find target file on working directory: ${cwd}`),
-      );
+      logger.flog(chalk.yellow(`Cannot find target file on working directory: ${cwd}`));
     }
 
     await Promise.all(
       concatted.map((file) => {
-        logger.log(chalk.default.redBright('delete file: '), path.join(cwd, file));
+        logger.log(chalk.redBright('delete file: '), path.join(cwd, file));
         return CommandModule.promisify.unlink(path.join(cwd, file));
       }),
     );
 
-    logger.flog(chalk.default.green(`clean succeeded: ${cwd}`));
+    logger.flog(chalk.green(`clean succeeded: ${cwd}`));
+  }
+
+  public async write(_param: {
+    directories: Array<string>;
+    option: ICreateTsIndexOption;
+    logger: CTILogger;
+  }): Promise<void> {
+    throw new Error('Not Implemented');
   }
 }

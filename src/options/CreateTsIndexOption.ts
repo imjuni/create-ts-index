@@ -1,8 +1,10 @@
+import debug from 'debug';
 import * as glob from 'glob';
 import { CTIUtility } from '../tools/CTIUtility';
 import { ICreateTsIndexCliOption, ICreateTsIndexOption } from './ICreateTsIndexOption';
 
 const { isNotEmpty } = CTIUtility;
+const log = debug('cti:CreateTsIndexOption');
 
 export class CreateTsIndexOption {
   public static factory({
@@ -86,6 +88,9 @@ export class CreateTsIndexOption {
     const srcKeys = Object.keys(src);
 
     dsts.forEach((dst) => {
+      // tslint:disable-next-line
+      log('__for_debug_from: ', dst['__for_debug_from']);
+
       const dstKeys = Object.keys(dst);
       const keySet = new Set<string>(srcKeys.concat(dstKeys));
 
@@ -98,14 +103,16 @@ export class CreateTsIndexOption {
           typeof merged[key] === 'symbol' ||
           typeof merged[key] === 'undefined'
         ) {
-          if (isNotCopyEmpty && (isNotEmpty(dst[key]) && dst[key])) {
+          if (isNotCopyEmpty && isNotEmpty(dst[key])) {
             merged[key] = dst[key];
           } else if (!isNotCopyEmpty) {
             merged[key] = dst[key];
           }
         } else if (typeof merged[key] === 'object' && Array.isArray(merged[key])) {
           const element = new Set<any>(merged[key].concat(dst[key]));
-          merged[key] = Array.from(element);
+          merged[key] = Array.from(element).filter(
+            (configElement) => isNotCopyEmpty && isNotEmpty(configElement),
+          );
         } else if (typeof merged[key] === 'object') {
           merged[key] = CreateTsIndexOption.merge(deep, isNotCopyEmpty, merged[key], dst[key]);
         }
@@ -122,12 +129,14 @@ export class CreateTsIndexOption {
   public static mergeOptions(
     ...passeds: Array<Partial<ICreateTsIndexOption>>
   ): CreateTsIndexOption {
-    const [first, remains] = passeds;
+    const [first, ...remains] = passeds;
+    log('from: ', first.__for_debug_from);
+
     const merged: ICreateTsIndexOption = CreateTsIndexOption.merge(
       true,
       true,
       first,
-      remains,
+      ...remains,
     ) as any;
     return new CreateTsIndexOption(merged);
   }

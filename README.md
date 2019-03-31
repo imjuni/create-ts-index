@@ -83,19 +83,8 @@ create-ts-index entrypoint sub-command create index.ts file below.
 * `-q --quote` deside quote charactor. default quote charactor single quote
 * `-v --verbose` disply verbose log message. no option false, option true
 
-## CLI
-add git-style sub-command
-
-* create
-  * cti create index.ts file
-* clean
-  * cti clean index.ts file recursively
-* entrypoint
-  * cti create webpack entrypoint
-
 # Usage
 ## library 
-
 ### Use TypeScritIndexWriter
 ```
 const tsiw = new TypeScritIndexWriter();
@@ -120,6 +109,16 @@ const option = TypeScritIndexWriter.getDefaultOption('./src');
 ```
 
 ## CLI
+cli use git-style sub-command
+
+* create
+  * cti create index.ts file
+* entrypoint
+  * cti create webpack entrypoint
+* init
+  * create `.ctirc` file
+* clean
+  * cti clean index.ts file recursively
 ```
 # basic usage
 cti create ./src  # or cti create ./src
@@ -164,6 +163,17 @@ sh> cti create ./example/type01
 # apply configuration by "/Users/cti/github/create-ts-index"
 # apply configuration by "/Users/cti/github/create-ts-index/example/type01"
 # every configuration is overwrited 
+```
+
+### .ctirc creation
+You can use cli for `.ctirc` file creation. 
+
+```bash
+# create current directory
+> cti init
+
+# create multiple directory
+> cti init ./example/type03 ./example/type02
 ```
 
 ### .ctirc example

@@ -1,4 +1,4 @@
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 import * as moment from 'moment';
 import * as path from 'path';
 import { ctircLoader } from '../options/ctircLoader';
@@ -6,10 +6,11 @@ import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
 import { CTIUtility } from '../tools/CTIUtility';
 import { CommandModule } from './CommandModule';
+import { ICommandModule } from './ICommandModule';
 
 const { isNotEmpty, addDot } = CTIUtility;
 
-export class EntrypointCommandModule {
+export class EntrypointCommandModule implements ICommandModule {
   public async do(cliCwd: string, passed: Partial<ICreateTsIndexOption>): Promise<void> {
     const cwd =
       isNotEmpty(passed.globOptions) && isNotEmpty(passed.globOptions.cwd)
@@ -18,14 +19,14 @@ export class EntrypointCommandModule {
 
     const { readedFrom, option } = ctircLoader({
       cwd: cliCwd,
-      fromClioption: passed,
+      fromCliOption: passed,
       inputDir: cwd,
     });
     const logger = new CTILogger(option.verbose);
     logger.log('configuration from: ', readedFrom === '' ? 'default' : readedFrom);
 
     try {
-      logger.log(chalk.default.yellowBright('Option: '), option);
+      logger.log(chalk.yellowBright('Option: '), option);
 
       const targetFileGlob = option.targetExts.map((ext) => `*.${ext}`).join('|');
       const allTsFiles = await CommandModule.promisify.glob(
@@ -85,11 +86,9 @@ export class EntrypointCommandModule {
 
       await this.write({ logger, option, directories: tsDirs });
 
-      logger.flog(
-        chalk.default.green(`entrypoint create succeeded: ${option.globOptions.cwd}`),
-      );
+      logger.flog(chalk.green(`entrypoint create succeeded: ${option.globOptions.cwd}`));
     } catch (err) {
-      logger.ferror(chalk.default.redBright(err));
+      logger.ferror(chalk.redBright(err));
     }
   }
 
@@ -180,7 +179,7 @@ export class EntrypointCommandModule {
           ? target.replace(matchedExt, '')
           : target;
 
-        logger.log(chalk.default.green('entrypoint added from:'), target);
+        logger.log(chalk.green('entrypoint added from:'), target);
 
         if (option.useSemicolon) {
           return `export * from ${option.quote}./${targetFileWithoutExt}${option.quote};`;
@@ -204,9 +203,7 @@ export class EntrypointCommandModule {
 
       const cwdPath = option.globOptions.cwd || __dirname;
 
-      logger.log(
-        chalk.default.green('entrypoiny writed:', `${cwdPath}${path.sep}entrypoint.ts`),
-      );
+      logger.log(chalk.green('entrypoiny writed:', `${cwdPath}${path.sep}entrypoint.ts`));
 
       await CommandModule.promisify.writeFile(
         path.join(cwdPath, 'entrypoint.ts'),
@@ -214,8 +211,8 @@ export class EntrypointCommandModule {
         'utf8',
       );
     } catch (err) {
-      logger.error(chalk.default.red('indexWriter: ', err.message));
-      logger.error(chalk.default.red('indexWriter: ', err.stack));
+      logger.error(chalk.red('indexWriter: ', err.message));
+      logger.error(chalk.red('indexWriter: ', err.stack));
     }
   }
 }

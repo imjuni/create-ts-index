@@ -3,20 +3,22 @@ import debug from 'debug';
 import * as fs from 'fs';
 import * as json5 from 'json5';
 import * as path from 'path';
+import { CTIUtility } from '../tools/CTIUtility';
 import { CreateTsIndexOption } from './CreateTsIndexOption';
 import { ICreateTsIndexOption } from './ICreateTsIndexOption';
 
 const log = debug('cti:ctircLoader');
 const CTIRC_FILENAME = '.ctirc';
+const { isNotEmpty } = CTIUtility;
 
 export function ctircLoader({
   inputDir,
   cwd,
-  fromClioption,
+  fromCliOption,
 }: {
-  inputDir: string;
+  inputDir: string | null;
   cwd: string;
-  fromClioption: Partial<ICreateTsIndexOption>;
+  fromCliOption: Partial<ICreateTsIndexOption>;
 }): { readedFrom: string; option: CreateTsIndexOption } {
   log(`inputDir: (${inputDir}) /cwd: (${cwd})`);
 
@@ -24,7 +26,11 @@ export function ctircLoader({
   const targetDirs: Array<string> = (() => {
     const _target: Array<string> = [];
 
-    if (fs.existsSync(inputDir) && fs.existsSync(path.join(inputDir, CTIRC_FILENAME))) {
+    if (
+      isNotEmpty(inputDir) &&
+      fs.existsSync(inputDir) &&
+      fs.existsSync(path.join(inputDir, CTIRC_FILENAME))
+    ) {
       _target.push(inputDir);
     }
 
@@ -40,7 +46,7 @@ export function ctircLoader({
   try {
     if (targetDirs.length <= 0) {
       return {
-        option: new CreateTsIndexOption(CreateTsIndexOption.getOption(fromClioption)),
+        option: new CreateTsIndexOption(CreateTsIndexOption.getOption(fromCliOption)),
         readedFrom: 'from cli option',
       };
     }
@@ -73,16 +79,16 @@ export function ctircLoader({
       return _firstCTIRC;
     })();
 
-    log('mergedCTIRC: ', mergedCTIRC);
-
     mergedCTIRC.__for_debug_from = 'from-config-file';
-    fromClioption.__for_debug_from = 'from-cli-option';
+    fromCliOption.__for_debug_from = 'from-cli-option';
 
     const option = CreateTsIndexOption.mergeOptions(
       CreateTsIndexOption.getDefailtICreateTsIndexOption(),
       mergedCTIRC,
-      fromClioption,
+      fromCliOption,
     );
+
+    log('final option: ', mergedCTIRC, fromCliOption, option);
 
     return { option, readedFrom: 'from config file' };
   } catch (err) {
