@@ -5,7 +5,7 @@ import * as path from 'path';
 import { CleanCommandModule } from '../commands/CleanCommandModule';
 import { CreateCommandModule } from '../commands/CreateCommandModule';
 
-const log = debug('cti:clean-test');
+const log = debug('ctit:clean-test');
 const exampleRootPath = path.resolve(path.join(__dirname, '..', '..', 'example'));
 const exampleType01Path = path.join(exampleRootPath, 'type01');
 

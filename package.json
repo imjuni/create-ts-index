@@ -50,7 +50,7 @@
     "@types/glob": "^7.1.1",
     "@types/jest": "^23.3.5",
     "@types/json5": "0.0.30",
-    "@types/node": "^10.12.0",
+    "@types/node": "^12.0.2",
     "@types/yargs": "^12.0.5",
     "jest": "^24.1.0",
     "maid": "^0.3.0",

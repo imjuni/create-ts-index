@@ -4,5 +4,5 @@
 execute test case from create-ts-index
 
 ```bash
-NODE_ENV=develop DEBUG=cti:* jest ${@:1}
+NODE_ENV=develop DEBUG=ctit:* jest ${@:1}
 ```
