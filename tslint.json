@@ -16,5 +16,8 @@
     "no-unused-variable": [true],
     "prefer-array-literal": [false],
     "array-type": [true, "generic"]
+  },
+  "linterOptions": {
+    "exclude": ["node_modules/**"]
   }
 }
