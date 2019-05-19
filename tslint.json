@@ -15,7 +15,8 @@
     "variable-name": [true, "allow-leading-underscore"],
     "no-unused-variable": [true],
     "prefer-array-literal": [false],
-    "array-type": [true, "generic"]
+    "array-type": [true, "generic"],
+    "no-console": [false]
   },
   "linterOptions": {
     "exclude": ["node_modules/**"]
