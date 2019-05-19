@@ -7,9 +7,6 @@ create-ts-index
 npm install create-ts-index --save-dev
 ```
 
-# 변경점
-`1.5` 버전에서 큰 변경점이 있습니다. `create-ts-index(이하 cti)`는 단순 cli에서 Git-style sub-commands 형식으로 변경했습니다. `cti`는 Node.js 패키지를 생성할 때 유용한 도구입니다. Node.js 패키지는 `commonjs` 또는 `AMD`, `umd`와 같은 다양한 방식으로 개발되며 `AMD` 또는 `umd`는 브라우저에서 사용하기 위해서 `webpack` 또는 `parcel`을 사용합니다. 기존 `cti`는 이러한 `AMD` 또는 `umd`에서 사용하기에 불편함이 있었습니다. 그래서 기존 기능을 지원하면서 `entrypoint.ts` 파일을 생성할 수 있도록 Git-style sub-commands를 채용하였으며 기존과 같이 index.ts파일을 생성할 때는 `create` sub-commands를 사용하면 됩니다. 새로운 기능인 `entrypoint` sub-commands를 사용하면 `webpack`과 `parcel`에서 사용할 수 있는 단일 `entrypoint.ts` 파일을 생성하게 됩니다.
-
 # 소개
 TypeScript 프로젝트를 개발할 때 export를 위한 index.ts 파일을 생성합니다. index.ts 파일을 export 용도로만 사용하거나 라이브러리 프로젝트를 개발할 때 유용합니다. 예를들면 [blueprint.js](http://blueprintjs.com/)와 같은 라이브러리 프로젝트를 개발한다면 컴포넌트를 다른 프로젝트에서 사용할 수 있도록 모든 파일을 export 해야 합니다. 이런 경우 create-ts-index를 아주 유용하게 사용할 수 있습니다. 라이브러리 프로젝트가 아니라도, create-ts-index를 사용해서 export 용 index.ts 파일을 사용한다면 import 구문을 간단하게 만들 수 있고 협업할 때 import 형식에 대한 고민을 줄일 수 있어서 유용합니다.
 

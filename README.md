@@ -7,11 +7,8 @@ create-ts-index
 npm install create-ts-index --save-dev
 ```
 
-# Breaking Changes
-`create-ts-index(below cti)` have breaking change on `1.5`. `cti` change to Git-style sub-commands. `cti` convenient tool for Node.js package development. Node.js packages have variety type `commonjs` and `AMD`, `umd`. Almost `AMD`, `umd` packages used to bundle tool likes `webpack` or `parcel`. `1.x` version `cti` have in-connvenient for bundle tools. We need legacy index.ts creation and entrypoint.ts creation. So `cti` adopt Git-style sub-commands after `create` sub-commands
-
 # Introduction
-Index.ts file create for export syntax. If don't have business logic in index.ts that use to only export. In this case, more than easy importing and library project need this export process(for example, blueprint.js etc ...). cti(create-ts-index) create export index.ts file.
+index.ts file create for exportation. If don't have business logic in index.ts that use to only exportation, create-ts-index help easy importing. Or if you have library project need this export process(for example, blueprint.js etc ...). cti(create-ts-index) create export index.ts file.
 
 For example, sample directory below.
 
