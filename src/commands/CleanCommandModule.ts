@@ -21,6 +21,7 @@ export class CleanCommandModule implements ICommandModule {
       fromCliOption: passed,
       inputDir: cwd,
     });
+
     const logger = new CTILogger(option.verbose);
     logger.log('configuration from: ', readedFrom === '' ? 'default' : readedFrom);
 
