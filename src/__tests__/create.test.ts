@@ -50,15 +50,17 @@ describe('cti-test', () => {
 
     log('file readed: ', contents);
 
-    const resultContents = `// created from 'create-ts-index'
+    const resultContents = [
+      `// created from 'create-ts-index'
 
 export * from './export_sample01';
 export * from './export_sample02';
 export * from './export_sample03';
 export * from './export_sample04';
-`;
+`,
+    ];
 
-    expect(contents).toEqual([resultContents]);
+    expect(contents).toEqual(resultContents);
   });
 
   test('create-index-type02', async () => {
