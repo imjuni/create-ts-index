@@ -40,16 +40,3 @@ export interface ICreateTsIndexOption {
   /** disply verbose logging message */
   verbose: boolean;
 }
-
-export interface ICreateTsIndexCliOption {
-  filefirst: boolean;
-  addnewline: boolean;
-  usesemicolon: boolean;
-  includecwd: boolean;
-  usetimestamp: boolean;
-  excludes: Array<string>;
-  fileexcludes: Array<string>;
-  targetexts: Array<string>;
-  verbose: boolean;
-  quote: string;
-}

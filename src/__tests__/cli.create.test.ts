@@ -1,13 +1,17 @@
+import * as child_process from 'child_process';
 import debug from 'debug';
 import { readFile } from 'fs';
 import * as glob from 'glob';
 import * as path from 'path';
 import { promisify } from 'util';
 import { CleanCommandModule } from '../commands/CleanCommandModule';
-import { CreateCommandModule } from '../commands/CreateCommandModule';
 
-const log = debug('ctit:create-test');
+const log = debug('ctit:cli-test');
+
+const cliPath = path.resolve(path.join(__dirname, '..', 'cti.ts'));
 const exampleRootPath = path.resolve(path.join(__dirname, '..', '..', 'example'));
+const nodeWithTypescript = 'node --require ts-node/register ';
+
 const exampleType01Path = path.join(exampleRootPath, 'type01');
 const exampleType02Path = path.join(exampleRootPath, 'type02');
 const exampleType03Path = path.join(exampleRootPath, 'type03');
@@ -26,10 +30,11 @@ describe('cti-test', () => {
   });
 
   test('create-index-type01', async () => {
-    log('cwd: ', exampleType01Path);
+    const cliCmd = `${nodeWithTypescript} ${cliPath} create ${exampleType01Path}`;
 
-    const cmd = new CreateCommandModule();
-    await cmd.do(exampleType01Path, { globOptions: { cwd: exampleType01Path } });
+    log('cli command: ', cliCmd);
+
+    child_process.execSync(cliCmd);
 
     const files = glob
       .sync('**/index.ts', { cwd: exampleType01Path })
@@ -62,10 +67,11 @@ export * from './export_sample04';
   });
 
   test('create-index-type02', async () => {
-    log('cwd: ', exampleType02Path);
+    const cliCmd = `${nodeWithTypescript} ${cliPath} create ${exampleType02Path}`;
 
-    const cmd = new CreateCommandModule();
-    await cmd.do(exampleType02Path, { globOptions: { cwd: exampleType02Path } });
+    log('cli command: ', cliCmd);
+
+    child_process.execSync(cliCmd);
 
     const files = glob
       .sync('**/index.ts', { cwd: exampleType02Path })
@@ -121,10 +127,11 @@ export * from './WhisperingCls';
   });
 
   test('create-index-type03', async () => {
-    log('cwd: ', exampleType03Path);
+    const cliCmd = `${nodeWithTypescript} ${cliPath} create ${exampleType03Path}`;
 
-    const cmd = new CreateCommandModule();
-    await cmd.do(exampleType03Path, { globOptions: { cwd: exampleType03Path } });
+    log('cli command: ', cliCmd);
+
+    child_process.execSync(cliCmd);
 
     const files = glob
       .sync('**/index.ts', { cwd: exampleType03Path })

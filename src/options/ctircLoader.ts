@@ -2,14 +2,14 @@
 import debug from 'debug';
 import * as fs from 'fs';
 import * as json5 from 'json5';
+import merge = require('merge');
 import * as path from 'path';
-import { CTIUtility } from '../tools/CTIUtility';
-import { CreateTsIndexOption } from './CreateTsIndexOption';
+import { isNotEmpty } from '../tools/CTIUtility';
+import { CreateTsIndexOption, getDefailtICreateTsIndexOption } from './CreateTsIndexOption';
 import { ICreateTsIndexOption } from './ICreateTsIndexOption';
 
 const log = debug('cti:ctircLoader');
 const CTIRC_FILENAME = '.ctirc';
-const { isNotEmpty } = CTIUtility;
 
 export function ctircLoader({
   inputDir,
@@ -24,21 +24,21 @@ export function ctircLoader({
 
   // Step01. Read configuration file on parametered input directory
   const targetDirs: Array<string> = (() => {
-    const _target: Array<string> = [];
+    const target: Set<string> = new Set<string>();
 
     if (
       isNotEmpty(inputDir) &&
       fs.existsSync(inputDir) &&
       fs.existsSync(path.join(inputDir, CTIRC_FILENAME))
     ) {
-      _target.push(inputDir);
+      target.add(inputDir);
     }
 
     if (fs.existsSync(cwd) && fs.existsSync(path.join(cwd, CTIRC_FILENAME))) {
-      _target.push(cwd);
+      target.add(cwd);
     }
 
-    return _target;
+    return Array.from(target);
   })();
 
   log('targetDirs: ', targetDirs);
@@ -62,38 +62,28 @@ export function ctircLoader({
       return fromConfigfile;
     });
 
-    const mergedCTIRC = (() => {
-      if (fromConfigfiles.length > 2) {
-        const [soruce, dsts] = fromConfigfiles;
-        const _mergedCTIRC = CreateTsIndexOption.merge<ICreateTsIndexOption>(
-          true,
-          true,
-          soruce,
-          dsts,
-        );
-
-        return _mergedCTIRC;
-      }
-
-      const [_firstCTIRC] = fromConfigfiles;
-      return _firstCTIRC;
-    })();
+    const mergedCTIRC = fromConfigfiles.reduce((src, dst) => merge.recursive(true, src, dst));
 
     mergedCTIRC.__for_debug_from = 'from-config-file';
-    fromCliOption.__for_debug_from = 'from-cli-option';
 
-    const option = CreateTsIndexOption.mergeOptions(
-      CreateTsIndexOption.getDefailtICreateTsIndexOption(),
+    if (Object.keys(fromCliOption).length > 0) {
+      fromCliOption.__for_debug_from = 'from-cli-option';
+    }
+
+    const option: ICreateTsIndexOption = [
+      { __for_debug_from: 'from-default-config', ...getDefailtICreateTsIndexOption() },
       mergedCTIRC,
-      fromCliOption,
-    );
+      fromCliOption as any,
+    ].reduce((src, dst) => merge.recursive(true, src, dst));
 
-    log('final option: ', mergedCTIRC, fromCliOption, option);
+    log('final option-1: ', mergedCTIRC);
+    log('final option-2: ', fromCliOption);
+    log('final option-3: ', option);
 
-    return { option, readedFrom: 'from config file' };
+    return { option: CreateTsIndexOption.factory({ option }), readedFrom: 'from config file' };
   } catch (err) {
     log(err.message);
-    log(err.stacktrace);
+    log(err.stack);
 
     const option = new CreateTsIndexOption();
     return { option, readedFrom: '' };

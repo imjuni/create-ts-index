@@ -4,11 +4,9 @@ import * as path from 'path';
 import { ctircLoader } from '../options/ctircLoader';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
-import { CTIUtility } from '../tools/CTIUtility';
+import { addDot, addNewline, isNotEmpty } from '../tools/CTIUtility';
 import { CommandModule } from './CommandModule';
 import { ICommandModule } from './ICommandModule';
-
-const { isNotEmpty, addDot } = CTIUtility;
 
 export class EntrypointCommandModule implements ICommandModule {
   public async do(cliCwd: string, passed: Partial<ICreateTsIndexOption>): Promise<void> {
@@ -116,7 +114,7 @@ export class EntrypointCommandModule implements ICommandModule {
               .filter((element) => indexFiles.indexOf(element) < 0)
               .filter((element) => {
                 const isTarget = option.targetExts.reduce<boolean>((result, ext) => {
-                  return result || CTIUtility.addDot(ext) === path.extname(element);
+                  return result || addDot(ext) === path.extname(element);
                 }, false);
 
                 const isHaveTarget = directories.indexOf(path.join(directory, element)) >= 0;
@@ -198,8 +196,7 @@ export class EntrypointCommandModule implements ICommandModule {
       })();
 
       const sortedExportString = exportString.sort();
-      const fileContent =
-        comment + CTIUtility.addNewline(option, sortedExportString.join('\n'));
+      const fileContent = comment + addNewline(option, sortedExportString.join('\n'));
 
       const cwdPath = option.globOptions.cwd || __dirname;
 

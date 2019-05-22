@@ -5,11 +5,10 @@ import * as path from 'path';
 import { ctircLoader } from '../options/ctircLoader';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
-import { CTIUtility } from '../tools/CTIUtility';
+import { addDot, addNewline, isNotEmpty } from '../tools/CTIUtility';
 import { CommandModule } from './CommandModule';
 import { ICommandModule } from './ICommandModule';
 
-const { isNotEmpty, addDot } = CTIUtility;
 const log = debug('cti:CreateCommandModule');
 
 export class CreateCommandModule implements ICommandModule {
@@ -26,6 +25,7 @@ export class CreateCommandModule implements ICommandModule {
     });
 
     const logger = new CTILogger(option.verbose);
+
     logger.log(
       chalk.yellowBright('Configuration from: '),
       readedFrom === '' ? 'default' : readedFrom,
@@ -130,7 +130,7 @@ export class CreateCommandModule implements ICommandModule {
         .filter((element) => indexFiles.indexOf(element) < 0)
         .filter((element) => {
           const isTarget = option.targetExts.reduce<boolean>((result, ext) => {
-            return result || CTIUtility.addDot(ext) === path.extname(element);
+            return result || addDot(ext) === path.extname(element);
           }, false);
 
           const isHaveTarget = directories.indexOf(path.join(directory, element)) >= 0;
@@ -203,7 +203,7 @@ export class CreateCommandModule implements ICommandModule {
         return `// created from ${option.quote}create-ts-index${option.quote}\n\n`;
       })();
 
-      const fileContent = comment + CTIUtility.addNewline(option, exportString.join('\n'));
+      const fileContent = comment + addNewline(option, exportString.join('\n'));
 
       logger.log(chalk.green('created: '), `${path.join(resolvePath, directory, 'index.ts')}`);
 

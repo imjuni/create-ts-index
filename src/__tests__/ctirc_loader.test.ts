@@ -1,20 +1,26 @@
-// tslint:disable no-console
-import { CreateTsIndexOption } from '../options/CreateTsIndexOption';
+import debug from 'debug';
+import {
+  CreateTsIndexOption,
+  getDefailtICreateTsIndexOption,
+} from '../options/CreateTsIndexOption';
 import { ctircLoader } from '../options/ctiRcLoader';
+
+const log = debug('ctit:create-test');
 
 describe('loader-test-coverage', () => {
   test('load', async () => {
     const { readedFrom, option } = ctircLoader({
       cwd: './example/rcloader',
-      fromClioption: {},
+      fromCliOption: {},
       inputDir: './example/rcloader',
     });
 
-    const defaultOption = CreateTsIndexOption.getDefailtICreateTsIndexOption();
+    const defaultOption = getDefailtICreateTsIndexOption();
     defaultOption.globOptions.cwd = './example/rcloader';
+    const defaultCtiOption = CreateTsIndexOption.factory({ option: defaultOption });
 
-    console.log('>> Readed from ', readedFrom);
+    log('>> Readed from ', readedFrom);
 
-    expect(option).toEqual(defaultOption);
+    expect(option).toEqual(defaultCtiOption);
   });
 });

@@ -3,11 +3,9 @@ import * as path from 'path';
 import { ctircLoader } from '../options/ctircLoader';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
-import { CTIUtility } from '../tools/CTIUtility';
+import { isNotEmpty } from '../tools/CTIUtility';
 import { CommandModule } from './CommandModule';
 import { ICommandModule } from './ICommandModule';
-
-const { isNotEmpty } = CTIUtility;
 
 export class CleanCommandModule implements ICommandModule {
   public async do(cliCwd: string, passed: Partial<ICreateTsIndexOption>) {

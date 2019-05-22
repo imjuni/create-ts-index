@@ -4,14 +4,13 @@ import * as fs from 'fs';
 import * as json5 from 'json5';
 import * as moment from 'moment';
 import * as path from 'path';
-import { CreateTsIndexOption } from '../options/CreateTsIndexOption';
+import { getDefailtICreateTsIndexOption } from '../options/CreateTsIndexOption';
 import { ctircLoader } from '../options/ctircLoader';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
-import { CTIUtility } from '../tools/CTIUtility';
+import { isNotEmpty } from '../tools/CTIUtility';
 import { ICommandModule } from './ICommandModule';
 
-const { isNotEmpty } = CTIUtility;
 const log = debug('cti:InitCommandModule');
 
 export class InitCommandModule implements ICommandModule {
@@ -33,7 +32,7 @@ export class InitCommandModule implements ICommandModule {
     logger.log('configuration from: ', readedFrom === '' ? 'default' : readedFrom);
 
     try {
-      const defaultOption = CreateTsIndexOption.getDefailtICreateTsIndexOption(cwd);
+      const defaultOption = getDefailtICreateTsIndexOption(cwd);
       const stringified = json5.stringify(defaultOption, null, 2);
 
       const headContent = (() => {
