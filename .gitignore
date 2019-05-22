@@ -75,5 +75,6 @@ Todo.md
 .DS_store
 
 # configuration file
-example/**/.ctirc
+!example/**/.ctirc
+!example/rcloader/
 .ctirc

@@ -1,0 +1,28 @@
+// created from 'create-ts-index'
+
+{
+  addNewline: true,
+  excludes: [
+    '@types',
+    'typings',
+    '__test__',
+    '__tests__',
+    'node_modules',
+  ],
+  fileExcludePatterns: [],
+  fileFirst: false,
+  globOptions: {
+    cwd: 'example/rcloader',
+    dot: true,
+    nonull: true,
+  },
+  includeCWD: true,
+  quote: "'",
+  targetExts: [
+    'ts',
+    'tsx',
+  ],
+  useSemicolon: true,
+  useTimestamp: false,
+  verbose: false,
+}

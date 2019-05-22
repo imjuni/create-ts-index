@@ -1,9 +1,7 @@
 import { CreateCommandModule } from './commands/CreateCommandModule';
 import { EntrypointCommandModule } from './commands/EntrypointCommandModule';
 import { CreateTsIndexOption } from './options/CreateTsIndexOption';
-import { CTIUtility } from './tools/CTIUtility';
-
-const { isNotEmpty } = CTIUtility;
+import { isNotEmpty } from './tools/CTIUtility';
 
 export class TypeScritIndexWriter {
   public getDefaultOption(cwd?: string): CreateTsIndexOption {

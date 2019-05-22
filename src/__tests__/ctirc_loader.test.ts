@@ -3,7 +3,7 @@ import {
   CreateTsIndexOption,
   getDefailtICreateTsIndexOption,
 } from '../options/CreateTsIndexOption';
-import { ctircLoader } from '../options/ctiRcLoader';
+import { ctircLoader } from '../options/ctircLoader';
 
 const log = debug('ctit:create-test');
 

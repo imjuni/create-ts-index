@@ -1,4 +1,3 @@
-// tslint:disable no-console
 import debug from 'debug';
 import * as fs from 'fs';
 import * as json5 from 'json5';
