@@ -1,6 +1,6 @@
 {
   "name": "create-ts-index",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "Automatic create index.ts file",
   "main": "dist/index.js",
   "scripts": {
@@ -52,6 +52,7 @@
     "@types/json5": "0.0.30",
     "@types/node": "^12.0.2",
     "@types/yargs": "^13.0.0",
+    "codecov": "^3.5.0",
     "jest": "^24.1.0",
     "maid": "^0.3.0",
     "rimraf": "^2.6.2",
