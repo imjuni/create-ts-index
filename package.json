@@ -1,10 +1,11 @@
 {
   "name": "create-ts-index",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "description": "Automatic create index.ts file",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest",
+    "test": "maid test",
+    "win": "npx cross-env NODE_ENV=develop DEBUG=ctit:* jest --runInBand",
     "debug": "node --nolazy --inspect-brk=9229 ./node_modules/.bin/jest --runInBand",
     "start": "node -r ts-node/register ./src/cti.ts ",
     "dexec": "DEBUG=cti:* node -r ts-node/register ./src/cti.ts ",
@@ -57,14 +58,14 @@
     "jest": "^24.1.0",
     "maid": "^0.3.0",
     "rimraf": "^2.6.2",
-    "ts-jest": "^24.0.0",
-    "ts-node": "^8.1.0",
-    "tslib": "^1.9.3",
-    "tslint": "^5.14.0",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.3.0",
+    "tslib": "^1.10.0",
+    "tslint": "^5.17.0",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.4.5",
-    "typescript-tslint-plugin": "^0.1.2"
+    "typescript": "^3.5.2",
+    "typescript-tslint-plugin": "^0.5.0"
   },
   "dependencies": {
     "chalk": "^2.4.1",
