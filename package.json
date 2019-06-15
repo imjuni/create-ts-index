@@ -1,6 +1,6 @@
 {
   "name": "create-ts-index",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Automatic create index.ts file",
   "main": "dist/index.js",
   "scripts": {
