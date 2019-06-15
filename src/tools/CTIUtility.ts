@@ -10,6 +10,10 @@ export function addNewline(option: ICreateTsIndexOption, data: string) {
   return data;
 }
 
+export function isFalsy(value: boolean): boolean {
+  return !value;
+}
+
 export function isNotEmpty<T>(value?: T | undefined | null): value is T {
   return value !== undefined && value !== null;
 }

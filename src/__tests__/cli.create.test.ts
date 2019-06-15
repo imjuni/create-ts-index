@@ -16,7 +16,7 @@ const exampleType01Path = path.join(exampleRootPath, 'type01');
 const exampleType02Path = path.join(exampleRootPath, 'type02');
 const exampleType03Path = path.join(exampleRootPath, 'type03');
 
-describe('cti-test', () => {
+describe('cti-create-test', () => {
   afterAll(async () => {
     const cmd = new CleanCommandModule();
     await cmd.do(exampleType01Path, { globOptions: { cwd: exampleType01Path } });

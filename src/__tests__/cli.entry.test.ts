@@ -6,7 +6,7 @@ import * as path from 'path';
 import { promisify } from 'util';
 import { CleanCommandModule } from '../commands/CleanCommandModule';
 
-const log = debug('ctit:create-test');
+const log = debug('ctit:entrypoint-test');
 
 const cliPath = path.resolve(path.join(__dirname, '..', 'cti.ts'));
 const exampleRootPath = path.resolve(path.join(__dirname, '..', '..', 'example'));
@@ -16,7 +16,7 @@ const exampleType01Path = path.join(exampleRootPath, 'type01');
 const exampleType02Path = path.join(exampleRootPath, 'type02');
 const exampleType03Path = path.join(exampleRootPath, 'type03');
 
-describe('cti-test', () => {
+describe('cti-entrypoint-test', () => {
   afterAll(async () => {
     const cmd = new CleanCommandModule();
     await cmd.do(exampleType01Path, { globOptions: { cwd: exampleType01Path } });

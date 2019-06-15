@@ -4,7 +4,8 @@ import * as path from 'path';
 import { ctircLoader } from '../options/ctircLoader';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
-import { addDot, addNewline, isNotEmpty } from '../tools/CTIUtility';
+import { addNewline, isNotEmpty } from '../tools/CTIUtility';
+import { getExportStatementCreator } from '../tools/exportStatement';
 import { CommandModule } from './CommandModule';
 import { ICommandModule } from './ICommandModule';
 
@@ -99,8 +100,6 @@ export class EntrypointCommandModule implements ICommandModule {
     option: ICreateTsIndexOption;
     logger: CTILogger;
   }): Promise<void> {
-    const indexFiles = option.targetExts.map((targetExt) => `entrypoint.${targetExt}`);
-
     try {
       const zipFiles = await Promise.all(
         directories.map((directory) => {
@@ -110,30 +109,29 @@ export class EntrypointCommandModule implements ICommandModule {
               path.join(resolvePath, directory),
             );
 
-            const targets = elements
-              .filter((element) => indexFiles.indexOf(element) < 0)
-              .filter((element) => {
-                const isTarget = option.targetExts.reduce<boolean>((result, ext) => {
-                  return result || addDot(ext) === path.extname(element);
-                }, false);
-
-                const isHaveTarget = directories.indexOf(path.join(directory, element)) >= 0;
-
-                return isTarget || isHaveTarget;
-              });
-
             const stats = await Promise.all(
-              targets.map((target) =>
+              elements.map((target) =>
                 CommandModule.promisify.stat(path.join(resolvePath, directory, target)),
               ),
             );
+
+            const statMap = elements.reduce((map, element, index) => {
+              map[element] = stats[index];
+              return map;
+            }, {});
+
+            const targets = elements
+              .filter((element) => statMap[element].isDirectory() || element !== 'index.ts')
+              .filter(
+                (element) => statMap[element].isDirectory() || element !== 'entrypoint.ts',
+              );
 
             const categorized = targets.reduce<{
               dir: Array<string>;
               allFiles: Array<string>;
             }>(
-              (result, target, index) => {
-                if (stats[index].isDirectory()) {
+              (result, target) => {
+                if (statMap[target].isDirectory()) {
                   result.dir.push(target);
                 } else {
                   result.allFiles.push(target);
@@ -170,21 +168,8 @@ export class EntrypointCommandModule implements ICommandModule {
         return aggregated.concat(_files);
       });
 
-      const targetExtWithDot = option.targetExts.map((ext) => addDot(ext));
-      const exportString = files.map((target) => {
-        const matchedExt = targetExtWithDot.find((ext) => path.extname(target) === ext);
-        const targetFileWithoutExt = isNotEmpty(matchedExt)
-          ? target.replace(matchedExt, '')
-          : target;
-
-        logger.log(chalk.green('entrypoint added from:'), target);
-
-        if (option.useSemicolon) {
-          return `export * from ${option.quote}./${targetFileWithoutExt}${option.quote};`;
-        }
-
-        return `export * from ${option.quote}./${targetFileWithoutExt}${option.quote}`;
-      });
+      const getExport = getExportStatementCreator(option, logger);
+      const exportString = files.map((target) => getExport(target));
 
       const comment = (() => {
         if (option.useTimestamp) {
