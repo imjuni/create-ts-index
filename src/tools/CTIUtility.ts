@@ -19,7 +19,7 @@ export function isNotEmpty<T>(value?: T | undefined | null): value is T {
 }
 
 export function isEmpty<T>(value?: T | undefined | null): value is T {
-  return isNotEmpty(value);
+  return !isNotEmpty(value);
 }
 
 export function parseBool(value?: unknown | undefined | null): boolean {

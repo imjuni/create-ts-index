@@ -5,7 +5,6 @@ import * as chalk from 'chalk';
 import debug from 'debug';
 import * as fs from 'fs';
 import * as path from 'path';
-import yargs, { Argv, Options } from 'yargs';
 import { CleanCommandModule } from './commands/CleanCommandModule';
 import { CreateCommandModule } from './commands/CreateCommandModule';
 import { EntrypointCommandModule } from './commands/EntrypointCommandModule';
@@ -25,6 +24,7 @@ import {
 } from './options/partialCliOption';
 import { isNotEmpty } from './tools/CTIUtility';
 
+import yargs = require('yargs');
 const log = debug('cti:cti-cli');
 
 const version = (() => {
@@ -45,7 +45,7 @@ const version = (() => {
   return '1.7.2';
 })();
 
-const optionMap: { [key in EN_CLI_OPTION]: Options } = {
+const optionMap: { [key in EN_CLI_OPTION]: yargs.Options } = {
   [EN_CLI_OPTION.FILEFIRST]: {
     alias: 'f',
     describe: 'export list create filefirst, no option false, option true',
@@ -101,23 +101,26 @@ const optionMap: { [key in EN_CLI_OPTION]: Options } = {
   },
 };
 
-const parser = yargs<ICreateTsIndexCliOption>({
-  addnewline: true,
-  cwds: [],
-  excludes: ['@types', 'typings', '__test__', '__tests__', 'node_modules'],
-  fileexcludes: [],
-  filefirst: false,
-  includecwd: true,
-  quote: "'",
-  targetexts: ['ts', 'tsx'],
-  usesemicolon: true,
-  usetimestamp: false,
-  verbose: false,
-})
+// const parser: yargs.Argv<ICreateTsIndexCliOption> = yargs<ICreateTsIndexCliOption>({
+//   addnewline: true,
+//   cwds: [],
+//   excludes: ['@types', 'typings', '__test__', '__tests__', 'node_modules'],
+//   fileexcludes: [],
+//   filefirst: false,
+//   includecwd: true,
+//   quote: "'",
+//   targetexts: ['ts', 'tsx'],
+//   usesemicolon: true,
+//   usetimestamp: false,
+//   verbose: false,
+// })
+// tslint:disable-next-line
+yargs
   .command<ICreateTsIndexCliOption>(
     '$0 [cwds...]',
     'create index.ts file in working directory',
-    (args: Argv<ICreateTsIndexCliOption>): Argv<ICreateTsIndexCliOption> => {
+    // @ts-ignore
+    (args: yargs.Argv<ICreateTsIndexCliOption>): yargs.Argv<ICreateTsIndexCliOption> => {
       args.option(EN_CLI_OPTION.FILEFIRST, optionMap[EN_CLI_OPTION.FILEFIRST]);
       args.option(EN_CLI_OPTION.ADD_NEWLINE, optionMap[EN_CLI_OPTION.ADD_NEWLINE]);
       args.option(EN_CLI_OPTION.USE_SEMICOLON, optionMap[EN_CLI_OPTION.USE_SEMICOLON]);
@@ -165,7 +168,7 @@ const parser = yargs<ICreateTsIndexCliOption>({
   .command<ICreateTsIndexCliOption>(
     'create [cwds...]',
     'create index.ts file in working directory',
-    (args: Argv<ICreateTsIndexCliOption>): Argv<ICreateTsIndexCliOption> => {
+    (args: yargs.Argv<ICreateTsIndexCliOption>): yargs.Argv<ICreateTsIndexCliOption> => {
       args.option(EN_CLI_OPTION.FILEFIRST, optionMap[EN_CLI_OPTION.FILEFIRST]);
       args.option(EN_CLI_OPTION.ADD_NEWLINE, optionMap[EN_CLI_OPTION.ADD_NEWLINE]);
       args.option(EN_CLI_OPTION.USE_SEMICOLON, optionMap[EN_CLI_OPTION.USE_SEMICOLON]);
@@ -215,7 +218,7 @@ const parser = yargs<ICreateTsIndexCliOption>({
   .command<TEntrypointCliOption>(
     'entrypoint [cwds...]',
     'create entrypoint.ts file in working directory',
-    (args: Argv<ICreateTsIndexCliOption>): Argv<TEntrypointCliOption> => {
+    (args: yargs.Argv<ICreateTsIndexCliOption>): yargs.Argv<TEntrypointCliOption> => {
       args.option(EN_CLI_OPTION.ADD_NEWLINE, optionMap[EN_CLI_OPTION.ADD_NEWLINE]);
       args.option(EN_CLI_OPTION.USE_SEMICOLON, optionMap[EN_CLI_OPTION.USE_SEMICOLON]);
       args.option(EN_CLI_OPTION.INCLUDE_CWD, optionMap[EN_CLI_OPTION.INCLUDE_CWD]);
@@ -262,7 +265,7 @@ const parser = yargs<ICreateTsIndexCliOption>({
   .command<TInitCliOption>(
     'init [cwds...]',
     'create .ctirc file in working directory',
-    (args: Argv<ICreateTsIndexCliOption>): Argv<TInitCliOption> => {
+    (args: yargs.Argv<ICreateTsIndexCliOption>): yargs.Argv<TInitCliOption> => {
       args.option(EN_CLI_OPTION.ADD_NEWLINE, optionMap[EN_CLI_OPTION.ADD_NEWLINE]);
       args.option(EN_CLI_OPTION.USE_TIMESTAMP, optionMap[EN_CLI_OPTION.USE_TIMESTAMP]);
       args.option(EN_CLI_OPTION.VERBOSE, optionMap[EN_CLI_OPTION.VERBOSE]);
@@ -299,7 +302,7 @@ const parser = yargs<ICreateTsIndexCliOption>({
   .command<TCleanCliOption>(
     'clean [cwds...]',
     'clean index.ts or entrypoint.ts file in working directory',
-    (args: Argv<any>): Argv<TCleanCliOption> => {
+    (args: yargs.Argv<any>): yargs.Argv<TCleanCliOption> => {
       args.option(EN_CLI_OPTION.VERBOSE, optionMap[EN_CLI_OPTION.VERBOSE]);
       return args;
     },
@@ -332,10 +335,9 @@ const parser = yargs<ICreateTsIndexCliOption>({
             }),
         );
       }
+
+      return true;
     },
   )
   .version(version, 'version', 'display version information')
-  .help();
-
-// tslint:disable-next-line
-parser.argv;
+  .help().argv;

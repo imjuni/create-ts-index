@@ -1,6 +1,6 @@
 import chalk from 'chalk';
+import dayjs from 'dayjs';
 import debug from 'debug';
-import * as moment from 'moment';
 import * as path from 'path';
 import { ctircLoader } from '../options/ctircLoader';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
@@ -35,6 +35,8 @@ export class CreateCommandModule implements ICommandModule {
     try {
       logger.log(chalk.yellowBright('Option: '), option);
 
+      log('opt: ', option);
+
       const targetFileGlob = option.targetExts.map((ext) => `*.${ext}`).join('|');
       const allTsFiles = await CommandModule.promisify.glob(
         `**/+(${targetFileGlob})`,
@@ -46,6 +48,7 @@ export class CreateCommandModule implements ICommandModule {
         option,
         filenames: allTsFiles,
       });
+
       const dupLibDirs = tsFiles
         .filter((tsFile) => tsFile.split('/').length > 1)
         .map((tsFile) => {
@@ -154,27 +157,34 @@ export class CreateCommandModule implements ICommandModule {
         { dir: [], allFiles: [] },
       );
 
-      categorized.dir.sort();
+      const excludePatternFilteredDirs = categorized.dir.filter((element) => {
+        return !option.excludes.reduce<boolean>((result, excludePattern) => {
+          return result || element.indexOf(excludePattern) >= 0;
+        }, false);
+      });
+
+      excludePatternFilteredDirs.sort();
+
       categorized.allFiles = CommandModule.targetFileFilter({
         logger,
         option,
         filenames: categorized.allFiles,
       });
 
-      const files = categorized.allFiles.filter((element) => {
+      const excludePatternFilteredFiles = categorized.allFiles.filter((element) => {
         return !option.fileExcludePatterns.reduce<boolean>((result, excludePattern) => {
           return result || element.indexOf(excludePattern) >= 0;
         }, false);
       });
 
-      files.sort();
+      excludePatternFilteredFiles.sort();
 
       const sorted = (() => {
         if (option.fileFirst) {
-          return categorized.allFiles.concat(categorized.dir);
+          return categorized.allFiles.concat(excludePatternFilteredDirs);
         }
 
-        return categorized.dir.concat(files);
+        return excludePatternFilteredDirs.concat(excludePatternFilteredFiles);
       })();
 
       const getExport = getExportStatementCreator(option, logger);
@@ -182,9 +192,9 @@ export class CreateCommandModule implements ICommandModule {
 
       const comment = (() => {
         if (option.useTimestamp) {
-          return `// created from ${option.quote}create-ts-index${option.quote} ${moment(
-            new Date(),
-          ).format('YYYY-MM-DD HH:mm')}\n\n`;
+          return `// created from ${option.quote}create-ts-index${
+            option.quote
+          } ${dayjs().format('YYYY-MM-DD HH:mm')}\n\n`;
         }
         return `// created from ${option.quote}create-ts-index${option.quote}\n\n`;
       })();

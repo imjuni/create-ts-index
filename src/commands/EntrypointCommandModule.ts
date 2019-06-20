@@ -1,5 +1,6 @@
 import chalk from 'chalk';
-import * as moment from 'moment';
+import dayjs from 'dayjs';
+import debug from 'debug';
 import * as path from 'path';
 import { ctircLoader } from '../options/ctircLoader';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
@@ -8,6 +9,8 @@ import { addNewline, isNotEmpty } from '../tools/CTIUtility';
 import { getExportStatementCreator } from '../tools/exportStatement';
 import { CommandModule } from './CommandModule';
 import { ICommandModule } from './ICommandModule';
+
+const log = debug('cti:EntrypointCommandModule');
 
 export class EntrypointCommandModule implements ICommandModule {
   public async do(cliCwd: string, passed: Partial<ICreateTsIndexOption>): Promise<void> {
@@ -87,6 +90,9 @@ export class EntrypointCommandModule implements ICommandModule {
 
       logger.flog(chalk.green(`entrypoint create succeeded: ${option.globOptions.cwd}`));
     } catch (err) {
+      log('entrypoint: ', err.message);
+      log('entrypoint: ', err.stack);
+
       logger.ferror(chalk.redBright(err));
     }
   }
@@ -142,7 +148,14 @@ export class EntrypointCommandModule implements ICommandModule {
               { dir: [], allFiles: [] },
             );
 
-            categorized.dir.sort();
+            const excludePatternFilteredDirs = categorized.dir.filter((element) => {
+              return !option.excludes.reduce<boolean>((result, excludePattern) => {
+                return result || element.indexOf(excludePattern) >= 0;
+              }, false);
+            });
+
+            excludePatternFilteredDirs.sort();
+
             categorized.allFiles = CommandModule.targetFileFilter({
               logger,
               option,
@@ -173,9 +186,9 @@ export class EntrypointCommandModule implements ICommandModule {
 
       const comment = (() => {
         if (option.useTimestamp) {
-          return `// created from ${option.quote}create-ts-index${option.quote} ${moment(
-            new Date(),
-          ).format('YYYY-MM-DD HH:mm')}\n\n`;
+          return `// created from ${option.quote}create-ts-index${
+            option.quote
+          } ${dayjs().format('YYYY-MM-DD HH:mm')}\n\n`;
         }
         return `// created from ${option.quote}create-ts-index${option.quote}\n\n`;
       })();

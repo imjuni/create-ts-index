@@ -1,8 +1,8 @@
 import chalk from 'chalk';
+import * as dayjs from 'dayjs';
 import debug from 'debug';
 import * as fs from 'fs';
 import * as json5 from 'json5';
-import * as moment from 'moment';
 import * as path from 'path';
 import { getDefailtICreateTsIndexOption } from '../options/CreateTsIndexOption';
 import { ctircLoader } from '../options/ctircLoader';
@@ -37,9 +37,9 @@ export class InitCommandModule implements ICommandModule {
 
       const headContent = (() => {
         if (option.useTimestamp) {
-          return `// created from ${option.quote}create-ts-index${option.quote} ${moment(
-            new Date(),
-          ).format('YYYY-MM-DD HH:mm')}`;
+          return `// created from ${option.quote}create-ts-index${
+            option.quote
+          } ${dayjs.default().format('YYYY-MM-DD HH:mm')}`;
         }
 
         return `// created from ${option.quote}create-ts-index${option.quote}`;
