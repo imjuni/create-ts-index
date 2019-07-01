@@ -9,4 +9,5 @@ export enum EN_CLI_OPTION {
   TARGET_EXTS = 'targetexts',
   VERBOSE = 'verbose',
   QUOTE = 'quote',
+  WITHOUT_COMMENT = 'withoutcomment',
 }

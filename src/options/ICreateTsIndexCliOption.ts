@@ -10,4 +10,5 @@ export interface ICreateTsIndexCliOption {
   targetexts: Array<string>;
   verbose: boolean;
   quote: string;
+  withoutcomment: boolean;
 }

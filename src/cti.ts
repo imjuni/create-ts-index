@@ -89,6 +89,11 @@ const optionMap: { [key in EN_CLI_OPTION]: yargs.Options } = {
     describe: `pass include extname. default extname is ["ts", "tsx"]. extname \npass without dot charactor.`, // tslint:disable-line
     type: 'string',
   },
+  [EN_CLI_OPTION.WITHOUT_COMMENT]: {
+    alias: 'w',
+    describe: 'remove comment from created output',
+    type: 'boolean',
+  },
   [EN_CLI_OPTION.VERBOSE]: {
     alias: 'v',
     describe: 'verbose logging message. to option false, option true',
@@ -101,19 +106,6 @@ const optionMap: { [key in EN_CLI_OPTION]: yargs.Options } = {
   },
 };
 
-// const parser: yargs.Argv<ICreateTsIndexCliOption> = yargs<ICreateTsIndexCliOption>({
-//   addnewline: true,
-//   cwds: [],
-//   excludes: ['@types', 'typings', '__test__', '__tests__', 'node_modules'],
-//   fileexcludes: [],
-//   filefirst: false,
-//   includecwd: true,
-//   quote: "'",
-//   targetexts: ['ts', 'tsx'],
-//   usesemicolon: true,
-//   usetimestamp: false,
-//   verbose: false,
-// })
 // tslint:disable-next-line
 yargs
   .command<ICreateTsIndexCliOption>(
@@ -130,6 +122,7 @@ yargs
       args.option(EN_CLI_OPTION.FILE_EXCLUDES, optionMap[EN_CLI_OPTION.FILE_EXCLUDES]);
       args.option(EN_CLI_OPTION.TARGET_EXTS, optionMap[EN_CLI_OPTION.TARGET_EXTS]);
       args.option(EN_CLI_OPTION.VERBOSE, optionMap[EN_CLI_OPTION.VERBOSE]);
+      args.option(EN_CLI_OPTION.WITHOUT_COMMENT, optionMap[EN_CLI_OPTION.WITHOUT_COMMENT]);
       args.option(EN_CLI_OPTION.QUOTE, optionMap[EN_CLI_OPTION.QUOTE]);
 
       return args;
@@ -227,6 +220,7 @@ yargs
       args.option(EN_CLI_OPTION.FILE_EXCLUDES, optionMap[EN_CLI_OPTION.FILE_EXCLUDES]);
       args.option(EN_CLI_OPTION.TARGET_EXTS, optionMap[EN_CLI_OPTION.TARGET_EXTS]);
       args.option(EN_CLI_OPTION.VERBOSE, optionMap[EN_CLI_OPTION.VERBOSE]);
+      args.option(EN_CLI_OPTION.WITHOUT_COMMENT, optionMap[EN_CLI_OPTION.WITHOUT_COMMENT]);
       args.option(EN_CLI_OPTION.QUOTE, optionMap[EN_CLI_OPTION.QUOTE]);
 
       return args;

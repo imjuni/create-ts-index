@@ -22,6 +22,9 @@ export interface ICreateTsIndexOption {
   /** current working directory add to creation work */
   includeCWD: boolean;
 
+  /** remove create-ts-index comment, if enable this option forced disable useTimestamp option */
+  withoutComment: boolean;
+
   /** exclude directories */
   excludes: Array<string>;
 

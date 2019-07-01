@@ -86,6 +86,7 @@ export class CommandModule {
       useSemicolon: true,
       useTimestamp: false,
       verbose: false,
+      withoutComment: false,
     };
   }
 }

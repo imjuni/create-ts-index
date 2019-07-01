@@ -190,14 +190,20 @@ export class CreateCommandModule implements ICommandModule {
       const getExport = getExportStatementCreator(option, logger);
       const exportString = sorted.map((target) => getExport(target));
 
-      const comment = (() => {
+      const _buildComment = () => {
+        if (option.withoutComment) {
+          return '';
+        }
+
         if (option.useTimestamp) {
           return `// created from ${option.quote}create-ts-index${
             option.quote
           } ${dayjs().format('YYYY-MM-DD HH:mm')}\n\n`;
         }
+
         return `// created from ${option.quote}create-ts-index${option.quote}\n\n`;
-      })();
+      };
+      const comment = _buildComment();
 
       const fileContent = comment + addNewline(option, exportString.join('\n'));
 

@@ -184,14 +184,20 @@ export class EntrypointCommandModule implements ICommandModule {
       const getExport = getExportStatementCreator(option, logger);
       const exportString = files.map((target) => getExport(target));
 
-      const comment = (() => {
+      const _buildComment = () => {
+        if (option.withoutComment) {
+          return '';
+        }
+
         if (option.useTimestamp) {
           return `// created from ${option.quote}create-ts-index${
             option.quote
           } ${dayjs().format('YYYY-MM-DD HH:mm')}\n\n`;
         }
+
         return `// created from ${option.quote}create-ts-index${option.quote}\n\n`;
-      })();
+      };
+      const comment = _buildComment();
 
       const sortedExportString = exportString.sort();
       const fileContent = comment + addNewline(option, sortedExportString.join('\n'));

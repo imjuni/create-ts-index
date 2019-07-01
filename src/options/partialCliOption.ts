@@ -14,6 +14,7 @@ export type TEntrypointCliOption = Pick<
     | 'targetexts'
     | 'verbose'
     | 'quote'
+    | 'withoutcomment'
   >
 >;
 

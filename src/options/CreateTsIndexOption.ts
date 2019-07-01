@@ -27,6 +27,7 @@ export function createOptionBuilder(
     useSemicolon: args.usesemicolon,
     useTimestamp: args.usetimestamp,
     verbose: args.verbose,
+    withoutComment: args.withoutcomment,
   };
 }
 
@@ -50,6 +51,7 @@ export function entrypointOptionBuilder(
     useSemicolon: args.usesemicolon,
     useTimestamp: args.usetimestamp,
     verbose: args.verbose,
+    withoutComment: args.withoutcomment,
   };
 }
 
@@ -70,6 +72,7 @@ export function cleanOptionBuilder(args: TCleanCliOption, cwd: string): ICreateT
     useSemicolon: false,
     useTimestamp: false,
     verbose: args.verbose,
+    withoutComment: false,
   };
 }
 
@@ -90,6 +93,7 @@ export function initOptionBuilder(args: TInitCliOption, cwd: string): ICreateTsI
     useSemicolon: false,
     useTimestamp: args.usetimestamp,
     verbose: args.verbose,
+    withoutComment: false,
   };
 }
 
@@ -110,6 +114,26 @@ export function getDefailtICreateTsIndexOption(cwd?: string): ICreateTsIndexOpti
     useSemicolon: true,
     useTimestamp: false,
     verbose: false,
+    withoutComment: false,
+  };
+}
+
+export function createTsIndexOptionToInterface(
+  option: CreateTsIndexOption,
+): ICreateTsIndexOption {
+  return {
+    addNewline: option.addNewline,
+    excludes: option.excludes,
+    fileExcludePatterns: option.fileExcludePatterns,
+    fileFirst: option.fileFirst,
+    globOptions: option.globOptions,
+    includeCWD: option.includeCWD,
+    quote: option.quote,
+    targetExts: option.targetExts,
+    useSemicolon: option.useSemicolon,
+    useTimestamp: option.useTimestamp,
+    verbose: option.verbose,
+    withoutComment: option.withoutComment,
   };
 }
 
@@ -153,6 +177,9 @@ export class CreateTsIndexOption {
 
     option.excludes = isNotEmpty(passed.excludes) ? passed.excludes : option.excludes;
     option.targetExts = isNotEmpty(passed.targetExts) ? passed.targetExts : option.targetExts;
+    option.withoutComment = isNotEmpty(passed.withoutComment)
+      ? passed.withoutComment
+      : option.withoutComment;
 
     // remove sorting
     // option.targetExts = option.targetExts.sort((l, r) => r.length - l.length);
@@ -196,6 +223,8 @@ export class CreateTsIndexOption {
   public readonly quote: string;
   /** disply verbose logging message */
   public readonly verbose: boolean;
+  /** remove create-ts-index comment, if enable this option forced disable useTimestamp option */
+  public readonly withoutComment: boolean;
 
   constructor(
     fileFirst?: boolean | ICreateTsIndexOption,
@@ -209,6 +238,7 @@ export class CreateTsIndexOption {
     globOptions?: glob.IOptions,
     quote?: string,
     verbose?: boolean,
+    withoutComment?: boolean,
   ) {
     if (typeof fileFirst === 'boolean') {
       this.fileFirst = fileFirst;
@@ -230,6 +260,7 @@ export class CreateTsIndexOption {
           };
       this.quote = isNotEmpty(quote) ? quote : "'";
       this.verbose = isNotEmpty(verbose) ? verbose : false;
+      this.withoutComment = isNotEmpty(withoutComment) ? withoutComment : false;
     } else {
       const {
         fileFirst: _fileFirst,
@@ -243,6 +274,7 @@ export class CreateTsIndexOption {
         globOptions: _globOptions,
         quote: _quote,
         verbose: _verbose,
+        withoutComment: _withoutComment,
       } = fileFirst || getDefailtICreateTsIndexOption();
 
       this.fileFirst = _fileFirst;
@@ -256,6 +288,7 @@ export class CreateTsIndexOption {
       this.globOptions = _globOptions;
       this.quote = _quote;
       this.verbose = _verbose;
+      this.withoutComment = _withoutComment;
     }
   }
 }
