@@ -68,6 +68,7 @@ index.ts 파일을 webpack entrypoint로 사용할 수 있습니다.
 * `globOptions: glob.IOptions` [node-glob](https://github.com/isaacs/node-glob) 옵션 값을 전달할 수 있습니다. 자세한 내용은 링크문서를 참고하세요.
 * `quote` export 구문에서 사용할 따옴표 문자를 전달합니다. 기본 값은 홑따옴표 입니다.
 * `verbose` 실행할 때 더 많은 로그 메시지를 출력합니다.
+* `withoutComment` index.ts 파일 또는 entrypoint.ts 파일 맨 윗줄에 추가되는 주석을 제거합니다.
 
 ## CLI(command-line interface)로 사용할 경우
 * `-f --filefirst` 생성되는 export 파일내용에서 파일이름을 먼저 export 할지 디렉터리 이름을 먼저 export 할지 결정합니다. 옵션을 생략하면 `false`, 전달하면 `true` 이며, 기본 값은 false 입니다.
@@ -80,6 +81,7 @@ index.ts 파일을 webpack entrypoint로 사용할 수 있습니다.
 * `-x --targetexts [comma separated extname]` export 구문을 생성할 때 사용할 확장자명을 전달합니다. 기본 값은 `['ts', 'tsx']` 입니다. 확장자명을 전달할 때는 예와같이 점 문자를 제외하고 전달해야합니다. 또한 사용자 설정 값을 전달하려고 하는 경우 아래 예제와 같이 쉼표로 구분해서 전달하세요.
 * `-v --verbose` 로그 메시지를 더 상세하게 출력합니다. 1.5.0 버전부터 로그 메시지 출력을 간소화 하였습니다. 하여 기존과 같이 상세한 로그를 보고자 하는 경우 이 옵션을 추가해야 합니다.
 * `-q --quote` 따옴표를 결정한다. 쌍따옴표와 홑따옴표를 전달할 수 있고 전달한 문자를 사용해서 따옴표를 출력한다.
+* `-w --withoutComment` index.ts 파일 또는 entrypoint.ts 파일 맨 윗줄에 추가되는 주석을 제거합니다.
 
 # 사용법
 ## 라이브러리로 사용하는 경우
@@ -171,49 +173,6 @@ cli를 사용해서 `.ctirc` 파일을 생성할 수 있습니다.
 
 # 여러 디렉터리에 생성
 > cti init ./example/type03 ./example/type02
-```
-
-
-### .ctirc 예제
-```
-// Option interface for CreateTsIndex
-{
-  // enable file first
-  "fileFirst": false,
-
-  // add newline on EOF
-  "addNewline": true,
-
-  // add semicolon on every export statement
-  "useSemicolon": true,
-
-  // add timestamp on creation comment
-  "useTimestamp": false,
-
-  // current working directory add to creation work 
-  "includeCWD": true,
-
-  // exclude directories 
-  "excludes": ["@types", "typings", "__test__", "__tests__", "node_modules"],
-
-  // file exclude pattern 
-  "fileExcludePatterns": [],
-
-  // file exclude by extension 
-  "targetExts": ["ts", "tsx"],
-
-  // glob option 
-  "globOptions": {
-    dot: true,
-    nonull: true
-  },
-
-  // quote mark " or ' 
-  "quote": "'",
-
-  // disply verbose logging message 
-  "verbose": false,
-}
 ```
 
 # Language

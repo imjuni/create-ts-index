@@ -66,6 +66,7 @@ create-ts-index entrypoint sub-command create index.ts file below.
 * `globOptions: glob.IOptions` pass include glob options. [node-glob](https://github.com/isaacs/node-glob) option use it.
 * `quote` deside quote charactor. Single quete charactor use to default.
 * `verbose` verbose log message disply
+* `withoutComment` remove create-ts-index comment that top of line in index.ts
 
 
 ## cli (use it cti)
@@ -79,6 +80,7 @@ create-ts-index entrypoint sub-command create index.ts file below.
 * `-x --targetexts [comma separated extname]` pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot charactor.
 * `-q --quote` deside quote charactor. default quote charactor single quote
 * `-v --verbose` disply verbose log message. no option false, option true
+* `-w --withoutcomment` remove create-ts-index comment that top of line in index.ts
 
 # Usage
 ## library 
@@ -116,6 +118,7 @@ cli use git-style sub-command
   * create `.ctirc` file
 * clean
   * cti clean index.ts file recursively
+
 ```
 # basic usage
 cti create ./src  # or cti create ./src
@@ -171,48 +174,6 @@ You can use cli for `.ctirc` file creation.
 
 # create multiple directory
 > cti init ./example/type03 ./example/type02
-```
-
-### .ctirc example
-```
-// Option interface for CreateTsIndex
-{
-  // enable file first
-  "fileFirst": false,
-
-  // add newline on EOF
-  "addNewline": true,
-
-  // add semicolon on every export statement
-  "useSemicolon": true,
-
-  // add timestamp on creation comment
-  "useTimestamp": false,
-
-  // current working directory add to creation work 
-  "includeCWD": true,
-
-  // exclude directories 
-  "excludes": ["@types", "typings", "__test__", "__tests__", "node_modules"],
-
-  // file exclude pattern 
-  "fileExcludePatterns": [],
-
-  // file exclude by extension 
-  "targetExts": ["ts", "tsx"],
-
-  // glob option 
-  "globOptions": {
-    dot: true,
-    nonull: true
-  },
-
-  // quote mark " or ' 
-  "quote": "'",
-
-  // disply verbose logging message 
-  "verbose": false,
-}
 ```
 
 # Language
