@@ -1,6 +1,6 @@
 {
   "name": "create-ts-index",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "description": "Automatic create index.ts file",
   "main": "dist/index.js",
   "scripts": {
@@ -60,7 +60,6 @@
     "rimraf": "^2.6.2",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
-    "tslib": "^1.10.0",
     "tslint": "^5.17.0",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
@@ -75,6 +74,7 @@
     "glob": "^7.1.3",
     "json5": "^2.1.0",
     "merge": "^1.2.1",
+    "tslib": "^1.10.0",
     "yargs": "^13.2.4"
   }
 }
