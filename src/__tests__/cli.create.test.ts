@@ -66,6 +66,41 @@ export * from './export_sample04';
     expect(contents).toEqual(resultContents);
   });
 
+  test('create-index-type01-1', async () => {
+    const cliCmd = `${nodeWithTypescript} ${cliPath} create -w ${exampleType01Path}`;
+
+    log('cli command: ', cliCmd);
+
+    child_process.execSync(cliCmd);
+
+    const files = glob
+      .sync('**/index.ts', { cwd: exampleType01Path })
+      .map((file) => path.join(exampleType01Path, file));
+
+    log('files-01: ', files.sort());
+
+    expect(files).toBeDefined();
+    expect(files.length).toBeGreaterThanOrEqual(1);
+
+    log('create file count check success');
+
+    const promisified = promisify(readFile);
+    const contentBuffers = await Promise.all(files.map((file) => promisified(file)));
+    const contents = contentBuffers.map((buffer) => buffer.toString());
+
+    log('file readed: ', contents);
+
+    const resultContents = [
+      `export * from './export_sample01';
+export * from './export_sample02';
+export * from './export_sample03';
+export * from './export_sample04';
+`,
+    ];
+
+    expect(contents).toEqual(resultContents);
+  });
+
   test('create-index-type02', async () => {
     const cliCmd = `${nodeWithTypescript} ${cliPath} create ${exampleType02Path}`;
 

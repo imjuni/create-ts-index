@@ -27,23 +27,7 @@ import { isNotEmpty } from './tools/CTIUtility';
 import yargs = require('yargs');
 const log = debug('cti:cti-cli');
 
-const version = (() => {
-  if (fs.existsSync(path.join(__dirname, 'package.json'))) {
-    const packageJSON = JSON.parse(
-      fs.readFileSync(path.join(__dirname, 'package.json')).toString(),
-    );
-
-    return packageJSON.version;
-  }
-
-  if (fs.existsSync(path.join('.', 'package.json'))) {
-    const packageJSON = JSON.parse(fs.readFileSync(path.join('.', 'package.json')).toString());
-
-    return packageJSON.version;
-  }
-
-  return '1.7.2';
-})();
+const version = '1.10.2';
 
 const optionMap: { [key in EN_CLI_OPTION]: yargs.Options } = {
   [EN_CLI_OPTION.FILEFIRST]: {
@@ -106,107 +90,69 @@ const optionMap: { [key in EN_CLI_OPTION]: yargs.Options } = {
   },
 };
 
+function createCommandOptionBuilder(
+  args: yargs.Argv<ICreateTsIndexCliOption>,
+): yargs.Argv<ICreateTsIndexCliOption> {
+  args.option(EN_CLI_OPTION.FILEFIRST, optionMap[EN_CLI_OPTION.FILEFIRST]);
+  args.option(EN_CLI_OPTION.ADD_NEWLINE, optionMap[EN_CLI_OPTION.ADD_NEWLINE]);
+  args.option(EN_CLI_OPTION.USE_SEMICOLON, optionMap[EN_CLI_OPTION.USE_SEMICOLON]);
+  args.option(EN_CLI_OPTION.INCLUDE_CWD, optionMap[EN_CLI_OPTION.INCLUDE_CWD]);
+  args.option(EN_CLI_OPTION.USE_TIMESTAMP, optionMap[EN_CLI_OPTION.USE_TIMESTAMP]);
+  args.option(EN_CLI_OPTION.EXCLUDES, optionMap[EN_CLI_OPTION.EXCLUDES]);
+  args.option(EN_CLI_OPTION.FILE_EXCLUDES, optionMap[EN_CLI_OPTION.FILE_EXCLUDES]);
+  args.option(EN_CLI_OPTION.TARGET_EXTS, optionMap[EN_CLI_OPTION.TARGET_EXTS]);
+  args.option(EN_CLI_OPTION.VERBOSE, optionMap[EN_CLI_OPTION.VERBOSE]);
+  args.option(EN_CLI_OPTION.WITHOUT_COMMENT, optionMap[EN_CLI_OPTION.WITHOUT_COMMENT]);
+  args.option(EN_CLI_OPTION.QUOTE, optionMap[EN_CLI_OPTION.QUOTE]);
+
+  return args;
+}
+
+async function createCommandActor(args: ICreateTsIndexCliOption) {
+  const cwds = args.cwds;
+  const cliCwd = process.cwd();
+
+  if (!cwds) {
+    console.log(chalk.default.magenta('Enter working directory, '));
+    console.log(chalk.default.red('cti [working directory]'));
+
+    process.exit(1);
+  }
+
+  if (typeof cwds === 'string') {
+    const createCommand = new CreateCommandModule();
+    const options = createOptionBuilder(args, cwds);
+
+    return createCommand.do(cliCwd, options);
+  }
+
+  if (typeof cwds !== 'string' && Array.isArray(cwds)) {
+    return Promise.all(
+      cwds
+        .filter((cwd) => fs.existsSync(cwd))
+        .map((cwd) => {
+          const createCommand = new CreateCommandModule();
+          const options = createOptionBuilder(args, cwd);
+          return createCommand.do(cliCwd, options);
+        }),
+    );
+  }
+}
+
 // tslint:disable-next-line
 yargs
   .command<ICreateTsIndexCliOption>(
     '$0 [cwds...]',
     'create index.ts file in working directory',
     // @ts-ignore
-    (args: yargs.Argv<ICreateTsIndexCliOption>): yargs.Argv<ICreateTsIndexCliOption> => {
-      args.option(EN_CLI_OPTION.FILEFIRST, optionMap[EN_CLI_OPTION.FILEFIRST]);
-      args.option(EN_CLI_OPTION.ADD_NEWLINE, optionMap[EN_CLI_OPTION.ADD_NEWLINE]);
-      args.option(EN_CLI_OPTION.USE_SEMICOLON, optionMap[EN_CLI_OPTION.USE_SEMICOLON]);
-      args.option(EN_CLI_OPTION.INCLUDE_CWD, optionMap[EN_CLI_OPTION.INCLUDE_CWD]);
-      args.option(EN_CLI_OPTION.USE_TIMESTAMP, optionMap[EN_CLI_OPTION.USE_TIMESTAMP]);
-      args.option(EN_CLI_OPTION.EXCLUDES, optionMap[EN_CLI_OPTION.EXCLUDES]);
-      args.option(EN_CLI_OPTION.FILE_EXCLUDES, optionMap[EN_CLI_OPTION.FILE_EXCLUDES]);
-      args.option(EN_CLI_OPTION.TARGET_EXTS, optionMap[EN_CLI_OPTION.TARGET_EXTS]);
-      args.option(EN_CLI_OPTION.VERBOSE, optionMap[EN_CLI_OPTION.VERBOSE]);
-      args.option(EN_CLI_OPTION.WITHOUT_COMMENT, optionMap[EN_CLI_OPTION.WITHOUT_COMMENT]);
-      args.option(EN_CLI_OPTION.QUOTE, optionMap[EN_CLI_OPTION.QUOTE]);
-
-      return args;
-    },
-    async (args: ICreateTsIndexCliOption) => {
-      const cwds = args.cwds;
-      const cliCwd = process.cwd();
-
-      if (!cwds) {
-        console.log(chalk.default.magenta('Enter working directory, '));
-        console.log(chalk.default.red('cti [working directory]'));
-
-        process.exit(1);
-      }
-
-      if (typeof cwds === 'string') {
-        const createCommand = new CreateCommandModule();
-        const options = createOptionBuilder(args, cwds);
-
-        return createCommand.do(cliCwd, options);
-      }
-
-      if (typeof cwds !== 'string' && Array.isArray(cwds)) {
-        return Promise.all(
-          cwds
-            .filter((cwd) => fs.existsSync(cwd))
-            .map((cwd) => {
-              const createCommand = new CreateCommandModule();
-              const options = createOptionBuilder(args, cwd);
-              return createCommand.do(cliCwd, options);
-            }),
-        );
-      }
-    },
+    createCommandOptionBuilder,
+    createCommandActor,
   )
   .command<ICreateTsIndexCliOption>(
     'create [cwds...]',
     'create index.ts file in working directory',
-    (args: yargs.Argv<ICreateTsIndexCliOption>): yargs.Argv<ICreateTsIndexCliOption> => {
-      args.option(EN_CLI_OPTION.FILEFIRST, optionMap[EN_CLI_OPTION.FILEFIRST]);
-      args.option(EN_CLI_OPTION.ADD_NEWLINE, optionMap[EN_CLI_OPTION.ADD_NEWLINE]);
-      args.option(EN_CLI_OPTION.USE_SEMICOLON, optionMap[EN_CLI_OPTION.USE_SEMICOLON]);
-      args.option(EN_CLI_OPTION.INCLUDE_CWD, optionMap[EN_CLI_OPTION.INCLUDE_CWD]);
-      args.option(EN_CLI_OPTION.USE_TIMESTAMP, optionMap[EN_CLI_OPTION.USE_TIMESTAMP]);
-      args.option(EN_CLI_OPTION.EXCLUDES, optionMap[EN_CLI_OPTION.EXCLUDES]);
-      args.option(EN_CLI_OPTION.FILE_EXCLUDES, optionMap[EN_CLI_OPTION.FILE_EXCLUDES]);
-      args.option(EN_CLI_OPTION.TARGET_EXTS, optionMap[EN_CLI_OPTION.TARGET_EXTS]);
-      args.option(EN_CLI_OPTION.VERBOSE, optionMap[EN_CLI_OPTION.VERBOSE]);
-      args.option(EN_CLI_OPTION.QUOTE, optionMap[EN_CLI_OPTION.QUOTE]);
-
-      return args;
-    },
-    async (args: ICreateTsIndexCliOption) => {
-      const cwds = args['cwds'];
-      const cliCwd = process.cwd();
-
-      log('cli option: ', args);
-
-      if (!cwds) {
-        console.log(chalk.default.magenta('Enter working directory, '));
-        console.log(chalk.default.red('cti [working directory]'));
-
-        process.exit(1);
-      }
-
-      if (typeof cwds === 'string') {
-        const createCommand = new CreateCommandModule();
-        const options = createOptionBuilder(args, cwds);
-
-        return createCommand.do(cliCwd, options);
-      }
-
-      if (typeof cwds !== 'string' && Array.isArray(cwds)) {
-        return Promise.all(
-          cwds
-            .filter((cwd) => fs.existsSync(cwd))
-            .map((cwd) => {
-              const createCommand = new CreateCommandModule();
-              const options = createOptionBuilder(args, cwd);
-              return createCommand.do(cliCwd, options);
-            }),
-        );
-      }
-    },
+    createCommandOptionBuilder,
+    createCommandActor,
   )
   .command<TEntrypointCliOption>(
     'entrypoint [cwds...]',
