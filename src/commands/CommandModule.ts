@@ -1,6 +1,7 @@
 import * as chalk from 'chalk';
 import * as fs from 'fs';
 import glob from 'glob';
+import minimatch from 'minimatch';
 import * as path from 'path';
 import * as util from 'util';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
@@ -44,7 +45,7 @@ export class CommandModule {
         // Step 4, remove exclude pattern
         .filter((filename) => {
           return !option.fileExcludePatterns.reduce<boolean>((result, excludePattern) => {
-            return result || filename.indexOf(excludePattern) >= 0;
+            return result || minimatch(filename, excludePattern);
           }, false);
         })
 
