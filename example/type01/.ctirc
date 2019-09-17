@@ -1,0 +1,38 @@
+// Option interface for CreateTsIndex
+{
+  // enable file first
+  "fileFirst": false,
+
+  // add newline on EOF
+  "addNewline": true,
+
+  // add semicolon on every export statement
+  "useSemicolon": true,
+
+  // add timestamp on creation comment
+  "useTimestamp": false,
+
+  // current working directory add to creation work 
+  "includeCWD": true,
+
+  // exclude directories 
+  "excludes": ["@types", "typings", "__test__", "__tests__", "node_modules"],
+
+  // file exclude pattern 
+  "fileExcludePatterns": ["iamtest", "*excludeme.ts"],
+
+  // file exclude by extension 
+  "targetExts": ["ts", "tsx"],
+
+  // glob option 
+  "globOptions": {
+    dot: true,
+    nonull: true
+  },
+
+  // quote mark " or ' 
+  "quote": "'",
+
+  // disply verbose logging message 
+  "verbose": false,
+}
