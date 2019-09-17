@@ -45,6 +45,11 @@ export class CommandModule {
         // Step 4, remove exclude pattern
         .filter((filename) => {
           return !option.fileExcludePatterns.reduce<boolean>((result, excludePattern) => {
+            if (/\w+/.test(excludePattern)) {
+              // backward compatibility for indexOf
+              return result || minimatch(filename, `*${excludePattern}*`);
+            }
+
             return result || minimatch(filename, excludePattern);
           }, false);
         })

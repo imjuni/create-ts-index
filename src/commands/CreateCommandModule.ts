@@ -79,20 +79,19 @@ export class CreateCommandModule implements ICommandModule {
         tsDirs.push('.');
       }
 
-      tsDirs.sort(
-        (left: string, right: string): number => {
-          const llen = left.split('/').length;
-          const rlen = right.split('/').length;
+      tsDirs.sort((left: string, right: string): number => {
+        const llen = left.split('/').length;
+        const rlen = right.split('/').length;
 
-          if (llen > rlen) {
-            return -1;
-          }
-          if (llen < rlen) {
-            return 1;
-          }
-          return 0;
-        },
-      );
+        if (llen > rlen) {
+          return -1;
+        }
+
+        if (llen < rlen) {
+          return 1;
+        }
+        return 0;
+      });
 
       log('tsDirs:: ', tsDirs);
 
@@ -171,13 +170,7 @@ export class CreateCommandModule implements ICommandModule {
         filenames: categorized.allFiles,
       });
 
-      const excludePatternFilteredFiles = categorized.allFiles.filter((element) => {
-        return !option.fileExcludePatterns.reduce<boolean>((result, excludePattern) => {
-          return result || element.indexOf(excludePattern) >= 0;
-        }, false);
-      });
-
-      excludePatternFilteredFiles.sort();
+      const excludePatternFilteredFiles = [...categorized.allFiles].sort();
 
       const sorted = (() => {
         if (option.fileFirst) {

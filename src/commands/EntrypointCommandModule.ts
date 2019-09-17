@@ -71,20 +71,18 @@ export class EntrypointCommandModule implements ICommandModule {
         tsDirs.push('.');
       }
 
-      tsDirs.sort(
-        (left: string, right: string): number => {
-          const llen = left.split('/').length;
-          const rlen = right.split('/').length;
+      tsDirs.sort((left: string, right: string): number => {
+        const llen = left.split('/').length;
+        const rlen = right.split('/').length;
 
-          if (llen > rlen) {
-            return -1;
-          }
-          if (llen < rlen) {
-            return 1;
-          }
-          return 0;
-        },
-      );
+        if (llen > rlen) {
+          return -1;
+        }
+        if (llen < rlen) {
+          return 1;
+        }
+        return 0;
+      });
 
       await this.write({ logger, option, directories: tsDirs });
 
@@ -162,15 +160,9 @@ export class EntrypointCommandModule implements ICommandModule {
               filenames: categorized.allFiles,
             });
 
-            const filesInDirectory = categorized.allFiles.filter((element) => {
-              return !option.fileExcludePatterns.reduce<boolean>((result, excludePattern) => {
-                return result || element.indexOf(excludePattern) >= 0;
-              }, false);
-            });
+            const excludePatternFilteredFiles = [...categorized.allFiles].sort();
 
-            filesInDirectory.sort();
-
-            return filesInDirectory.map((file) =>
+            return excludePatternFilteredFiles.map((file) =>
               path.relative(resolvePath, path.join(resolvePath, directory, file)),
             );
           })();
