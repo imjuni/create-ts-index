@@ -3,7 +3,7 @@ create-ts-index
 [![Download Status](https://img.shields.io/npm/dw/create-ts-index.svg)](https://npmcharts.com/compare/create-ts-index?minimal=true) [![Github Star](https://img.shields.io/github/stars/imjuni/create-ts-index.svg?style=popout)](https://github.com/imjuni/create-ts-index) [![Github Issues](https://img.shields.io/github/issues-raw/imjuni/create-ts-index.svg)](https://github.com/imjuni/create-ts-index/issues) [![NPM version](https://img.shields.io/npm/v/create-ts-index.svg)](https://www.npmjs.com/package/create-ts-index) [![License](https://img.shields.io/npm/l/create-ts-index.svg)](https://github.com/imjuni/create-ts-index/blob/master/LICENSE) ![Build Status](https://travis-ci.org/imjuni/create-ts-index.svg?branch=master) [![codecov](https://codecov.io/gh/imjuni/create-ts-index/branch/master/graph/badge.svg)](https://codecov.io/gh/imjuni/create-ts-index)
 
 # Install
-```
+```bash
 npm install create-ts-index --save-dev
 ```
 
@@ -85,7 +85,7 @@ create-ts-index entrypoint sub-command create index.ts file below.
 # Usage
 ## library 
 ### Use TypeScritIndexWriter
-```
+```typescript
 const tsiw = new TypeScritIndexWriter();
 const option = TypeScritIndexWriter.getDefaultOption('./src');
 
@@ -99,7 +99,7 @@ const option = TypeScritIndexWriter.getDefaultOption('./src');
 ```
 
 ### Use CommandModule
-```
+```typescript
 (async () => {
   const option = CreateTsIndexOption.getOption({});
   const createCommand = new CreateCommandModule();
@@ -119,7 +119,7 @@ cli use git-style sub-command
 * clean
   * cti clean index.ts file recursively
 
-```
+```bash
 # basic usage
 cti create ./src  # or cti create ./src
 ## or
@@ -154,7 +154,7 @@ create-ts-index cli support `.ctirc` configuration file. Available name is only 
 
 See below search, apply order. 
 
-```
+```bash
 # execute on /Users/cti/github/create-ts-index
 sh> cti create ./example/type01
 
