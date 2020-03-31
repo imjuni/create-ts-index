@@ -1,4 +1,5 @@
 import * as chalk from 'chalk';
+import debug from 'debug';
 import * as fs from 'fs';
 import glob from 'glob';
 import minimatch from 'minimatch';
@@ -7,10 +8,14 @@ import * as util from 'util';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
 
+const log = debug('cti:CommandModule');
+
 export class CommandModule {
   public static promisify = {
+    exists: util.promisify(fs.exists),
     glob: util.promisify<string, glob.IOptions, Array<string>>(glob),
     readDir: util.promisify<string, Array<string>>(fs.readdir),
+    readFile: util.promisify(fs.readFile),
     stat: util.promisify<string, fs.Stats>(fs.stat),
     unlink: util.promisify<fs.PathLike>(fs.unlink),
     writeFile: util.promisify<string, any, string>(fs.writeFile),
@@ -28,6 +33,8 @@ export class CommandModule {
     const targetExts = option.targetExts.map((ext) => (ext.startsWith('.') ? ext : `.${ext}`));
 
     try {
+      log('Start filter logic', option.fileExcludePatterns, filenames);
+
       const filteredFiles = filenames
         // Step 1, remove file by target extension
         .filter((filename) => targetExts.indexOf(path.extname(filename)) >= 0)
@@ -45,6 +52,12 @@ export class CommandModule {
         // Step 4, remove exclude pattern
         .filter((filename) => {
           return !option.fileExcludePatterns.reduce<boolean>((result, excludePattern) => {
+            log(
+              'ExcludePattern: ',
+              glob.hasMagic(excludePattern, option.globOptions),
+              result || minimatch(filename, excludePattern),
+            );
+
             if (!glob.hasMagic(excludePattern, option.globOptions)) {
               // backward compatibility for indexOf
               return result || minimatch(filename, `*${excludePattern}*`);
@@ -73,26 +86,5 @@ export class CommandModule {
       logger.error(chalk.default.redBright('Error occured: ', err));
       return [];
     }
-  }
-
-  public static getDefaultOption(cwd?: string): ICreateTsIndexOption {
-    return {
-      addNewline: true,
-      excludes: ['@types', 'typings', '__test__', '__tests__', 'node_modules'],
-      fileExcludePatterns: [],
-      fileFirst: false,
-      globOptions: {
-        cwd: cwd || process.cwd(),
-        dot: true,
-        nonull: true,
-      },
-      includeCWD: true,
-      quote: "'",
-      targetExts: ['ts', 'tsx'],
-      useSemicolon: true,
-      useTimestamp: false,
-      verbose: false,
-      withoutComment: false,
-    };
   }
 }

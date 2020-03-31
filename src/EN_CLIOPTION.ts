@@ -10,4 +10,5 @@ export enum EN_CLI_OPTION {
   VERBOSE = 'verbose',
   QUOTE = 'quote',
   WITHOUT_COMMENT = 'withoutcomment',
+  WITHOUT_BACKUP = 'withoutbackup',
 }

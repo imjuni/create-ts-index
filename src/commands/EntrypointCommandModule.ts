@@ -198,11 +198,25 @@ export class EntrypointCommandModule implements ICommandModule {
 
       logger.log(chalk.green('entrypoiny writed:', `${cwdPath}${path.sep}entrypoint.ts`));
 
-      await CommandModule.promisify.writeFile(
-        path.join(cwdPath, 'entrypoint.ts'),
-        fileContent,
-        'utf8',
-      );
+      const entrypointFile = path.join(cwdPath, 'entrypoint.ts');
+      const entrypointBackupFile = path.join(cwdPath, 'entrypoint.ts.bak');
+
+      if (option.withoutBackupFile) {
+        await CommandModule.promisify.writeFile(entrypointFile, fileContent, 'utf8');
+        return;
+      }
+
+      if (await CommandModule.promisify.exists(entrypointFile)) {
+        logger.log(chalk.green('created: '), `${entrypointBackupFile}`);
+
+        await CommandModule.promisify.writeFile(
+          entrypointBackupFile,
+          await CommandModule.promisify.readFile(entrypointFile),
+          'utf8',
+        );
+      }
+
+      await CommandModule.promisify.writeFile(entrypointFile, fileContent, 'utf8');
     } catch (err) {
       logger.error(chalk.red('indexWriter: ', err.message));
       logger.error(chalk.red('indexWriter: ', err.stack));

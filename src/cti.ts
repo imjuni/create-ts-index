@@ -4,7 +4,6 @@
 import * as chalk from 'chalk';
 import debug from 'debug';
 import * as fs from 'fs';
-import * as path from 'path';
 import { CleanCommandModule } from './commands/CleanCommandModule';
 import { CreateCommandModule } from './commands/CreateCommandModule';
 import { EntrypointCommandModule } from './commands/EntrypointCommandModule';
@@ -78,6 +77,11 @@ const optionMap: { [key in EN_CLI_OPTION]: yargs.Options } = {
     describe: 'remove comment from created output',
     type: 'boolean',
   },
+  [EN_CLI_OPTION.WITHOUT_BACKUP]: {
+    alias: 'b',
+    describe: "Don't create backupfile if already exists target file",
+    type: 'boolean',
+  },
   [EN_CLI_OPTION.VERBOSE]: {
     alias: 'v',
     describe: 'verbose logging message. to option false, option true',
@@ -94,6 +98,7 @@ function createCommandOptionBuilder(
   args: yargs.Argv<ICreateTsIndexCliOption>,
 ): yargs.Argv<ICreateTsIndexCliOption> {
   args.option(EN_CLI_OPTION.FILEFIRST, optionMap[EN_CLI_OPTION.FILEFIRST]);
+  args.option(EN_CLI_OPTION.WITHOUT_BACKUP, optionMap[EN_CLI_OPTION.WITHOUT_BACKUP]);
   args.option(EN_CLI_OPTION.ADD_NEWLINE, optionMap[EN_CLI_OPTION.ADD_NEWLINE]);
   args.option(EN_CLI_OPTION.USE_SEMICOLON, optionMap[EN_CLI_OPTION.USE_SEMICOLON]);
   args.option(EN_CLI_OPTION.INCLUDE_CWD, optionMap[EN_CLI_OPTION.INCLUDE_CWD]);
@@ -167,6 +172,7 @@ yargs
       args.option(EN_CLI_OPTION.TARGET_EXTS, optionMap[EN_CLI_OPTION.TARGET_EXTS]);
       args.option(EN_CLI_OPTION.VERBOSE, optionMap[EN_CLI_OPTION.VERBOSE]);
       args.option(EN_CLI_OPTION.WITHOUT_COMMENT, optionMap[EN_CLI_OPTION.WITHOUT_COMMENT]);
+      args.option(EN_CLI_OPTION.WITHOUT_BACKUP, optionMap[EN_CLI_OPTION.WITHOUT_BACKUP]);
       args.option(EN_CLI_OPTION.QUOTE, optionMap[EN_CLI_OPTION.QUOTE]);
 
       return args;

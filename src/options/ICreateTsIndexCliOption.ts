@@ -11,4 +11,5 @@ export interface ICreateTsIndexCliOption {
   verbose: boolean;
   quote: string;
   withoutcomment: boolean;
+  withoutbackup: boolean;
 }

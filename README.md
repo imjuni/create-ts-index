@@ -67,7 +67,7 @@ create-ts-index entrypoint sub-command create index.ts file below.
 * `quote` deside quote charactor. Single quete charactor use to default.
 * `verbose` verbose log message disply
 * `withoutComment` remove create-ts-index comment that top of line in index.ts
-
+* `withoutBackupFile` Don't create backupfile if already exists target file
 
 ## cli (use it cti)
 * `-f --filefirst` export list create filefirst, no option false, option true
@@ -81,6 +81,7 @@ create-ts-index entrypoint sub-command create index.ts file below.
 * `-q --quote` deside quote charactor. default quote charactor single quote
 * `-v --verbose` disply verbose log message. no option false, option true
 * `-w --withoutcomment` remove create-ts-index comment that top of line in index.ts
+* `-b --withoutbackup` Don't create backupfile if already exists target file
 
 # Usage
 ## library 

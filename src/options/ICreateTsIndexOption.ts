@@ -42,4 +42,7 @@ export interface ICreateTsIndexOption {
 
   /** disply verbose logging message */
   verbose: boolean;
+
+  /** Don't create backupfile if already exists target file */
+  withoutBackupFile: boolean;
 }

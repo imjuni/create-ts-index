@@ -27,6 +27,7 @@ export function createOptionBuilder(
     useSemicolon: args.usesemicolon,
     useTimestamp: args.usetimestamp,
     verbose: args.verbose,
+    withoutBackupFile: args.withoutbackup,
     withoutComment: args.withoutcomment,
   };
 }
@@ -51,6 +52,7 @@ export function entrypointOptionBuilder(
     useSemicolon: args.usesemicolon,
     useTimestamp: args.usetimestamp,
     verbose: args.verbose,
+    withoutBackupFile: false,
     withoutComment: args.withoutcomment,
   };
 }
@@ -72,6 +74,7 @@ export function cleanOptionBuilder(args: TCleanCliOption, cwd: string): ICreateT
     useSemicolon: false,
     useTimestamp: false,
     verbose: args.verbose,
+    withoutBackupFile: false,
     withoutComment: false,
   };
 }
@@ -93,6 +96,7 @@ export function initOptionBuilder(args: TInitCliOption, cwd: string): ICreateTsI
     useSemicolon: false,
     useTimestamp: args.usetimestamp,
     verbose: args.verbose,
+    withoutBackupFile: false,
     withoutComment: false,
   };
 }
@@ -114,6 +118,7 @@ export function getDefailtICreateTsIndexOption(cwd?: string): ICreateTsIndexOpti
     useSemicolon: true,
     useTimestamp: false,
     verbose: false,
+    withoutBackupFile: false,
     withoutComment: false,
   };
 }
@@ -133,6 +138,7 @@ export function createTsIndexOptionToInterface(
     useSemicolon: option.useSemicolon,
     useTimestamp: option.useTimestamp,
     verbose: option.verbose,
+    withoutBackupFile: option.withoutBackupFile,
     withoutComment: option.withoutComment,
   };
 }
@@ -225,6 +231,8 @@ export class CreateTsIndexOption {
   public readonly verbose: boolean;
   /** remove create-ts-index comment, if enable this option forced disable useTimestamp option */
   public readonly withoutComment: boolean;
+  /** Don't create backupfile if already exists target file */
+  public readonly withoutBackupFile: boolean;
 
   constructor(
     fileFirst?: boolean | ICreateTsIndexOption,
@@ -239,6 +247,7 @@ export class CreateTsIndexOption {
     quote?: string,
     verbose?: boolean,
     withoutComment?: boolean,
+    backupFileCreate?: boolean,
   ) {
     if (typeof fileFirst === 'boolean') {
       this.fileFirst = fileFirst;
@@ -261,6 +270,7 @@ export class CreateTsIndexOption {
       this.quote = isNotEmpty(quote) ? quote : "'";
       this.verbose = isNotEmpty(verbose) ? verbose : false;
       this.withoutComment = isNotEmpty(withoutComment) ? withoutComment : false;
+      this.withoutBackupFile = isNotEmpty(backupFileCreate) ? backupFileCreate : false;
     } else {
       const {
         fileFirst: _fileFirst,
@@ -275,6 +285,7 @@ export class CreateTsIndexOption {
         quote: _quote,
         verbose: _verbose,
         withoutComment: _withoutComment,
+        withoutBackupFile: _backupFileCreate,
       } = fileFirst || getDefailtICreateTsIndexOption();
 
       this.fileFirst = _fileFirst;
@@ -289,6 +300,7 @@ export class CreateTsIndexOption {
       this.quote = _quote;
       this.verbose = _verbose;
       this.withoutComment = _withoutComment;
+      this.withoutBackupFile = _backupFileCreate;
     }
   }
 }

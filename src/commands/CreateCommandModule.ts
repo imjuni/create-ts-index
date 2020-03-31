@@ -202,11 +202,30 @@ export class CreateCommandModule implements ICommandModule {
 
       logger.log(chalk.green('created: '), `${path.join(resolvePath, directory, 'index.ts')}`);
 
-      await CommandModule.promisify.writeFile(
-        path.join(resolvePath, directory, 'index.ts'),
-        fileContent,
-        'utf8',
-      );
+      if (option.withoutBackupFile) {
+        await CommandModule.promisify.writeFile(
+          path.join(resolvePath, directory, 'index.ts'),
+          fileContent,
+          'utf8',
+        );
+
+        return;
+      }
+
+      const indexFile = path.join(resolvePath, directory, 'index.ts');
+      const indexBackupFile = path.join(resolvePath, directory, 'index.ts.bak');
+
+      if (await CommandModule.promisify.exists(indexFile)) {
+        logger.log(chalk.green('created: '), `${indexBackupFile}`);
+
+        await CommandModule.promisify.writeFile(
+          indexBackupFile,
+          await CommandModule.promisify.readFile(indexFile),
+          'utf8',
+        );
+      }
+
+      await CommandModule.promisify.writeFile(indexFile, fileContent, 'utf8');
     } catch (err) {
       log(err.message);
       log(err.stack);

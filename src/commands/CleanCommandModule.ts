@@ -30,12 +30,25 @@ export class CleanCommandModule implements ICommandModule {
       nonull: false,
     });
 
+    const indexBackupFiles = await CommandModule.promisify.glob('**/index.ts.bak', {
+      cwd,
+      nonull: false,
+    });
+
     const entrypointFiles = await CommandModule.promisify.glob('**/entrypoint.ts', {
       cwd,
       nonull: false,
     });
 
-    const concatted = indexFiles.concat(entrypointFiles);
+    const entrypointBackupFiles = await CommandModule.promisify.glob('**/entrypoint.ts.bak', {
+      cwd,
+      nonull: false,
+    });
+
+    const concatted = indexFiles
+      .concat(indexBackupFiles)
+      .concat(entrypointFiles)
+      .concat(entrypointBackupFiles);
 
     if (concatted.length === 0) {
       logger.flog(chalk.yellow(`Cannot find target file on working directory: ${cwd}`));
