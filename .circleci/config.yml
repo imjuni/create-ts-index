@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  node: circleci/node@12
+  node: circleci/node@1.1.6
 jobs:
   build-and-test:
     executor:
@@ -10,11 +10,8 @@ jobs:
       - node/with-cache:
           steps:
             - run: npm install
-            - run: npm install codecov -g
-            - run: npm run webpack:prod
             - run: npm test
 workflows:
     build-and-test:
       jobs:
         - build-and-test
-        
