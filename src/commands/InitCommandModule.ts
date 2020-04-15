@@ -1,11 +1,17 @@
 import chalk from 'chalk';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import debug from 'debug';
 import * as fs from 'fs';
-import * as json5 from 'json5';
+import json5 from 'json5';
+import { isPass } from 'my-easy-fp';
 import * as path from 'path';
-import { getDefailtICreateTsIndexOption } from '../options/CreateTsIndexOption';
-import { ctircLoader } from '../options/ctircLoader';
+import {
+  concreteConfig,
+  getDeafultOptions,
+  getRCFilename,
+  merging,
+  readConfigRC,
+} from '../options/configure';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
 import { isNotEmpty } from '../tools/CTIUtility';
@@ -14,32 +20,38 @@ import { ICommandModule } from './ICommandModule';
 const log = debug('cti:InitCommandModule');
 
 export class InitCommandModule implements ICommandModule {
-  public async do(cliCwd: string, passed: Partial<ICreateTsIndexOption>): Promise<void> {
-    const cwd =
+  public async do(executePath: string, passed: Partial<ICreateTsIndexOption>): Promise<void> {
+    const workDir =
       isNotEmpty(passed.globOptions) && isNotEmpty(passed.globOptions.cwd)
         ? passed.globOptions.cwd
         : process.cwd();
 
-    const { readedFrom, option } = ctircLoader({
-      cwd: cliCwd,
-      fromCliOption: passed,
-      inputDir: null,
-    });
+    const configFromExecutePath = await readConfigRC(getRCFilename(executePath));
+    const configFromWorkDir = await readConfigRC(getRCFilename(workDir));
 
-    log('Option: ', option.useTimestamp);
+    const option = concreteConfig(
+      merging(
+        merging(
+          isPass(configFromExecutePath) ? configFromExecutePath.pass : getDeafultOptions(),
+          isPass(configFromWorkDir) ? configFromWorkDir.pass : getDeafultOptions(),
+        ),
+        passed,
+      ),
+    );
+
+    log('readed option: ', option);
 
     const logger = new CTILogger(option.verbose);
-    logger.log('configuration from: ', readedFrom === '' ? 'default' : readedFrom);
 
     try {
-      const defaultOption = getDefailtICreateTsIndexOption(cwd);
+      const defaultOption = getDeafultOptions();
       const stringified = json5.stringify(defaultOption, null, 2);
 
       const headContent = (() => {
         if (option.useTimestamp) {
           return `// created from ${option.quote}create-ts-index${
             option.quote
-          } ${dayjs.default().format('YYYY-MM-DD HH:mm')}`;
+          } ${dayjs().format('YYYY-MM-DD HH:mm')}`;
         }
 
         return `// created from ${option.quote}create-ts-index${option.quote}`;
@@ -55,7 +67,7 @@ export class InitCommandModule implements ICommandModule {
 
       await new Promise((resolve, reject) => {
         fs.writeFile(
-          path.join(cwd, '.ctirc'),
+          path.join(workDir, '.ctirc'),
           `${headContent}\n\n${stringified}${addNewline}`,
           (err) => {
             if (isNotEmpty(err)) {

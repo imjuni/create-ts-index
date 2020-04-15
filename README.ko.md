@@ -70,6 +70,7 @@ index.ts 파일을 webpack entrypoint로 사용할 수 있습니다.
 * `verbose` 실행할 때 더 많은 로그 메시지를 출력합니다.
 * `withoutComment` index.ts 파일 또는 entrypoint.ts 파일 맨 윗줄에 추가되는 주석을 제거합니다.
 * `withoutBackupFile` index.ts 파일 또는 entrypoint.ts 파일을 생성할 때 이미 파일이 있는 경우 백업 파일을 생성하는 기능을 사용하지 않습니다.
+* `output` index.ts 파일 또는 entrypoint.ts 파일 이름의 이름을 변경합니다.
 
 ## CLI(command-line interface)로 사용할 경우
 * `-f --filefirst` 생성되는 export 파일내용에서 파일이름을 먼저 export 할지 디렉터리 이름을 먼저 export 할지 결정합니다. 옵션을 생략하면 `false`, 전달하면 `true` 이며, 기본 값은 false 입니다.
@@ -84,6 +85,7 @@ index.ts 파일을 webpack entrypoint로 사용할 수 있습니다.
 * `-q --quote` 따옴표를 결정한다. 쌍따옴표와 홑따옴표를 전달할 수 있고 전달한 문자를 사용해서 따옴표를 출력한다.
 * `-w --withoutcomment` index.ts 파일 또는 entrypoint.ts 파일 맨 윗줄에 추가되는 주석을 제거합니다.
 * `-b --withoutbackup` index.ts 파일 또는 entrypoint.ts 파일을 생성할 때 이미 파일이 있는 경우 백업 파일을 생성하는 기능을 사용하지 않습니다.
+* `-o --output` index.ts 파일 또는 entrypoint.ts 파일 이름의 이름을 변경합니다.
 
 # 사용법
 ## 라이브러리로 사용하는 경우

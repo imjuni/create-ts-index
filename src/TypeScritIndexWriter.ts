@@ -1,22 +1,22 @@
 import { CreateCommandModule } from './commands/CreateCommandModule';
 import { EntrypointCommandModule } from './commands/EntrypointCommandModule';
-import { CreateTsIndexOption } from './options/CreateTsIndexOption';
+import { getDeafultOptions } from './options/configure';
+import { ICreateTsIndexOption } from './options/ICreateTsIndexOption';
 import { isNotEmpty } from './tools/CTIUtility';
 
 export class TypeScritIndexWriter {
-  public getDefaultOption(cwd?: string): CreateTsIndexOption {
+  public getDefaultOption(cwd?: string): ICreateTsIndexOption {
     if (isNotEmpty(cwd)) {
-      const optionWithCwd = CreateTsIndexOption.getOption({});
-      optionWithCwd.globOptions.cwd = cwd;
+      const option = getDeafultOptions();
+      option.globOptions.cwd = cwd;
 
-      return new CreateTsIndexOption(optionWithCwd);
+      return option;
     }
 
-    const option = CreateTsIndexOption.getOption({});
-    return new CreateTsIndexOption(option);
+    return getDeafultOptions();
   }
 
-  public async create(option: CreateTsIndexOption, _cliCwd?: string): Promise<void> {
+  public async create(option: ICreateTsIndexOption, _cliCwd?: string): Promise<void> {
     const cliCwd: string = (() => {
       if (isNotEmpty(_cliCwd)) {
         return _cliCwd;
@@ -34,7 +34,10 @@ export class TypeScritIndexWriter {
     return result;
   }
 
-  public async createEntrypoint(option: CreateTsIndexOption, _cliCwd?: string): Promise<void> {
+  public async createEntrypoint(
+    option: ICreateTsIndexOption,
+    _cliCwd?: string,
+  ): Promise<void> {
     const cliCwd: string = (() => {
       if (isNotEmpty(_cliCwd)) {
         return _cliCwd;

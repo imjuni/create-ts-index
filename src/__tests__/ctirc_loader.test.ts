@@ -1,26 +1,33 @@
 import debug from 'debug';
+import { isPass } from 'my-easy-fp';
+import path from 'path';
 import {
-  CreateTsIndexOption,
-  getDefailtICreateTsIndexOption,
-} from '../options/CreateTsIndexOption';
-import { ctircLoader } from '../options/ctircLoader';
+  concreteConfig,
+  getDeafultOptions,
+  getRCFilename,
+  merging,
+  readConfigRC,
+} from '../options/configure';
 
 const log = debug('ctit:create-test');
 
 describe('loader-test-coverage', () => {
   test('load', async () => {
-    const { readedFrom, option } = ctircLoader({
-      cwd: './example/rcloader',
-      fromCliOption: {},
-      inputDir: './example/rcloader',
-    });
+    const configFromExecutePath = await readConfigRC(getRCFilename('./example/rcloader'));
+    const configFromWorkDir = await readConfigRC(getRCFilename('./example/rcloader'));
 
-    const defaultOption = getDefailtICreateTsIndexOption();
-    defaultOption.globOptions.cwd = './example/rcloader';
-    const defaultCtiOption = CreateTsIndexOption.factory({ option: defaultOption });
+    const option = concreteConfig(
+      merging(
+        isPass(configFromExecutePath) ? configFromExecutePath.pass : getDeafultOptions(),
+        isPass(configFromWorkDir) ? configFromWorkDir.pass : getDeafultOptions(),
+      ),
+    );
 
-    log('>> Readed from ', readedFrom);
+    const defaultOption = getDeafultOptions();
+    defaultOption.globOptions.cwd = path.resolve('./example/rcloader');
 
-    expect(option).toEqual(defaultCtiOption);
+    log(option);
+
+    expect(option).toEqual(defaultOption);
   });
 });

@@ -68,6 +68,7 @@ create-ts-index entrypoint sub-command create index.ts file below.
 * `verbose` verbose log message disply
 * `withoutComment` remove create-ts-index comment that top of line in index.ts
 * `withoutBackupFile` Don't create backupfile if already exists target file
+* `output` index.ts or entrypoint.ts filename change
 
 ## cli (use it cti)
 * `-f --filefirst` export list create filefirst, no option false, option true
@@ -82,6 +83,7 @@ create-ts-index entrypoint sub-command create index.ts file below.
 * `-v --verbose` disply verbose log message. no option false, option true
 * `-w --withoutcomment` remove create-ts-index comment that top of line in index.ts
 * `-b --withoutbackup` Don't create backupfile if already exists target file
+* `-o --output` index.ts or entrypoint.ts filename change
 
 # Usage
 ## library 
