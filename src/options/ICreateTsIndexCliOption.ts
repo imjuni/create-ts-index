@@ -1,5 +1,6 @@
 export interface ICreateTsIndexCliOption {
   cwds: Array<string> | string;
+  output: string;
   filefirst: boolean;
   addnewline: boolean;
   usesemicolon: boolean;

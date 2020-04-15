@@ -1,6 +1,6 @@
 create-ts-index
 ----
-[![Download Status](https://img.shields.io/npm/dw/create-ts-index.svg)](https://npmcharts.com/compare/create-ts-index?minimal=true) [![Github Star](https://img.shields.io/github/stars/imjuni/create-ts-index.svg?style=popout)](https://github.com/imjuni/create-ts-index) [![Github Issues](https://img.shields.io/github/issues-raw/imjuni/create-ts-index.svg)](https://github.com/imjuni/create-ts-index/issues) [![NPM version](https://img.shields.io/npm/v/create-ts-index.svg)](https://www.npmjs.com/package/create-ts-index) [![License](https://img.shields.io/npm/l/create-ts-index.svg)](https://github.com/imjuni/create-ts-index/blob/master/LICENSE) ![Build Status](https://travis-ci.org/imjuni/create-ts-index.svg?branch=master) [![codecov](https://codecov.io/gh/imjuni/create-ts-index/branch/master/graph/badge.svg)](https://codecov.io/gh/imjuni/create-ts-index)
+[![Download Status](https://img.shields.io/npm/dw/create-ts-index.svg)](https://npmcharts.com/compare/create-ts-index?minimal=true) [![Github Star](https://img.shields.io/github/stars/imjuni/create-ts-index.svg?style=popout)](https://github.com/imjuni/create-ts-index) [![Github Issues](https://img.shields.io/github/issues-raw/imjuni/create-ts-index.svg)](https://github.com/imjuni/create-ts-index/issues) [![NPM version](https://img.shields.io/npm/v/create-ts-index.svg)](https://www.npmjs.com/package/create-ts-index) [![License](https://img.shields.io/npm/l/create-ts-index.svg)](https://github.com/imjuni/create-ts-index/blob/master/LICENSE) [![cti](https://circleci.com/gh/imjuni/create-ts-index.svg?style=shield)](https://app.circleci.com/pipelines/github/imjuni/create-ts-index?branch=master)
 
 # Install
 ```bash
@@ -68,6 +68,7 @@ create-ts-index entrypoint sub-command create index.ts file below.
 * `verbose` verbose log message disply
 * `withoutComment` remove create-ts-index comment that top of line in index.ts
 * `withoutBackupFile` Don't create backupfile if already exists target file
+* `output` index.ts or entrypoint.ts filename change
 
 ## cli (use it cti)
 * `-f --filefirst` export list create filefirst, no option false, option true
@@ -82,6 +83,7 @@ create-ts-index entrypoint sub-command create index.ts file below.
 * `-v --verbose` disply verbose log message. no option false, option true
 * `-w --withoutcomment` remove create-ts-index comment that top of line in index.ts
 * `-b --withoutbackup` Don't create backupfile if already exists target file
+* `-o --output` index.ts or entrypoint.ts filename change
 
 # Usage
 ## library 

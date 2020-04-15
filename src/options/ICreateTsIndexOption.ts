@@ -45,4 +45,6 @@ export interface ICreateTsIndexOption {
 
   /** Don't create backupfile if already exists target file */
   withoutBackupFile: boolean;
+
+  output: string;
 }

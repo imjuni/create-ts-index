@@ -1,26 +1,30 @@
 {
   "name": "create-ts-index",
-  "version": "1.12.1",
+  "version": "1.13.0",
   "description": "Automatic create index.ts file",
   "main": "dist/index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=develop DEBUG=cti:* jest --runInBand",
+    "test": "cross-env NODE_ENV=develop DEBUG=cti:*,ctit:* jest --runInBand",
     "win": "npx cross-env NODE_ENV=develop DEBUG=ctit:* jest --runInBand",
     "debug": "node --nolazy --inspect-brk=9229 ./node_modules/.bin/jest --runInBand",
-    "start": "node -r ts-node/register ./src/cti.ts ",
-    "dexec": "DEBUG=cti:* node -r ts-node/register ./src/cti.ts ",
+    "start": "node -r ts-node/register ./src/cti.ts",
+    "webpack:prod": "NODE_ENV=production webpack --config webpack.config.prod.js",
+    "webpack:dev": "NODE_ENV=production webpack --config webpack.config.dev.js",
+    "dbgstart": "DEBUG=cti:* node -r ts-node/register --nolazy --inspect-brk=9229 ./src/cti.ts ",
     "prebuild": "npm run clean",
     "build": "tsc",
     "clean": "rimraf ./dist",
-    "prepub": "npm run clean && npm run build",
-    "pub": "npm publish"
+    "prepub": "npm run clean && npm run webpack:prod",
+    "pub": "npm publish --registry http://localhost:8901 --force",
+    "prepub:prod": "npm run clean && npm run build",
+    "pub:prod": "npm publish"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/imjuni/create-ts-index.git"
   },
   "bin": {
-    "cti": "./dist/cti.js"
+    "cti": "./dist/index.js"
   },
   "author": "ByungJoon Lee",
   "license": "MIT",
@@ -52,19 +56,24 @@
     "@types/jest": "^23.3.5",
     "@types/json5": "0.0.30",
     "@types/node": "^12.0.2",
-    "@types/yargs": "^13.0.0",
+    "@types/yargs": "^15.0.4",
     "codecov": "^3.6.5",
     "cross-env": "^5.2.0",
     "jest": "^25.2.4",
-    "maid": "^0.3.0",
     "rimraf": "^2.6.2",
     "ts-jest": "^25.3.0",
+    "ts-loader": "^7.0.0",
     "ts-node": "^8.3.0",
-    "tslint": "^5.17.0",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
+    "tslint": "^5.20.1",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.5.2",
-    "typescript-tslint-plugin": "^0.5.0"
+    "typescript": "^3.8.3",
+    "typescript-tslint-plugin": "^0.5.0",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-node-externals": "^1.7.2",
+    "webpackbar": "^4.0.0"
   },
   "dependencies": {
     "chalk": "^2.4.1",
@@ -74,10 +83,11 @@
     "deepmerge": "^4.2.2",
     "fast-glob": "^3.2.2",
     "glob": "^7.1.3",
-    "json5": "^2.1.0",
+    "json5": "^2.1.3",
     "merge": "^1.2.1",
     "minimatch": "^3.0.4",
+    "my-easy-fp": "^0.5.1",
     "tslib": "^1.10.0",
-    "yargs": "^13.2.4"
+    "yargs": "^15.3.1"
   }
 }

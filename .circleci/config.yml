@@ -1,0 +1,24 @@
+# https://circleci.com/docs/2.0/language-javascript/
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/node:12.16
+    steps: 
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: npm-install
+          command: npm install
+      - run:
+          name: npm-test
+          command: npm run test
+      - run:
+          name: npm-build
+          command: npm run build
+          no_output_timeout: 10m
+      - run:
+          name: npm-webpack:prod
+          command: npm run webpack:prod
+     

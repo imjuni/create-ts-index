@@ -1,8 +1,9 @@
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import debug from 'debug';
+import { isPass } from 'my-easy-fp';
 import * as path from 'path';
-import { ctircLoader } from '../options/ctircLoader';
+import { concreteConfig, getRCFilename, merging, readConfigRC } from '../options/configure';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
 import { addNewline, isNotEmpty } from '../tools/CTIUtility';
@@ -13,19 +14,28 @@ import { ICommandModule } from './ICommandModule';
 const log = debug('cti:EntrypointCommandModule');
 
 export class EntrypointCommandModule implements ICommandModule {
-  public async do(cliCwd: string, passed: Partial<ICreateTsIndexOption>): Promise<void> {
-    const cwd =
+  public async do(executePath: string, passed: Partial<ICreateTsIndexOption>): Promise<void> {
+    const workDir =
       isNotEmpty(passed.globOptions) && isNotEmpty(passed.globOptions.cwd)
         ? passed.globOptions.cwd
         : process.cwd();
 
-    const { readedFrom, option } = ctircLoader({
-      cwd: cliCwd,
-      fromCliOption: passed,
-      inputDir: cwd,
-    });
+    const configFromExecutePath = await readConfigRC(getRCFilename(executePath));
+    const configFromWorkDir = await readConfigRC(getRCFilename(workDir));
+
+    passed.output = passed.output ?? 'entrypoint.ts';
+
+    const option = concreteConfig(
+      merging(
+        merging(
+          isPass(configFromExecutePath) ? configFromExecutePath.pass : {},
+          isPass(configFromWorkDir) ? configFromWorkDir.pass : {},
+        ),
+        passed,
+      ),
+    );
+
     const logger = new CTILogger(option.verbose);
-    logger.log('configuration from: ', readedFrom === '' ? 'default' : readedFrom);
 
     try {
       logger.log(chalk.yellowBright('Option: '), option);
@@ -41,6 +51,7 @@ export class EntrypointCommandModule implements ICommandModule {
         option,
         filenames: allTsFiles,
       });
+
       const dupLibDirs = tsFiles
         .filter((tsFile) => tsFile.split('/').length > 1)
         .map((tsFile) => {
@@ -128,6 +139,9 @@ export class EntrypointCommandModule implements ICommandModule {
               .filter((element) => statMap[element].isDirectory() || element !== 'index.ts')
               .filter(
                 (element) => statMap[element].isDirectory() || element !== 'entrypoint.ts',
+              )
+              .filter(
+                (element) => statMap[element].isDirectory() || element !== option.output,
               );
 
             const categorized = targets.reduce<{
@@ -196,10 +210,10 @@ export class EntrypointCommandModule implements ICommandModule {
 
       const cwdPath = option.globOptions.cwd || __dirname;
 
-      logger.log(chalk.green('entrypoiny writed:', `${cwdPath}${path.sep}entrypoint.ts`));
+      logger.log(chalk.green('entrypoiny writed:', `${cwdPath}${path.sep}${option.output}`));
 
-      const entrypointFile = path.join(cwdPath, 'entrypoint.ts');
-      const entrypointBackupFile = path.join(cwdPath, 'entrypoint.ts.bak');
+      const entrypointFile = path.join(cwdPath, option.output);
+      const entrypointBackupFile = path.join(cwdPath, `${option.output}.bak`);
 
       if (option.withoutBackupFile) {
         await CommandModule.promisify.writeFile(entrypointFile, fileContent, 'utf8');
