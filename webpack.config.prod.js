@@ -36,7 +36,7 @@ const config = {
   },
 
   output: {
-    filename: 'index.js',
+    filename: 'cti.js',
     libraryTarget: 'commonjs',
     path: distPath,
   },

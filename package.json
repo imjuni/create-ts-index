@@ -1,8 +1,8 @@
 {
   "name": "create-ts-index",
-  "version": "1.13.0",
+  "version": "1.13.2",
   "description": "Automatic create index.ts file",
-  "main": "dist/index.js",
+  "main": "dist/cti.js",
   "scripts": {
     "test": "cross-env NODE_ENV=develop DEBUG=cti:*,ctit:* jest --runInBand",
     "win": "npx cross-env NODE_ENV=develop DEBUG=ctit:* jest --runInBand",
@@ -16,7 +16,7 @@
     "clean": "rimraf ./dist",
     "prepub": "npm run clean && npm run webpack:prod",
     "pub": "npm publish --registry http://localhost:8901 --force",
-    "prepub:prod": "npm run clean && npm run build",
+    "prepub:prod": "npm run clean && npm run webpack:prod",
     "pub:prod": "npm publish"
   },
   "repository": {
@@ -24,7 +24,7 @@
     "url": "git+https://github.com/imjuni/create-ts-index.git"
   },
   "bin": {
-    "cti": "./dist/index.js"
+    "cti": "./dist/cti.js"
   },
   "author": "ByungJoon Lee",
   "license": "MIT",
@@ -34,7 +34,7 @@
   "files": [
     "dist"
   ],
-  "types": "./dist/index.d.ts",
+  "types": "./dist/cti.d.ts",
   "homepage": "https://github.com/imjuni/create-ts-index#readme",
   "jest": {
     "testEnvironment": "node",
