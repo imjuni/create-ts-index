@@ -1,6 +1,6 @@
 {
   "name": "create-ts-index",
-  "version": "1.13.3",
+  "version": "1.13.4",
   "description": "Automatic create index.ts file",
   "main": "dist/cti.js",
   "scripts": {
@@ -68,7 +68,7 @@
     "tslint": "^5.20.1",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.8.3",
+    "typescript": "^4.0.2",
     "typescript-tslint-plugin": "^0.5.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
