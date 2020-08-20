@@ -8,7 +8,9 @@ npm install create-ts-index --save-dev
 ```
 
 # [ctix](https://github.com/imjuni/ctix)
-[ctix](https://github.com/imjuni/ctix) next generation export generation tool. ctix use TypeScript compiler API so ctix filter about don't exported file and handle about default export statement. And ctix don't need exclude configuration. Because don't export file filter outed. Also you can easily ignored `.ctiignore` file and `.npmignore` file. Or create tsconfig.json for ctix like tsconfig.eslint.json because ctix use exclude configuration read from passed tsconfig.json. But ctix use TypeScript Compiler API. Sometimes you feel slow on big project. So you can choose cti or ctix.
+[ctix](https://github.com/imjuni/ctix) next generation export generation tool. ctix use TypeScript compiler API. ctix can filter about don't exported file and handle about default export statement. ctix configuration easy. Because ctix read  include and exclude configuration in tsconfig.json. You can easily add ignore file using by `.ctiignore` file and `.npmignore` file. Also create tsconfig.json for ctix like tsconfig.eslint.json because ctix read exclude configuration from passed tsconfig.json. 
+
+ctix use TypeScript Compiler API. Sometimes you feel slow because project too big. So you can choose cti or ctix.
 
 # Introduction
 index.ts file create for exportation. If don't have business logic in index.ts that use to only exportation, create-ts-index help easy importing. Or if you have library project need this export process(for example, blueprint.js etc ...). cti(create-ts-index) create export index.ts file.
