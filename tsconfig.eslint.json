@@ -1,0 +1,21 @@
+{
+  // extend your base config so you don't have to redefine your compilerOptions
+  "extends": "./tsconfig.json",
+  "include": [
+    "**/src/**/*.ts",
+    "**/test/**/*.ts",
+    "**/typings/**/*.ts",
+    "**/src/**/*.tsx",
+    "**/test/**/*.tsx",
+    "**/typings/**/*.tsx",
+    "**/src/**/*.d.ts",
+    "**/test/**/*.d.ts",
+    "**/typings/**/*.d.ts"
+    // etc
+  ],
+  // IF (and only if) you have a mixed JS/TS codebase - you should also turn on JS support
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true
+  }
+}

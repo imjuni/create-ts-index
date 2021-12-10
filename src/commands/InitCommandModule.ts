@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import debug from 'debug';
+import * as TEI from 'fp-ts/Either';
 import * as fs from 'fs';
 import json5 from 'json5';
-import { isPass } from 'my-easy-fp';
 import * as path from 'path';
 import {
   concreteConfig,
@@ -32,8 +32,10 @@ export class InitCommandModule implements ICommandModule {
     const option = concreteConfig(
       merging(
         merging(
-          isPass(configFromExecutePath) ? configFromExecutePath.pass : getDeafultOptions(),
-          isPass(configFromWorkDir) ? configFromWorkDir.pass : getDeafultOptions(),
+          TEI.isRight(configFromExecutePath)
+            ? configFromExecutePath.right
+            : getDeafultOptions(),
+          TEI.isRight(configFromWorkDir) ? configFromWorkDir.right : getDeafultOptions(),
         ),
         passed,
       ),
@@ -65,7 +67,7 @@ export class InitCommandModule implements ICommandModule {
         return '';
       })();
 
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         fs.writeFile(
           path.join(workDir, '.ctirc'),
           `${headContent}\n\n${stringified}${addNewline}`,
@@ -79,7 +81,9 @@ export class InitCommandModule implements ICommandModule {
           },
         );
       });
-    } catch (err) {
+    } catch (catched) {
+      const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
       logger.error(chalk.red('indexWriter: ', err.message));
       logger.error(chalk.red('indexWriter: ', err.stack));
     }

@@ -10,29 +10,36 @@ const config = {
   devtool: 'eval-source-map',
   externals: [
     webpackNodeExternals({
-      whitelist: ['tslib'],
+      allowlist: ['tslib'],
     }),
   ],
-  mode: 'development',
+  mode: 'production',
   target: 'node',
 
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    fallback: {
+      __dirname: false,
+      __filename: false,
+      console: false,
+      global: false,
+      process: false,
+    },
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     plugins: [
       new tsconfigPathsWebpackPlugin({
-        configFile: 'tsconfig.json',
+        configFile: 'tsconfig.prod.json',
       }),
     ],
   },
 
   plugins: [
     new webpack.BannerPlugin({ banner: '#!/usr/bin/env node', raw: true }),
-    new webpackBar({ name: '-create-ts-index' })
+    new webpackBar({ name: '-create-ts-index' }),
   ],
 
   entry: {
-    'cti': ['./src/cti.ts'],
+    cti: ['./src/cti.ts'],
   },
 
   output: {
@@ -42,7 +49,7 @@ const config = {
   },
 
   optimization: {
-    minimize: false, // <---- disables uglify.
+    minimize: true, // <---- disables uglify.
     // minimizer: [new UglifyJsPlugin()] if you want to customize it.
   },
 
@@ -57,20 +64,15 @@ const config = {
         loader: 'ts-loader',
         test: /\.tsx?$/,
         options: {
-          configFile: 'tsconfig.json'
-        }
+          configFile: 'tsconfig.prod.json',
+        },
       },
+      // {
+      //   exclude: /node_modules/,
+      //   loader: 'shebang-loader',
+      //   test: /\.tsx?$/,
+      // },
     ],
-  },
-
-  devtool: 'inline-source-map',
-
-  node: {
-    __dirname: false,
-    __filename: false,
-    console: false,
-    global: false,
-    process: false,
   },
 };
 

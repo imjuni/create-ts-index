@@ -3,7 +3,8 @@ import deepmerge from 'deepmerge';
 import * as fs from 'fs';
 import * as glob from 'glob';
 import json5 from 'json5';
-import { efail, Either, epass } from 'my-easy-fp';
+// import { efail, Either, epass } from 'my-easy-fp';
+import * as TEI from 'fp-ts/Either';
 import * as path from 'path';
 import * as util from 'util';
 import { ICreateTsIndexCliOption } from './ICreateTsIndexCliOption';
@@ -173,7 +174,7 @@ export function cleansing(src: Partial<ICreateTsIndexOption>): Partial<ICreateTs
 
 export async function readConfigRC(
   configPath: string,
-): Promise<Either<Partial<ICreateTsIndexOption>, Error>> {
+): Promise<TEI.Either<Error, Partial<ICreateTsIndexOption>>> {
   try {
     if (await exists(configPath)) {
       const readed = await readFile(configPath);
@@ -191,12 +192,17 @@ export async function readConfigRC(
       }
 
       cleansed.__for_debug_from = configPath;
-      return epass(cleansed);
+      return TEI.right(cleansed);
     }
 
-    return epass({});
-  } catch (err) {
-    return efail(err);
+    return TEI.right({});
+  } catch (catched) {
+    const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
+    log(err.message);
+    log(err.stack);
+
+    return TEI.left(err);
   }
 }
 

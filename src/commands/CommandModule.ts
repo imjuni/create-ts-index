@@ -12,13 +12,7 @@ const log = debug('cti:CommandModule');
 
 export class CommandModule {
   public static promisify = {
-    exists: util.promisify(fs.exists),
     glob: util.promisify<string, glob.IOptions, Array<string>>(glob),
-    readDir: util.promisify<string, Array<string>>(fs.readdir),
-    readFile: util.promisify(fs.readFile),
-    stat: util.promisify<string, fs.Stats>(fs.stat),
-    unlink: util.promisify<fs.PathLike>(fs.unlink),
-    writeFile: util.promisify<string, any, string>(fs.writeFile),
   };
 
   public static targetFileFilter({
@@ -82,8 +76,14 @@ export class CommandModule {
         });
 
       return filteredFiles;
-    } catch (err) {
-      logger.error(chalk.default.redBright('Error occured: ', err));
+    } catch (catched) {
+      const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
+      log(err.message);
+      log(err.stack);
+
+      logger.error(chalk.default.redBright('Error occured: ', catched));
+
       return [];
     }
   }

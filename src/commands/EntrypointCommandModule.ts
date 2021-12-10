@@ -1,12 +1,14 @@
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import debug from 'debug';
-import { isPass } from 'my-easy-fp';
+import * as TEI from 'fp-ts/Either';
+import * as fs from 'fs';
 import * as path from 'path';
 import { concreteConfig, getRCFilename, merging, readConfigRC } from '../options/configure';
 import { ICreateTsIndexOption } from '../options/ICreateTsIndexOption';
 import { CTILogger } from '../tools/CTILogger';
 import { addNewline, isNotEmpty } from '../tools/CTIUtility';
+import { exists } from '../tools/exists';
 import { getExportStatementCreator } from '../tools/exportStatement';
 import { CommandModule } from './CommandModule';
 import { ICommandModule } from './ICommandModule';
@@ -28,8 +30,8 @@ export class EntrypointCommandModule implements ICommandModule {
     const option = concreteConfig(
       merging(
         merging(
-          isPass(configFromExecutePath) ? configFromExecutePath.pass : {},
-          isPass(configFromWorkDir) ? configFromWorkDir.pass : {},
+          TEI.isRight(configFromExecutePath) ? configFromExecutePath.right : {},
+          TEI.isRight(configFromWorkDir) ? configFromWorkDir.right : {},
         ),
         passed,
       ),
@@ -98,7 +100,9 @@ export class EntrypointCommandModule implements ICommandModule {
       await this.write({ logger, option, directories: tsDirs });
 
       logger.flog(chalk.green(`entrypoint create succeeded: ${option.globOptions.cwd}`));
-    } catch (err) {
+    } catch (catched) {
+      const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
       log('entrypoint: ', err.message);
       log('entrypoint: ', err.stack);
 
@@ -120,13 +124,11 @@ export class EntrypointCommandModule implements ICommandModule {
         directories.map((directory) => {
           return (async () => {
             const resolvePath = path.resolve(option.globOptions.cwd || __dirname);
-            const elements = await CommandModule.promisify.readDir(
-              path.join(resolvePath, directory),
-            );
+            const elements = await fs.promises.readdir(path.join(resolvePath, directory));
 
             const stats = await Promise.all(
               elements.map((target) =>
-                CommandModule.promisify.stat(path.join(resolvePath, directory, target)),
+                fs.promises.stat(path.join(resolvePath, directory, target)),
               ),
             );
 
@@ -216,22 +218,24 @@ export class EntrypointCommandModule implements ICommandModule {
       const entrypointBackupFile = path.join(cwdPath, `${option.output}.bak`);
 
       if (option.withoutBackupFile) {
-        await CommandModule.promisify.writeFile(entrypointFile, fileContent, 'utf8');
+        await fs.promises.writeFile(entrypointFile, fileContent, 'utf8');
         return;
       }
 
-      if (await CommandModule.promisify.exists(entrypointFile)) {
+      if (await exists(entrypointFile)) {
         logger.log(chalk.green('created: '), `${entrypointBackupFile}`);
 
-        await CommandModule.promisify.writeFile(
+        await fs.promises.writeFile(
           entrypointBackupFile,
-          await CommandModule.promisify.readFile(entrypointFile),
+          await fs.promises.readFile(entrypointFile),
           'utf8',
         );
       }
 
-      await CommandModule.promisify.writeFile(entrypointFile, fileContent, 'utf8');
-    } catch (err) {
+      await fs.promises.writeFile(entrypointFile, fileContent, 'utf8');
+    } catch (catched) {
+      const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
       logger.error(chalk.red('indexWriter: ', err.message));
       logger.error(chalk.red('indexWriter: ', err.stack));
     }

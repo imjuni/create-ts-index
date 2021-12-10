@@ -1,6 +1,5 @@
 import debug from 'debug';
-import { isPass } from 'my-easy-fp';
-import path from 'path';
+import * as TEI from 'fp-ts/Either';
 import {
   concreteConfig,
   getDeafultOptions,
@@ -18,8 +17,8 @@ describe('loader-test-coverage', () => {
 
     const option = concreteConfig(
       merging(
-        isPass(configFromExecutePath) ? configFromExecutePath.pass : getDeafultOptions(),
-        isPass(configFromWorkDir) ? configFromWorkDir.pass : getDeafultOptions(),
+        TEI.isRight(configFromExecutePath) ? configFromExecutePath.right : getDeafultOptions(),
+        TEI.isRight(configFromWorkDir) ? configFromWorkDir.right : getDeafultOptions(),
       ),
     );
 

@@ -178,4 +178,4 @@ const argv = yargs
   .version(version, 'version', 'display version information')
   .help().argv;
 
-log('output filename: ', argv.output);
+// log('output filename: ', argv.output);

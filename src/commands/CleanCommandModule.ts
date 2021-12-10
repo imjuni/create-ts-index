@@ -1,6 +1,7 @@
 import chalk from 'chalk';
-import { isPass } from 'my-easy-fp';
+import * as TEI from 'fp-ts/Either';
 import * as path from 'path';
+import * as fs from 'fs';
 import {
   concreteConfig,
   getDeafultOptions,
@@ -27,8 +28,10 @@ export class CleanCommandModule implements ICommandModule {
     const option = concreteConfig(
       merging(
         merging(
-          isPass(configFromExecutePath) ? configFromExecutePath.pass : getDeafultOptions(),
-          isPass(configFromWorkDir) ? configFromWorkDir.pass : getDeafultOptions(),
+          TEI.isRight(configFromExecutePath)
+            ? configFromExecutePath.right
+            : getDeafultOptions(),
+          TEI.isRight(configFromWorkDir) ? configFromWorkDir.right : getDeafultOptions(),
         ),
         passed,
       ),
@@ -83,7 +86,7 @@ export class CleanCommandModule implements ICommandModule {
     await Promise.all(
       Array.from(concattedSet).map((file) => {
         logger.log(chalk.redBright('delete file: '), path.join(workDir, file));
-        return CommandModule.promisify.unlink(path.join(workDir, file));
+        return fs.promises.unlink(path.join(workDir, file));
       }),
     );
 

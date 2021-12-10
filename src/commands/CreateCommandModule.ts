@@ -1,8 +1,9 @@
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import debug from 'debug';
-import { isPass } from 'my-easy-fp';
+import * as TEI from 'fp-ts/Either';
 import * as path from 'path';
+import * as fs from 'fs';
 import {
   concreteConfig,
   getDeafultOptions,
@@ -16,6 +17,7 @@ import { addNewline, isNotEmpty } from '../tools/CTIUtility';
 import { getExportStatementCreator } from '../tools/exportStatement';
 import { CommandModule } from './CommandModule';
 import { ICommandModule } from './ICommandModule';
+import { exists } from '../tools/exists';
 
 const log = debug('cti:CreateCommandModule');
 
@@ -32,8 +34,10 @@ export class CreateCommandModule implements ICommandModule {
     const option = concreteConfig(
       merging(
         merging(
-          isPass(configFromExecutePath) ? configFromExecutePath.pass : getDeafultOptions(),
-          isPass(configFromWorkDir) ? configFromWorkDir.pass : getDeafultOptions(),
+          TEI.isRight(configFromExecutePath)
+            ? configFromExecutePath.right
+            : getDeafultOptions(),
+          TEI.isRight(configFromWorkDir) ? configFromWorkDir.right : getDeafultOptions(),
         ),
         passed,
       ),
@@ -111,7 +115,9 @@ export class CreateCommandModule implements ICommandModule {
       );
 
       logger.flog(chalk.green(`create succeeded: ${option.globOptions.cwd}`));
-    } catch (err) {
+    } catch (catched) {
+      const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
       log(err.message);
       log(err.stack);
 
@@ -133,14 +139,10 @@ export class CreateCommandModule implements ICommandModule {
       logger.log(chalk.yellowBright('Current working directory: ', directory));
 
       const resolvePath = path.resolve(option.globOptions.cwd || __dirname);
-      const elements = await CommandModule.promisify.readDir(
-        path.join(resolvePath, directory),
-      );
+      const elements = await fs.promises.readdir(path.join(resolvePath, directory));
 
       const stats = await Promise.all(
-        elements.map((target) =>
-          CommandModule.promisify.stat(path.join(resolvePath, directory, target)),
-        ),
+        elements.map((target) => fs.promises.stat(path.join(resolvePath, directory, target))),
       );
 
       const statMap = elements.reduce((map, element, index) => {
@@ -216,7 +218,7 @@ export class CreateCommandModule implements ICommandModule {
       );
 
       if (option.withoutBackupFile) {
-        await CommandModule.promisify.writeFile(
+        await fs.promises.writeFile(
           path.join(resolvePath, directory, option.output),
           fileContent,
           'utf8',
@@ -228,18 +230,20 @@ export class CreateCommandModule implements ICommandModule {
       const indexFile = path.join(resolvePath, directory, option.output);
       const indexBackupFile = path.join(resolvePath, directory, `${option.output}.bak`);
 
-      if (await CommandModule.promisify.exists(indexFile)) {
+      if (await exists(indexFile)) {
         logger.log(chalk.green('created: '), `${indexBackupFile}`);
 
-        await CommandModule.promisify.writeFile(
+        await fs.promises.writeFile(
           indexBackupFile,
-          await CommandModule.promisify.readFile(indexFile),
+          await fs.promises.readFile(indexFile),
           'utf8',
         );
       }
 
-      await CommandModule.promisify.writeFile(indexFile, fileContent, 'utf8');
-    } catch (err) {
+      await fs.promises.writeFile(indexFile, fileContent, 'utf8');
+    } catch (catched) {
+      const err = catched instanceof Error ? catched : new Error('unknown error raised');
+
       log(err.message);
       log(err.stack);
 
