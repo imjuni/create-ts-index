@@ -1,5 +1,4 @@
 import * as chalk from 'chalk';
-import debug from 'debug';
 import * as fs from 'fs';
 import yargs, { Arguments, Argv } from 'yargs';
 import { CleanCommandModule } from './commands/CleanCommandModule';
@@ -10,7 +9,6 @@ import { createFromCli } from './options/configure';
 import { ICreateTsIndexCliOption } from './options/ICreateTsIndexCliOption';
 import { options } from './options/options';
 
-const log = debug('cti:cti-cli');
 const version = '1.10.2';
 
 function setter(name: keyof ICreateTsIndexCliOption, yargv: Argv<{}>) {

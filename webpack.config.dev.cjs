@@ -40,7 +40,7 @@ const config = {
   ],
 
   entry: {
-    cti: ['./src/cti.ts'],
+    cti: ['./src/index.ts'],
   },
 
   output: {

@@ -1,6 +1,6 @@
 {
   "name": "create-ts-index",
-  "version": "1.13.7",
+  "version": "1.14.0",
   "description": "Automatic create index.ts file",
   "main": "dist/cti.js",
   "scripts": {
@@ -9,8 +9,9 @@
     "debug": "node --nolazy --inspect-brk=9229 ./node_modules/.bin/jest --runInBand",
     "lint": "eslint --ext ts,tsx ./src/*",
     "start": "node -r ts-node/register ./src/cti.ts",
-    "webpack:prod": "cross-env NODE_ENV=production webpack --config webpack.config.prod.cjs",
+    "prewebpack:dev": "npm run clean",
     "webpack:dev": "cross-env NODE_ENV=production webpack --config webpack.config.dev.cjs",
+    "webpack:prod": "cross-env NODE_ENV=production webpack --config webpack.config.prod.cjs",
     "dbgstart": "DEBUG=cti:* node -r ts-node/register --nolazy --inspect-brk=9229 ./src/cti.ts ",
     "prebuild": "npm run clean",
     "build": "tsc",
