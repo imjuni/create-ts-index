@@ -72,7 +72,7 @@ create-ts-index entrypoint sub-command create index.ts file below.
 * `withoutComment` remove create-ts-index comment that top of line in index.ts
 * `withoutBackupFile` Don't create backup file if already exists target file
 * `output` index.ts or entrypoint.ts filename change
-
+* `includeDeclarationFiles` pass declaration files (*.d.ts). default is false
 ## cli (use it cti)
 * `-f --filefirst` export list create file first, no option false, option true
 * `-n --addnewline` decide add newline file ending. no option true, option false
@@ -87,7 +87,7 @@ create-ts-index entrypoint sub-command create index.ts file below.
 * `-w --withoutcomment` remove create-ts-index comment that top of line in index.ts
 * `-b --withoutbackup` Don't create backup file if already exists target file
 * `-o --output` index.ts or entrypoint.ts filename change
-
+* `-d --includeDeclarationFiles` pass declaration files (*.d.ts). default is false
 # Usage
 ## library 
 ### Use TypeScritIndexWriter

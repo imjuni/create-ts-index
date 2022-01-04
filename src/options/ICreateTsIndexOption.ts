@@ -47,4 +47,7 @@ export interface ICreateTsIndexOption {
   withoutBackupFile: boolean;
 
   output: string;
+
+  /** Include declaration files (*.d.ts) */
+  includeDeclarationFiles: boolean;
 }

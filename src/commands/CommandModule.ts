@@ -41,7 +41,9 @@ export class CommandModule {
         })
 
         // Step 3, remove declare file(*.d.ts)
-        .filter((filename) => !filename.endsWith('.d.ts'))
+        .filter((filename) => {
+          return (option.includeDeclarationFiles) || !filename.endsWith('.d.ts')
+        })
 
         // Step 4, remove exclude pattern
         .filter((filename) => {
@@ -63,7 +65,7 @@ export class CommandModule {
 
         // Step 5, remove index file(index.ts, index.tsx etc ...)
         .filter((filename) => {
-          return !option.targetExts
+          return filename !== "index.d.ts" && !option.targetExts
             .map((ext) => `index.${ext}`)
             .reduce<boolean>((result, indexFile) => {
               return result || filename.indexOf(indexFile) >= 0;
