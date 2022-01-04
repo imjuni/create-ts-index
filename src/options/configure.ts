@@ -36,6 +36,7 @@ const defaultOptions: ICreateTsIndexOption = {
   verbose: false,
   withoutBackupFile: false,
   withoutComment: false,
+  includeDeclarationFiles: false,
 };
 
 export function getRCFilename(configPath: string): string {
@@ -69,6 +70,7 @@ export function createFromCli(
     verbose: args.verbose ?? undefined,
     withoutBackupFile: args.withoutbackup ?? undefined,
     withoutComment: args.withoutcomment ?? undefined,
+    includeDeclarationFiles: args.includeDeclarationFiles ?? undefined,
   };
 }
 
@@ -94,6 +96,7 @@ export function merging(
     verbose: dst.verbose ?? src.verbose ?? undefined,
     withoutBackupFile: dst.withoutBackupFile ?? src.withoutBackupFile ?? undefined,
     withoutComment: dst.withoutComment ?? src.withoutComment ?? undefined,
+    includeDeclarationFiles: dst.includeDeclarationFiles ?? src.includeDeclarationFiles ?? undefined,
   };
 
   const cleansed = cleansing(full);
@@ -159,6 +162,7 @@ export function cleansing(src: Partial<ICreateTsIndexOption>): Partial<ICreateTs
     verbose: src.verbose,
     withoutBackupFile: src.withoutBackupFile,
     withoutComment: src.withoutComment,
+    includeDeclarationFiles: src.includeDeclarationFiles,
   };
 
   const cleansed = Object.keys(full).reduce<Partial<ICreateTsIndexOption>>((obj, key) => {
@@ -222,5 +226,6 @@ export function concreteConfig(config: Partial<ICreateTsIndexOption>): ICreateTs
     verbose: config.verbose ?? defaultOptions.verbose,
     withoutBackupFile: config.withoutBackupFile ?? defaultOptions.withoutBackupFile,
     withoutComment: config.withoutComment ?? defaultOptions.withoutComment,
+    includeDeclarationFiles: config.includeDeclarationFiles ?? defaultOptions.includeDeclarationFiles,
   };
 }

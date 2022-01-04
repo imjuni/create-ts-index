@@ -114,4 +114,12 @@ export const options = new Map<TKEY_OF_CLI_OPTIONS, Options>([
       type: 'string',
     },
   ],
+  [
+    'includeDeclarationFiles',
+    {
+      alias: 'd',
+      describe: 'pass declaration files (*.d.ts). default is false.',
+      type: 'boolean',
+    },
+  ],
 ]);

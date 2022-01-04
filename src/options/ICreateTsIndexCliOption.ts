@@ -13,4 +13,5 @@ export interface ICreateTsIndexCliOption {
   quote: string;
   withoutcomment: boolean;
   withoutbackup: boolean;
+  includeDeclarationFiles: boolean;
 }
