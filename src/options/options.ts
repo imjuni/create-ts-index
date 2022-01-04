@@ -8,7 +8,7 @@ export const options = new Map<TKEY_OF_CLI_OPTIONS, Options>([
     'filefirst',
     {
       alias: 'f',
-      describe: 'export list create filefirst, no option false, option true',
+      describe: 'export list create file first, no option false, option true',
       type: 'boolean',
     },
   ],
@@ -16,7 +16,7 @@ export const options = new Map<TKEY_OF_CLI_OPTIONS, Options>([
     'addnewline',
     {
       alias: 'n',
-      describe: 'deside add newline file ending. no option true, option false',
+      describe: 'decide add newline file ending. no option true, option false',
       type: 'boolean',
     },
   ],
@@ -24,7 +24,7 @@ export const options = new Map<TKEY_OF_CLI_OPTIONS, Options>([
     'usesemicolon',
     {
       alias: 's',
-      describe: 'deside use semicolon line ending. no option true, option false',
+      describe: 'decide use semicolon line ending. no option true, option false',
       type: 'boolean',
     },
   ],
@@ -32,7 +32,7 @@ export const options = new Map<TKEY_OF_CLI_OPTIONS, Options>([
     'includecwd',
     {
       alias: 'c',
-      describe: 'deside include cwd directory in task. no option true, option false',
+      describe: 'decide include cwd directory in task. no option true, option false',
       type: 'boolean',
     },
   ],
@@ -41,7 +41,7 @@ export const options = new Map<TKEY_OF_CLI_OPTIONS, Options>([
     {
       alias: 't',
       // tslint:disable-next-line
-      describe: `deside use timestamp(YYYY-MM-DD HH:mm) top line comment. \nno option false, option true`,
+      describe: `decide use timestamp(YYYY-MM-DD HH:mm) top line comment. \nno option false, option true`,
       type: 'boolean',
     },
   ],
@@ -70,7 +70,7 @@ export const options = new Map<TKEY_OF_CLI_OPTIONS, Options>([
       alias: 'x',
       array: true,
       // tslint:disable-next-line
-      describe: `pass include extname. default extname is ["ts", "tsx"]. extname \npass without dot charactor.`,
+      describe: `pass include extname. default extname is ["ts", "tsx"]. extname \npass without dot character.`,
       type: 'string',
     },
   ],
@@ -86,7 +86,7 @@ export const options = new Map<TKEY_OF_CLI_OPTIONS, Options>([
     'withoutbackup',
     {
       alias: 'b',
-      describe: "Don't create backupfile if already exists target file",
+      describe: "Don't create backup file if already exists target file",
       type: 'boolean',
     },
   ],
@@ -102,7 +102,7 @@ export const options = new Map<TKEY_OF_CLI_OPTIONS, Options>([
     'quote',
     {
       alias: 'q',
-      describe: "deside quote character. default quote character is '",
+      describe: "decide quote character. default quote character is '",
       type: 'string',
     },
   ],
