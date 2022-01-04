@@ -59,33 +59,33 @@ create-ts-index entrypoint sub-command create index.ts file below.
 # Option
 ## library
 * `fileFirst: boolean` export list create filefirst. default false
-* `addNewline: boolean` deside add newline file ending. default true
-* `useSemicolon: boolean` deside use semicolon line ending. default true
-* `useTimestamp: boolean` deside use timestamp(YYYY-MM-DD HH:mm) top line comment. default false
-* `includeCWD: boolean` deside include cwd directory. default true
+* `addNewline: boolean` decide add newline file ending. default true
+* `useSemicolon: boolean` decide use semicolon line ending. default true
+* `useTimestamp: boolean` decide use timestamp(YYYY-MM-DD HH:mm) top line comment. default false
+* `includeCWD: boolean` decide include cwd directory. default true
 * `excludes: string[]` pass exclude directory. default exclude directory is `['@types', 'typings', '__test__', '__tests__']`
 * `fileExcludePatterns: string[]` pass exclude filename pattern. default exclude patterns is `[]`
-* `targetExts: string[]` pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot charactor.
+* `targetExts: string[]` pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot character.
 * `globOptions: glob.IOptions` pass include glob options. [node-glob](https://github.com/isaacs/node-glob) option use it.
-* `quote` deside quote charactor. Single quete charactor use to default.
-* `verbose` verbose log message disply
+* `quote` decide quote character. Single quote character use to default.
+* `verbose` verbose log message display
 * `withoutComment` remove create-ts-index comment that top of line in index.ts
-* `withoutBackupFile` Don't create backupfile if already exists target file
+* `withoutBackupFile` Don't create backup file if already exists target file
 * `output` index.ts or entrypoint.ts filename change
 
 ## cli (use it cti)
-* `-f --filefirst` export list create filefirst, no option false, option true
-* `-n --addnewline` deside add newline file ending. no option true, option false
-* `-s --usesemicolon` deside use semicolon line ending. no option true, option false
-* `-t --usetimestamp` deside use timestamp(YYYY-MM-DD HH:mm) top line comment. no option false, option true
-* `-c --includecwd` deside include cwd directory. no option true, option true
+* `-f --filefirst` export list create file first, no option false, option true
+* `-n --addnewline` decide add newline file ending. no option true, option false
+* `-s --usesemicolon` decide use semicolon line ending. no option true, option false
+* `-t --usetimestamp` decide use timestamp(YYYY-MM-DD HH:mm) top line comment. no option false, option true
+* `-c --includecwd` decide include cwd directory. no option true, option true
 * `-e --excludes [comma separated exclude directories]` pass exclude directory. default exclude directory is `['@types', 'typings', '__test__', '__tests__']`
 * `-i --fileexcludes [comma separated extname]` pass exclude filename pattern. default exclude patterns is `[]`
-* `-x --targetexts [comma separated extname]` pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot charactor.
-* `-q --quote` deside quote charactor. default quote charactor single quote
-* `-v --verbose` disply verbose log message. no option false, option true
+* `-x --targetexts [comma separated extname]` pass include extname. default extname is `['ts', 'tsx']`. extname pass without dot character.
+* `-q --quote` decide quote character. default quote character single quote
+* `-v --verbose` display verbose log message. no option false, option true
 * `-w --withoutcomment` remove create-ts-index comment that top of line in index.ts
-* `-b --withoutbackup` Don't create backupfile if already exists target file
+* `-b --withoutbackup` Don't create backup file if already exists target file
 * `-o --output` index.ts or entrypoint.ts filename change
 
 # Usage
